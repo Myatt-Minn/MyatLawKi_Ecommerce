@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "638749066043",
+    "project_id": "taxiproj-b2f9d",
+    "storage_bucket": "taxiproj-b2f9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638749066043:android:b769f487592778efcced1e",
+        "android_client_info": {
+          "package_name": "app.com.mm.myat_ecommerence"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOiQX5IpdEyrZA4x7HG_N7fbKyRQAp5nE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
