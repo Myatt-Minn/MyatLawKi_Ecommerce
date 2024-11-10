@@ -66,7 +66,7 @@ class ContactUsView extends GetView<ContactUsController> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'ဤအကြောင်းအရာတွင် အထောက်အကူပေးသည့်အချက်အလက်များပါဝင်သည်။', // Example description text
+            'ဤအကြောင်းအရာတွင် အထောက်အကူပေးသည့်အချက်အလက်များပါဝင်သည်', // Example description text
             style: TextStyle(color: Colors.white70),
           ),
         ),
