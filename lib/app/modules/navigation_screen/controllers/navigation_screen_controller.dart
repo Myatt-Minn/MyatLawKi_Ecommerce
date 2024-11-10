@@ -9,6 +9,7 @@ import 'package:myat_ecommerence/app/modules/notification/controllers/notificati
 class NavigationScreenController extends GetxController {
   //TODO: Implement NavigationScreenController
   var currentIndex = 0.obs;
+  var gg = "";
 
   @override
   void onInit() async {
