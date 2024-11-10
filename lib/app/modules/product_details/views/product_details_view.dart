@@ -13,8 +13,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
 
   @override
   Widget build(BuildContext context) {
-    final cartController = Get.put(CartController());
-    Get.put(CartController());
+    final cartController = Get.put(CartController(), permanent: true);
 
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
@@ -35,28 +34,13 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                     color: Colors.white,
                   ))),
         ),
-        title: const Text('Detail'),
+        title: Text('details'.tr),
         actions: [
           // Cart icon with badge
-          Obx(() => badges.Badge(
-                badgeContent: Text(
-                  '${cartController.itemCount}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                showBadge: cartController.itemCount > 0,
-                position: badges.BadgePosition.topEnd(top: -4, end: -4),
-                badgeStyle: badges.BadgeStyle(
-                  badgeColor: Colors.red,
-                  padding: const EdgeInsets.all(4),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
+          Obx(() => Stack(
+                clipBehavior: Clip.none, // Allow elements to overflow the stack
+                children: [
+                  Container(
                     decoration: BoxDecoration(
                       color: ConstsConfig.primarycolor, // Icon background color
                       borderRadius: BorderRadius.circular(12),
@@ -67,16 +51,39 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       onPressed: () {
                         Get.find<NavigationScreenController>()
                             .currentIndex
-                            .value = 2;
+                            .value = 3;
+
                         Get.back();
                       },
                     ),
                   ),
-                ),
+                  if (cartController.itemCount > 0)
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: badges.Badge(
+                        badgeContent: Text(
+                          '${cartController.itemCount}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        showBadge: cartController.itemCount > 0,
+                        badgeStyle: badges.BadgeStyle(
+                          badgeColor: Colors.red,
+                          padding: const EdgeInsets.all(4),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                ],
               )),
-          // SizedBox(
-          //   width: 4,
-          // ),
+
+          SizedBox(
+            width: 4,
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -113,7 +120,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                               border: Border.all(
                                   color: controller.selectedImageIndex.value ==
                                           index
-                                      ? const Color(0xFF95CCA9)
+                                      ? ConstsConfig.secondarycolor
                                       : Colors.transparent,
                                   width: 2),
                               borderRadius: BorderRadius.circular(8),
@@ -140,7 +147,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                 style: AppWidgets.lightTextFieldStyle()),
             const SizedBox(height: 20),
             // Color Options
-            Text("Color", style: AppWidgets.smallboldlineTextFieldStyle()),
+            Text("color".tr, style: AppWidgets.smallboldlineTextFieldStyle()),
             const SizedBox(height: 5),
             Obx(() => Row(
                   children: controller.colorOptions.map((colorOption) {
@@ -163,7 +170,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                 )),
             const SizedBox(height: 20),
             // Size Selection
-            Text("Available Sizes",
+            Text("available_sizes".tr,
                 style: AppWidgets.smallboldlineTextFieldStyle()),
             const SizedBox(height: 5),
             Obx(() => ListView.builder(
@@ -192,15 +199,16 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: isSelected
-                                  ? Colors.greenAccent
+                                  ? ConstsConfig.secondarycolor
                                   : Colors.white,
                             ),
                             child: ListTile(
-                              title: Text('Size: ${size.size}',
+                              title: Text('${'size'.tr}: ${size.size}',
                                   style: const TextStyle(color: Colors.black)),
-                              subtitle: Text('Price: ${size.price} Ks',
+                              subtitle: Text('${'price'.tr}: ${size.price} Ks',
                                   style: const TextStyle(color: Colors.black)),
-                              trailing: Text('In Stock: ${size.quantity}',
+                              trailing: Text(
+                                  '${'in_stock'.tr}: ${size.quantity}',
                                   style: const TextStyle(color: Colors.black)),
                               leading: isSelected
                                   ? const Icon(Icons.check_circle,
@@ -247,13 +255,12 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       if (controller.selectedSize.value.isNotEmpty) {
                         controller.addToCart();
                       } else {
-                        Get.snackbar("Error",
-                            "Please select a size before adding to cart.",
+                        Get.snackbar("Error", "select_item".tr,
                             backgroundColor: Colors.red,
                             colorText: Colors.black);
                       }
                     },
-                    child: const Text("Add To Cart",
+                    child: Text('add_to_cart'.tr,
                         style: TextStyle(color: Colors.black)),
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 import 'package:myat_ecommerence/app/modules/check_out/controllers/check_out_controller.dart';
 import 'package:myat_ecommerence/app/modules/check_out/views/widgets/AddressSection%20.dart';
@@ -15,15 +16,13 @@ class CheckOutView extends GetView<CheckOutController> {
     final CartController cartController = Get.find<CartController>();
 
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: Text('Check Out',
-            style:
-                TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black)),
+        title: Text('Check Out', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Get.isDarkMode ? Colors.white : Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
       ),

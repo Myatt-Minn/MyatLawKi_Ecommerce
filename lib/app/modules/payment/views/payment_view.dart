@@ -10,8 +10,12 @@ class PaymentView extends GetView<PaymentController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text('Confirm Payment'),
+        title: const Text(
+          'Confirm Payment',
+          style: TextStyle(color: Colors.black),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
@@ -22,7 +26,8 @@ class PaymentView extends GetView<PaymentController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Choose Payment', style: TextStyle(fontSize: 16)),
+            const Text('Choose Payment',
+                style: TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 8),
             // Wrap the payment options in an Obx to observe changes
             Obx(() {
@@ -46,7 +51,7 @@ class PaymentView extends GetView<PaymentController> {
             }),
             const SizedBox(height: 16),
             const Text('Upload Screenshot of Payment transaction',
-                style: TextStyle(fontSize: 16)),
+                style: TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () => controller.chooseImage(),
@@ -68,7 +73,8 @@ class PaymentView extends GetView<PaymentController> {
                                     Icon(Icons.upload_file,
                                         size: 40, color: Colors.grey),
                                     SizedBox(height: 8),
-                                    Text('Click here to upload image')
+                                    Text('Click here to upload image',
+                                        style: TextStyle(color: Colors.white))
                                   ],
                                 ),
                         )
@@ -90,13 +96,13 @@ class PaymentView extends GetView<PaymentController> {
                 child: controller.isOrder.value
                     ? const CircularProgressIndicator()
                     : const Text('Confirm',
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.black)),
               );
             }),
             const SizedBox(height: 8),
             const Text(
               'Note: Please upload the screenshot of your payment transaction to complete your payment',
-              style: TextStyle(color: Color.fromARGB(255, 130, 130, 130)),
+              style: TextStyle(color: Color.fromARGB(255, 151, 151, 151)),
             ),
           ],
         ),
@@ -127,11 +133,14 @@ class PaymentOption extends StatelessWidget {
       onTap: onSelect,
       child: ListTile(
         leading: Image.network(image), // Use network image from Firestore
-        title: Text(name),
-        subtitle: Text(phone),
+        title: Text(name, style: TextStyle(color: Colors.white)),
+        subtitle: Text(phone, style: TextStyle(color: Colors.white)),
         trailing: isSelected
-            ? const Icon(Icons.check_circle, color: ConstsConfig.primarycolor)
-            : const Icon(Icons.radio_button_unchecked),
+            ? const Icon(Icons.check_circle, color: ConstsConfig.secondarycolor)
+            : const Icon(
+                Icons.radio_button_unchecked,
+                color: ConstsConfig.secondarycolor,
+              ),
       ),
     );
   }

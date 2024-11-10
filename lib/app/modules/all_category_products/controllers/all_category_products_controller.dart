@@ -45,7 +45,7 @@ class AllCategoryProductsController extends GetxController {
       print('Stacktrace: $stacktrace');
 
       // Display error in the UI
-      Get.snackbar('Error', 'Failed to fetch products');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     } finally {
       isLoading.value = false;
     }

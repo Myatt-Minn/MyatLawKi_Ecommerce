@@ -8,9 +8,9 @@ class TermsAndConditionController extends GetxController {
   Future<String?> fetchTermsConditions() async {
     try {
       DocumentSnapshot doc =
-          await firestore.collection('legal').doc('policies').get();
+          await firestore.collection('legal').doc('81eFTbGsx6QFXF8lcm7N').get();
       if (doc.exists) {
-        return doc['termsAndConditions'] as String?;
+        return doc['description'] as String?;
       }
     } catch (e) {
       print('Error fetching privacy policies: $e');

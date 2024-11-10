@@ -5,7 +5,7 @@ import 'package:myat_ecommerence/app/data/category_model.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
 
 class CategoryController extends GetxController {
-  var selectedCategory = 'Category'.obs; // Observable for category selection
+  var selectedCategory = 'Categories'.obs; // Observable for category selection
   var searchText = ''.obs; // Observable for search input
   var isFavorite = false.obs;
   var brands = <BrandModel>[].obs;
@@ -31,7 +31,7 @@ class CategoryController extends GetxController {
           .map((doc) => BrandModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch brands');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 
@@ -45,7 +45,7 @@ class CategoryController extends GetxController {
               CategoryModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch categories');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 
@@ -64,7 +64,7 @@ class CategoryController extends GetxController {
         return Product.fromMap(doc.data() as Map<String, dynamic>);
       }).toList();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch products: $e');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 
@@ -81,8 +81,7 @@ class CategoryController extends GetxController {
         return Product.fromMap(doc.data() as Map<String, dynamic>);
       }).toList();
     } catch (e) {
-      // Handle errors, e.g., logging or showing an error message
-      print('Error fetching products by brand: $e');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 

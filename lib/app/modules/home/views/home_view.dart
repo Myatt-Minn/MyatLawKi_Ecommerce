@@ -1,9 +1,10 @@
+import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/navigation_screen/controllers/navigation_screen_controller.dart';
 import 'package:myat_ecommerence/app/modules/notification/controllers/notification_controller.dart';
-import 'package:myat_ecommerence/global_widgets/productCard.dart';
+import 'package:myat_ecommerence/app/modules/productCard/views/product_card_view.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -40,10 +41,11 @@ class HomeView extends GetView<HomeController> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
                             Text(
-                              "Sneaker Store",
+                              ConstsConfig.appname,
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),
@@ -54,7 +56,10 @@ class HomeView extends GetView<HomeController> {
                     Obx(() => Stack(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.notifications),
+                              icon: const Icon(
+                                Icons.notifications,
+                                color: Colors.white,
+                              ),
                               onPressed: () {
                                 Get.toNamed('/notification');
                               },
@@ -101,7 +106,7 @@ class HomeView extends GetView<HomeController> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed('all-products');
+                    Get.toNamed('/all-products');
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -118,9 +123,9 @@ class HomeView extends GetView<HomeController> {
                           color: Colors.black,
                         ), // Search Icon
                         const SizedBox(width: 10),
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            "Search products, brands...",
+                            "${'search'.tr} / ${'filter'.tr}",
                             style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 16), // Hint text styling
@@ -129,7 +134,7 @@ class HomeView extends GetView<HomeController> {
                         IconButton(
                           icon: const Icon(Icons.filter_list),
                           onPressed: () {
-                            Get.toNamed('all-products');
+                            Get.toNamed('/all-products');
                           },
                         ),
                       ],
@@ -153,9 +158,10 @@ class HomeView extends GetView<HomeController> {
                         .pageController, // Use the PageController from the controller
                     itemCount: controller.banners.length,
                     itemBuilder: (context, index) {
-                      return Image.network(
-                        controller.banners[index],
-                        fit: BoxFit.cover,
+                      return FancyShimmerImage(
+                        imageUrl: controller.banners[index],
+                        boxFit: BoxFit.cover,
+                        height: 160,
                       );
                     },
                   ),
@@ -180,19 +186,21 @@ class HomeView extends GetView<HomeController> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Category",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    Text(
+                      "categories".tr,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                     GestureDetector(
                       onTap: () {
                         Get.find<NavigationScreenController>()
                             .currentIndex
-                            .value = 1;
+                            .value = 2;
                       },
-                      child: const Text(
-                        "See all >",
+                      child: Text(
+                        "${'see_all'.tr} >",
                         style: TextStyle(color: Colors.blue),
                       ),
                     ),
@@ -218,13 +226,13 @@ class HomeView extends GetView<HomeController> {
               const SizedBox(height: 20),
 
               // New Arrivals Section
-              buildSectionHeader("All Products", () {
+              buildSectionHeader("all_products".tr, () {
                 Get.toNamed('all-products');
               }),
               Obx(() {
                 return controller.productList.isEmpty
-                    ? const Center(
-                        child: Text("There is no products yet!"),
+                    ? Center(
+                        child: Text("no_products".tr),
                       )
                     : GridView.builder(
                         physics:
@@ -242,7 +250,7 @@ class HomeView extends GetView<HomeController> {
                         itemBuilder: (context, index) {
                           final product = controller.productList[index];
                           controller.displayProductSizes(product);
-                          return ProductCard(
+                          return ProductCardView(
                             product: product,
                             sizeOptions: controller.sizeList,
                           );
@@ -262,20 +270,21 @@ class HomeView extends GetView<HomeController> {
 // Build the section header with "See all"
   Widget buildSectionHeader(String title, VoidCallback onSeeAll) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           GestureDetector(
             onTap: onSeeAll,
-            child: const Row(
+            child: Row(
               children: [
                 Text(
-                  "See all ",
+                  "see_all".tr,
                   style: TextStyle(color: Colors.blue),
                 ),
                 Icon(Icons.arrow_forward_ios, size: 12, color: Colors.blue),
@@ -289,20 +298,25 @@ class HomeView extends GetView<HomeController> {
 
   // Helper for building category icon widgets
   Widget _buildCategoryIcon(String name) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Card(
-            elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                name,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            )));
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed('/all-category-products', arguments: name);
+      },
+      child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  name,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ))),
+    );
   }
 
   // Dot builder for the page indicator
@@ -313,7 +327,7 @@ class HomeView extends GetView<HomeController> {
       margin: const EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: Colors.black38,
+        color: Colors.white,
       ),
     );
   }

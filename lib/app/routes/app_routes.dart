@@ -6,6 +6,11 @@ abstract class Routes {
   static const HOME = _Paths.NAVIGATION_SCREEN;
   static const AUTH_GATE = _Paths.AUTH_GATE;
   static const SPLASH = _Paths.SPLASH;
+  static const FEEDS = _Paths.FEEDS;
+  static const COMMENTS = _Paths.COMMENTS;
+  static const WISHLIST = _Paths.WISHLIST;
+  static const CONTACT_US = _Paths.CONTACT_US;
+  static const PRODUCT_CARD = _Paths.PRODUCT_CARD;
 }
 
 abstract class _Paths {
@@ -29,4 +34,13 @@ abstract class _Paths {
   static const ORDER_DETAILS = '/order-history-detail';
   static const EDIT_PROFILE = '/edit-profile';
   static const NO_CONNECTION = '/no-internet';
+  static const FEEDS = '/feeds';
+  static const ALL_PRODUCTS = '/all-products';
+  static const ALL_CATEGORY_PRODUCTS = '/all-category-products';
+  static const COMMENTS = '/comments';
+  static const WISHLIST = '/wishlist';
+  static const FULL_SCREEN_IMAGE = '/full-screen-image';
+  static const TERMS_AND_CONDITIONS = '/terms-and-conditions';
+  static const CONTACT_US = '/contact-us';
+  static const PRODUCT_CARD = '/product-card';
 }

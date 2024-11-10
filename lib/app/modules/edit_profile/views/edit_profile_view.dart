@@ -10,6 +10,7 @@ class EditProfileView extends GetView<EditProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
         title: const Text('Profile'),
         leading: IconButton(
@@ -41,7 +42,7 @@ class EditProfileView extends GetView<EditProfileController> {
                       backgroundImage:
                           controller.isProfileImageChooseSuccess.value
                               ? FileImage(controller.file)
-                              : const AssetImage('images/person.png')
+                              : const AssetImage('assets/person.png')
                                   as ImageProvider,
                     ),
                     Positioned(

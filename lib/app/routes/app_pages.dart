@@ -2,8 +2,16 @@ import 'package:get/get.dart';
 
 import '../modules/Cart/bindings/cart_binding.dart';
 import '../modules/Cart/views/cart_view.dart';
+import '../modules/Feeds/bindings/feeds_binding.dart';
+import '../modules/Feeds/views/feeds_view.dart';
+import '../modules/FullScreenImage/bindings/full_screen_image_binding.dart';
+import '../modules/FullScreenImage/views/full_screen_image_view.dart';
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
+import '../modules/all_category_products/bindings/all_category_products_binding.dart';
+import '../modules/all_category_products/views/all_category_products_view.dart';
+import '../modules/all_products/bindings/all_products_binding.dart';
+import '../modules/all_products/views/all_products_view.dart';
 import '../modules/auth-gate/bindings/auth_gate_binding.dart';
 import '../modules/auth-gate/views/auth_gate_view.dart';
 import '../modules/auth-gate/views/no_internet.dart';
@@ -11,6 +19,10 @@ import '../modules/category/bindings/category_binding.dart';
 import '../modules/category/views/category_view.dart';
 import '../modules/check_out/bindings/check_out_binding.dart';
 import '../modules/check_out/views/check_out_view.dart';
+import '../modules/comments/bindings/comments_binding.dart';
+import '../modules/comments/views/comments_view.dart';
+import '../modules/contact_us/bindings/contact_us_binding.dart';
+import '../modules/contact_us/views/contact_us_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
@@ -36,6 +48,10 @@ import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/terms_and_condition/bindings/terms_and_condition_binding.dart';
+import '../modules/terms_and_condition/views/terms_and_condition_view.dart';
+import '../modules/wishlist/bindings/wishlist_binding.dart';
+import '../modules/wishlist/views/wishlist_view.dart';
 
 part 'app_routes.dart';
 
@@ -139,6 +155,46 @@ class AppPages {
       name: _Paths.NO_CONNECTION,
       page: () => const NoInternetScreen(),
       binding: AuthGateBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEEDS,
+      page: () => const FeedsView(),
+      binding: FeedsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ALL_PRODUCTS,
+      page: () => const AllProductsView(),
+      binding: AllProductsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ALL_CATEGORY_PRODUCTS,
+      page: () => const AllCategoryProductsView(),
+      binding: AllCategoryProductsBinding(),
+    ),
+    GetPage(
+      name: _Paths.COMMENTS,
+      page: () => const CommentsView(),
+      binding: CommentsBinding(),
+    ),
+    GetPage(
+      name: _Paths.WISHLIST,
+      page: () => const WishlistView(),
+      binding: WishlistBinding(),
+    ),
+    GetPage(
+      name: _Paths.FULL_SCREEN_IMAGE,
+      page: () => const FullScreenImageView(),
+      binding: FullScreenImageBinding(),
+    ),
+    GetPage(
+      name: _Paths.TERMS_AND_CONDITIONS,
+      page: () => const TermsAndConditionView(),
+      binding: TermsAndConditionBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONTACT_US,
+      page: () => const ContactUsView(),
+      binding: ContactUsBinding(),
     ),
   ];
 }

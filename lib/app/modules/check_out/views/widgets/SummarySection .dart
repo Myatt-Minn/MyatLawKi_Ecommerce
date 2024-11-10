@@ -40,12 +40,13 @@ class SummarySection extends StatelessWidget {
                   : Expanded(
                       child: _buildPaymentButton(
                         label: 'Cash on Delivery',
-                        color: Colors.grey[800]!,
+                        color: Colors.grey,
                         onPressed: () {
                           checkOutController.setOrder()
                               ? checkOutController.confirmPayment()
-                              : Get.snackbar("Empty TextBox",
-                                  "Please fill all informations first.");
+                              : Get.snackbar(
+                                  "Empty TextBox", "fill_all_information".tr,
+                                  backgroundColor: Colors.red);
                         },
                       ),
                     );
@@ -64,8 +65,8 @@ class SummarySection extends StatelessWidget {
                           "address": checkOutController.addressController.text,
                           "totalCost": checkOutController.finaltotalcost
                         })
-                      : Get.snackbar("Empty TextBox",
-                          "Please fill all informations first.");
+                      : Get.snackbar("Empty TextBox", "fill_all_information".tr,
+                          backgroundColor: Colors.red);
                 },
               ),
             ),
@@ -93,7 +94,7 @@ class SummarySection extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15.0),
         child: Text(
           label,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.black),
         ),
       ),
     );
@@ -105,10 +106,13 @@ class SummarySection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 16)),
+          Text(title,
+              style: const TextStyle(fontSize: 16, color: Colors.white)),
           Text(value,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white)),
         ],
       ),
     );

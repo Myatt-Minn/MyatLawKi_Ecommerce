@@ -16,15 +16,17 @@ class Product {
     this.brand,
     this.colors,
   });
-  // Convert CartItem to JSON
+
+  // Convert Product to JSON
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'description': description,
       'image': images,
       'brand': brand,
       'category': category,
-      'colors': colors,
+      'colors': colors?.map((colorOption) => colorOption.toMap()).toList(),
     };
   }
 

@@ -4,18 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountController extends GetxController {
   var username = ''.obs;
-
+  var profileImg = ''.obs;
+  var selectedLanguage = 'ENG'.obs;
   var goDarkMode = true.obs;
   var notificationsEnabled = true.obs;
   var languageSelected = 'English'.obs;
   var isProfileImageChooseSuccess = false.obs;
-  var profileImg = "".obs;
   late File file;
+  final storage = GetStorage();
   final String userId =
       FirebaseAuth.instance.currentUser!.uid; // Replace with actual user ID
 
@@ -23,13 +25,23 @@ class AccountController extends GetxController {
   void onInit() {
     super.onInit();
     goDarkMode.value = false;
-    fetchProfilePic(); // Fetch profile pic when the controller initializes
+    fetchUserData(); // Fetch profile pic when the controller initializes
+    selectedLanguage.value = storage.read('language') ?? 'ENG';
+    updateLocale();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    fetchProfilePic(); // Fetch profile pic when the controller initializes
+  void updateLocale() {
+    if (selectedLanguage.value == 'ENG') {
+      Get.updateLocale(const Locale('en', 'US'));
+    } else {
+      Get.updateLocale(const Locale('my', 'MM'));
+    }
+  }
+
+  void toggleLanguage(String language) {
+    selectedLanguage.value = language;
+    storage.write('language', language); // Save to storage
+    updateLocale(); // Apply the new language
   }
 
   void toggleDarkMode() {
@@ -153,7 +165,7 @@ class AccountController extends GetxController {
   }
 
   // Function to retrieve the profile picture from Firestore
-  Future<void> fetchProfilePic() async {
+  Future<void> fetchUserData() async {
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -170,7 +182,7 @@ class AccountController extends GetxController {
         Get.snackbar('Error', 'User document does not exist.');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to retrieve profile picture.');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 }

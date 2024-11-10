@@ -15,7 +15,10 @@ class CartItems extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Your Item(s)',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.white)),
           const SizedBox(height: 10),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
@@ -50,9 +53,18 @@ class CartItems extends StatelessWidget {
                         Text('${item.price} MMK',
                             style: const TextStyle(
                                 fontSize: 14, color: Colors.black)),
-                        Text('Size: ${item.size}',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black)),
+                        Row(
+                          children: [
+                            Text(
+                              'Color: ${item.color}   ,',
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            const SizedBox(width: 10),
+                            Text('Size: ${item.size}',
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.black)),
+                          ],
+                        ),
                         Text('Quantity: ${item.quantity}',
                             style: const TextStyle(
                                 fontSize: 14, color: Colors.black)),

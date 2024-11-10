@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myat_ecommerence/app/data/consts_config.dart';
 
 import '../controllers/signup_controller.dart';
 
@@ -9,7 +8,8 @@ class SignupView extends GetView<SignupController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          const Color(0xFF4E0E0E), // Background color matching image
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -20,127 +20,193 @@ class SignupView extends GetView<SignupController> {
                     ? const LinearProgressIndicator()
                     : Container();
               }),
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
               // Logo
-              Image.asset(ConstsConfig.logo, width: 100, height: 100),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/logo.png', // Replace with your logo path
+                      width: 140,
+                      height: 140,
+                    ),
+                    const SizedBox(
+                        width: 10), // Adjusted to give some horizontal spacing
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start, // Align text to the left
+                        children: [
+                          // Create Account Text
+                          const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                              height: 5), // Reduced for a tighter layout
 
-              const SizedBox(height: 5),
-
-              // Get Started Text
-              const Text(
-                'Get Started',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                          // Subtitle
+                          const Text(
+                            'Fill your information below to create an account',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                            ),
+                            maxLines: 2, // Limit to 2 lines if needed
+                            overflow: TextOverflow
+                                .visible, // Ensure wrapping instead of overflow
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-
               const SizedBox(height: 10),
 
-              // Subtitle
-              const Text(
-                'Enter your information below',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromARGB(255, 132, 132, 132),
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
               // Form Container
-              Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFB7DBBE), // Light green background
-                  borderRadius: BorderRadius.circular(20),
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   children: [
                     // Name TextField
-                    // Name TextField with validation error message
-                    Obx(() => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (controller.nameError.isNotEmpty)
-                              Text(controller.nameError.value,
-                                  style: const TextStyle(color: Colors.red)),
-                            TextField(
-                              controller: controller.nameController,
-                              decoration: InputDecoration(
-                                labelText: 'Name',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'အမည်',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 5),
+                        TextField(
+                          controller: controller.nameController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelStyle: TextStyle(color: Colors.black),
+                            hintText: 'Myat Min',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
-                          ],
-                        )),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 15),
 
-                    // Name TextField with validation error message
-                    Obx(() => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (controller.emailError.isNotEmpty)
-                              Text(controller.emailError.value,
-                                  style: const TextStyle(color: Colors.red)),
-                            TextField(
-                              controller: controller.emailController,
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
+                    // Phone Number TextField
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'ဖုန်းနံပါတ်',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 5),
+                        TextField(
+                          controller: controller.phoneController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelStyle: TextStyle(color: Colors.black),
+                            hintText: 'E.g 09123456',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
-                          ],
-                        )),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 15),
 
-                    // Password TextField with Obx to toggle visibility
-                    // Name TextField with validation error message
-                    Obx(() => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (controller.passwordError.isNotEmpty)
-                              Text(controller.passwordError.value,
-                                  style: const TextStyle(color: Colors.red)),
-                            TextField(
-                              controller: controller.passwordController,
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
+                    // Password TextField
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'စကားဝှက်နံပါတ်',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 5),
+                        TextField(
+                          controller: controller.passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: '*************',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            filled: true,
+                            fillColor: Colors.white,
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.visibility_off),
+                              onPressed: () {
+                                // Add toggle visibility function if needed
+                              },
                             ),
-                          ],
-                        )),
-
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 15),
 
-                    // Name TextField with validation error message
-                    Obx(() => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    // Confirm Password TextField
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'စကားဝှက်အတည်ပြုရန်',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 5),
+                        TextField(
+                          controller: controller.confirmPasswordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: '*************',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            filled: true,
+                            fillColor: Colors.white,
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.visibility_off),
+                              onPressed: () {
+                                // Add toggle visibility function if needed
+                              },
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Terms & Conditions Checkbox
+                    Obx(() => Row(
                           children: [
-                            if (controller.confirmPasswordError.isNotEmpty)
-                              Text(controller.confirmPasswordError.value,
-                                  style: const TextStyle(color: Colors.red)),
-                            TextField(
-                              controller: controller.confirmPasswordController,
-                              decoration: InputDecoration(
-                                labelText: 'Confirm Password',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
+                            Checkbox(
+                              value: controller.agreeTerms.value,
+                              onChanged: (value) {
+                                controller.agreeTerms.value = value ?? false;
+                              },
+                              activeColor: const Color(0xFFE1B000),
+                            ),
+                            const Text(
+                              'Agree with Terms & Conditions',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ],
                         )),
@@ -155,43 +221,33 @@ class SignupView extends GetView<SignupController> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              ConstsConfig.secondarycolor, // Black button
+                              const Color(0xFFE1B000), // Yellow button color
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         child: const Text(
-                          'Sign up',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          'အကောင့်ဖွင့်ရန်',
+                          style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 15),
 
                     // Already have an account? Sign In
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Already have an account? ",
-                          style:
-                              TextStyle(color: Color.fromARGB(255, 48, 48, 48)),
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed("/login");
+                      },
+                      child: const Text(
+                        "အကောင့်ရှိပြီး",
+                        style: TextStyle(
+                          color: Color(0xFFE1B000),
+                          fontSize: 14,
+                          decoration: TextDecoration.underline,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Get.toNamed("/login");
-                          },
-                          child: const Text(
-                            "Sign In",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),

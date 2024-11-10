@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/cart_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/order_model.dart';
+import 'package:myat_ecommerence/app/data/product_model.dart';
 import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
 class CheckOutController extends GetxController {
@@ -72,7 +73,7 @@ class CheckOutController extends GetxController {
 // Function to check if there's enough stock for each item in the cart
   Future<bool> checkStockForOrder(List<CartItem> cartItems) async {
     for (var cartItem in cartItems) {
-      // Fetch the latest stock from Firestore for the specific product and size
+      // Fetch the latest stock from Firestore for the specific product
       var productDoc = await FirebaseFirestore.instance
           .collection('new_arrivals')
           .doc(cartItem.productId)
@@ -83,23 +84,36 @@ class CheckOutController extends GetxController {
         return false; // Exit if product doesn't exist
       }
 
+      // Retrieve the product data and map it to the Product model
       var productData = productDoc.data();
-      var sizeData = productData!['sizes'].firstWhere(
-          (size) => size['size'] == cartItem.size,
-          orElse: () => null);
+      var product = Product.fromMap(productData!);
 
-      if (sizeData == null) {
-        Get.snackbar(
-            'Stock Error', 'Size not found for product ${cartItem.name}.');
-        return false; // Exit if size doesn't exist
+      // Find the color option that matches the cart item's color
+      var colorOption = product.colors?.firstWhereOrNull(
+        (color) => color.color == cartItem.color,
+      );
+
+      if (colorOption == null) {
+        Get.snackbar('Stock Error', 'Color not found for ${cartItem.name}.');
+        return false; // Exit if color is not found
       }
 
-      int availableStock = sizeData['quantity'];
+      // Find the size option within the color option
+      var sizeOption = colorOption.sizes.firstWhereOrNull(
+        (size) => size.size == cartItem.size,
+      );
 
-      // Check if the quantity in the cart exceeds the available stock
+      if (sizeOption == null) {
+        Get.snackbar('Stock Error',
+            'Size not found for ${cartItem.name}, color: ${cartItem.color}.');
+        return false; // Exit if size not found
+      }
+
+      // Check if there is enough stock
+      int availableStock = sizeOption.quantity;
       if (cartItem.quantity > availableStock) {
         Get.snackbar('Stock Error',
-            'Not enough stock for ${cartItem.name}, size: ${cartItem.size}.',
+            '${'not_enough_stock'.tr} for ${cartItem.name}, color: ${cartItem.color}, size: ${cartItem.size}.',
             backgroundColor: Colors.red);
         return false; // Exit if stock is insufficient
       }
@@ -124,19 +138,19 @@ class CheckOutController extends GetxController {
       }
 
       final docRef = FirebaseFirestore.instance.collection('orders').doc();
-
-      // Create the OrderModel instance
       Timestamp timestamp =
           Timestamp.now(); // Assuming 'orderDate' is a Timestamp field
       DateTime dateTime = timestamp.toDate();
 
+      // Create the OrderModel instance
       final order = OrderItem(
         userId: user.uid,
         orderId: docRef.id,
         orderDate: dateTime,
         status: status, // Initial status
         totalPrice: totalPrice,
-        paymentMethod: "COD", // Assuming COD for now
+        paymentMethod: 'COD',
+
         name: name,
         phoneNumber: phoneNumber,
         address: address,
@@ -146,9 +160,9 @@ class CheckOutController extends GetxController {
       // Add the order to Firestore
       await docRef.set(order.toMap());
 
-      // Update stock for each product and size
+      // Update stock for each product, color, and size
       for (var cartItem in cartItems) {
-        // Get product document from Firestore
+        // Fetch the product document from Firestore
         var productDoc = await FirebaseFirestore.instance
             .collection('new_arrivals')
             .doc(cartItem.productId)
@@ -156,34 +170,44 @@ class CheckOutController extends GetxController {
 
         if (productDoc.exists) {
           var productData = productDoc.data();
-          var sizes = productData!['sizes'];
+          var product = Product.fromMap(productData!);
 
-          // Find the correct size and reduce its quantity
-          var updatedSizes = sizes.map((sizeData) {
-            if (sizeData['size'] == cartItem.size) {
-              int updatedQuantity = sizeData['quantity'] - cartItem.quantity;
-              return {
-                ...sizeData,
-                'quantity': updatedQuantity < 0
-                    ? 0
-                    : updatedQuantity, // Prevent negative stock
-              };
+          // Find the specific color option within the product
+          var colorOption = product.colors?.firstWhereOrNull(
+            (color) => color.color == cartItem.color,
+          );
+
+          if (colorOption != null) {
+            // Find the specific size option within the color option
+            var sizeOption = colorOption.sizes.firstWhereOrNull(
+              (size) => size.size == cartItem.size,
+            );
+
+            if (sizeOption != null) {
+              // Update the stock quantity
+              int updatedQuantity = sizeOption.quantity - cartItem.quantity;
+              sizeOption.quantity = updatedQuantity < 0 ? 0 : updatedQuantity;
+
+              // Update Firestore with the modified product data
+              await FirebaseFirestore.instance
+                  .collection('new_arrivals')
+                  .doc(cartItem.productId)
+                  .update({
+                'colors':
+                    product.colors?.map((color) => color.toMap()).toList(),
+              });
             } else {
-              return sizeData;
+              Get.snackbar("Stock Error",
+                  "Size not found for ${cartItem.name}, color: ${cartItem.color}.");
             }
-          }).toList();
-
-          // Update the product document with the new size quantities
-          await FirebaseFirestore.instance
-              .collection('new_arrivals')
-              .doc(cartItem.productId)
-              .update({
-            'sizes': updatedSizes,
-          });
+          } else {
+            Get.snackbar(
+                "Stock Error", "Color not found for ${cartItem.name}.");
+          }
         }
       }
     } catch (e) {
-      Get.snackbar("Error", "Sorry, Error creating order: $e");
+      Get.snackbar("Error", "Sorry, error creating order: $e");
     }
   }
 
@@ -200,7 +224,7 @@ class CheckOutController extends GetxController {
             userDoc['phoneNumber'] ?? ''; // Fetch phone number
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load user data.');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 }

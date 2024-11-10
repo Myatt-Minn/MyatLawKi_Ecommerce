@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class LoginController extends GetxController {
   // Controllers for TextFields
-  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
   final passwordController = TextEditingController();
 
   // Reactive variables
@@ -35,7 +35,7 @@ class LoginController extends GetxController {
     try {
       // Attempt to sign in with email and password
       await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
+        email: phoneController.text.trim(),
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
@@ -60,11 +60,11 @@ class LoginController extends GetxController {
     bool isValid = true;
 
     // Email validation
-    if (emailController.text.trim().isEmpty) {
-      emailError.value = 'Please enter your email.';
+    if (phoneController.text.trim().isEmpty) {
+      emailError.value = 'Please enter your phone number.';
       isValid = false;
-    } else if (!GetUtils.isEmail(emailController.text.trim())) {
-      emailError.value = 'Please enter a valid email address.';
+    } else if (!GetUtils.isEmail(phoneController.text.trim())) {
+      emailError.value = 'Please enter a valid phone number.';
       isValid = false;
     }
 
@@ -90,7 +90,7 @@ class LoginController extends GetxController {
   // Dispose controllers when not needed
   @override
   void onClose() {
-    emailController.dispose();
+    phoneController.dispose();
     passwordController.dispose();
     super.onClose();
   }

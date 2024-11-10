@@ -1,6 +1,5 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/cart_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
@@ -11,11 +10,12 @@ class CartView extends GetView<CartController> {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.put(CartController());
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
         leading: const Icon(Icons.shopping_cart),
-        title: const Text('My Cart',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('cart'.tr, style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         elevation: 0,
       ),
@@ -30,113 +30,105 @@ class CartView extends GetView<CartController> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 8.0),
-                    child: Slidable(
-                      // Set action panes to be slightly visible by default
-                      endActionPane: ActionPane(
-                        motion: const StretchMotion(),
-                        extentRatio: 0.3, // Reveal part of the action pane
-                        children: [
-                          SlidableAction(
-                            onPressed: (context) =>
-                                _showDeleteConfirmation(context, item),
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'Delete',
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 1,
+                            blurRadius: 5,
                           ),
                         ],
                       ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // Product Image
-                            Padding(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Product Image
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: FancyShimmerImage(
+                                  imageUrl: item.imageUrl,
+                                  width: 80,
+                                  height: 80,
+                                  boxFit: BoxFit.cover,
+                                )),
+                          ),
+
+                          // Product Info
+                          Expanded(
+                            child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: FancyShimmerImage(
-                                    imageUrl: item.imageUrl,
-                                    width: 80,
-                                    height: 80,
-                                    boxFit: BoxFit.cover,
-                                  )),
-                            ),
-
-                            // Product Info
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.name,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Colors.black),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '${item.price} MMK',
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                    ),
-                                    Text(
-                                      'Size: ${item.size}',
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // Quantity Adjusters and Remove Button
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[200],
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        child: Text(
-                                          item.quantity.toString(),
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    item.name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${item.price} MMK',
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                  Text(
+                                    'Size: ${item.size}',
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                  Text(
+                                    'Color: ${item.color}',
+                                    style: const TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          // Quantity Adjusters and Remove Button
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        item.quantity.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                        onPressed: () =>
+                                            _showDeleteConfirmation(item),
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ))
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -168,8 +160,8 @@ class CartView extends GetView<CartController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Total Quantity",
+                        Text(
+                          "total_quantity".tr,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -192,8 +184,8 @@ class CartView extends GetView<CartController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Total Amount",
+                        Text(
+                          "total_amount".tr,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -225,14 +217,14 @@ class CartView extends GetView<CartController> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.0),
                           child: Text(
-                            "Check Out Now",
+                            "checkout".tr,
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                                color: Colors.black),
                           ),
                         ),
                       ),
@@ -247,7 +239,7 @@ class CartView extends GetView<CartController> {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, CartItem item) {
+  void _showDeleteConfirmation(CartItem item) {
     Get.defaultDialog(
       title: "Delete Item",
       middleText: "Are you sure you want to delete this item?",

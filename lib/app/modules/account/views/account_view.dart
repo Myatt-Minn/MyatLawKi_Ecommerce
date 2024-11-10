@@ -10,211 +10,203 @@ class AccountView extends GetView<AccountController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text(
-          'Account',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          'profile'.tr,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        centerTitle: true,
+        backgroundColor: const Color(0xFF693A36),
+        actions: [
+          TextButton(
+            onPressed: controller.signOut,
+            child: Text(
+              'logout'.tr,
+              style: TextStyle(color: Colors.yellow),
+            ),
+          ),
+        ],
         elevation: 0,
-        backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile Picture and Username Section
-              Center(
-                child: Column(
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          const SizedBox(height: 20),
+          // Profile Picture and Username
+          Center(
+            child: Column(
+              children: [
+                Stack(
                   children: [
-                    Obx(() {
-                      return CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey.shade300,
+                    Obx(
+                      () => CircleAvatar(
+                        radius: 70,
+                        backgroundColor: Colors.blueGrey,
                         backgroundImage: controller.profileImg.value.isNotEmpty
                             ? NetworkImage(controller.profileImg.value)
                             : null,
                         child: controller.profileImg.value.isEmpty
-                            ? Image.asset(
-                                'images/person.png',
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              )
+                            ? const Icon(Icons.person,
+                                size: 70, color: Colors.white)
                             : null,
-                      );
-                    }),
-                    const SizedBox(height: 10),
-                    // Username
-                    Obx(
-                      () => Text(
-                        controller.username.value,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 4,
+                      child: CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.white,
+                        child: IconButton(
+                          icon: const Icon(Icons.edit,
+                              size: 16, color: Colors.black),
+                          onPressed: () {
+                            Get.toNamed('/edit-profile');
+                          },
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const Divider(height: 30),
-
-              // Account Setting Section
-              const Text(
-                'Account Setting',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-              SettingOption(
-                icon: Icons.person_outline,
-                label: 'Profile',
-                onTap: () => Get.toNamed('/edit-profile'),
-              ),
-              SettingOption(
-                icon: Icons.history,
-                label: 'Order History',
-                onTap: () => Get.toNamed('/order-history'),
-              ),
-              SettingOption(
-                icon: Icons.delete_outline,
-                label: 'Delete Account',
-                onTap: () {
-                  // Confirm Deletion Dialog
-                  Get.dialog(
-                    AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      title: const Text(
-                        'Confirm Deletion',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      content: Text(
-                        'Are you sure you want to delete this account?',
-                        style: TextStyle(color: Colors.grey[700]),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: Get.back,
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            controller.deleteUser();
-                            Get.back();
-                            controller.signOut();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                          ),
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    ),
-                    barrierDismissible: false,
-                  );
-                },
-              ),
-              const Divider(height: 30),
-
-              // App Setting Section
-              const Text(
-                'App Setting',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-              Obx(() => SwitchListTile(
-                    title: const Text('Dark Mode'),
-                    value: controller.goDarkMode.value,
-                    onChanged: (val) => controller.toggleDarkMode(),
-                    secondary: const Icon(Icons.dark_mode),
-                  )),
-              Obx(() => SwitchListTile(
-                    title: const Text('Enable Notification'),
-                    value: controller.notificationsEnabled.value,
-                    onChanged: (val) => controller.toggleNotifications(),
-                    secondary: const Icon(Icons.notifications),
-                  )),
-
-              const Divider(height: 30),
-
-              // Other Options Section
-              SettingOption(
-                icon: Icons.description_outlined,
-                label: 'Terms and Conditions',
-                onTap: () {
-                  Get.toNamed('/terms-and-condition');
-                },
-              ),
-              SettingOption(
-                icon: Icons.privacy_tip_outlined,
-                label: 'Privacy Policy',
-                onTap: () {
-                  Get.toNamed('/privacy-policy');
-                },
-              ),
-              SettingOption(
-                  icon: Icons.call,
-                  label: 'Call Center',
-                  onTap: controller.makePhoneCall),
-
-              // Footer Section
-              const SizedBox(height: 20),
-              ListTile(
-                title: const Text(
-                  'Sign Out',
-                  style: TextStyle(color: ConstsConfig.primarycolor),
-                ),
-                leading:
-                    const Icon(Icons.logout, color: ConstsConfig.primarycolor),
-                onTap: () => controller.signOut(),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: GestureDetector(
-                  onTap: controller.goToWebsite,
-                  child: Text(
-                    '© 2024 App.com.mm. All rights reserved.',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                const SizedBox(height: 10),
+                Text(
+                  controller.username.value,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Menu Options
+          Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF512C2A),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                _buildMenuItem(Icons.access_time_outlined, 'order_history'.tr,
+                    () {
+                  Get.toNamed('/order-history');
+                }),
+                _buildMenuItem(Icons.favorite_border, 'favorites'.tr, () {
+                  Get.toNamed('/wishlist');
+                }),
+                _buildMenuItem(Icons.lock_outline, 'change_password'.tr, () {
+                  Get.toNamed('/forgot-password');
+                }),
+                _buildMenuItem(Icons.headset_mic_outlined, 'contact_us'.tr, () {
+                  Get.toNamed('/contact-us');
+                }),
+                _buildMenuItem(
+                    Icons.description_outlined, 'terms_and_conditions'.tr, () {
+                  Get.toNamed('/terms-and-conditions');
+                }),
+                _buildLanguageToggle(),
+                const Divider(color: Colors.grey),
+                _buildDeleteAccount(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(IconData icon, String label, void Function() fn) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(
+        label,
+        style: const TextStyle(color: Colors.white),
+      ),
+      trailing:
+          const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+      onTap: fn, // Call the function directly here
+    );
+  }
+
+  Widget _buildLanguageToggle() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'change_language'.tr,
+            style: TextStyle(color: Colors.white),
+          ),
+          Obx(
+            () => ToggleButtons(
+              isSelected: [
+                controller.selectedLanguage.value == 'ENG',
+                controller.selectedLanguage.value == 'MYN'
+              ],
+              onPressed: (index) {
+                final language = index == 0 ? 'ENG' : 'MYN';
+                controller.toggleLanguage(language); // Call to change language
+              },
+              selectedColor: Colors.white,
+              color: Colors.white,
+              fillColor: Colors.black,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Text('ENG'),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Text('MYN'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeleteAccount() {
+    return ListTile(
+      title: Text(
+        'delete_account'.tr,
+        style: TextStyle(color: Colors.red),
+      ),
+      leading: const Icon(Icons.delete_outline, color: Colors.red),
+      onTap: () {
+        Get.dialog(
+          AlertDialog(
+            title: Text('confirm_delete'.tr),
+            content: Text('delete_account_warning'.tr),
+            actions: [
+              TextButton(
+                onPressed: Get.back,
+                child: Text('cancel'.tr),
+              ),
+              TextButton(
+                onPressed: () {
+                  controller.deleteUser();
+                  Get.back();
+                  controller.signOut();
+                },
+                child: Text(
+                  'delete'.tr,
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class SettingOption extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const SettingOption({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(label),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: onTap,
+        );
+      },
     );
   }
 }

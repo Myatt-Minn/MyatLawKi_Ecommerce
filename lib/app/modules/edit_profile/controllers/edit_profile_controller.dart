@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/account/controllers/account_controller.dart';
 
 class EditProfileController extends GetxController {
@@ -58,7 +57,7 @@ class EditProfileController extends GetxController {
         phoneController.text = phoneNumber.value; // Set phone number
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load user data.');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 
@@ -88,15 +87,12 @@ class EditProfileController extends GetxController {
         'phoneNumber': phoneController.text, // Add phone number
         'profilepic': profileImg.value,
       }, SetOptions(merge: true)); // Merge to avoid overwriting
-      Get.find<AccountController>().fetchProfilePic();
-      Get.snackbar('Success', 'Profile updated successfully!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: ConstsConfig.primarycolor,
-          colorText: Colors.black);
+      Get.find<AccountController>().fetchUserData();
+      Get.back();
 
       isLoading.value = false;
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update profile.');
+      Get.snackbar('Error', 'fill_all_information'.tr);
       isLoading.value = false;
     }
   }

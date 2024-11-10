@@ -15,6 +15,7 @@ class HomeController extends GetxController {
   late PageController pageController;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final notiController = Get.put(NotificationController());
+
   // List to store banner URLs
   var banners = <String>[].obs;
 
@@ -56,7 +57,7 @@ class HomeController extends GetxController {
               CategoryModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch categories');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 
@@ -80,7 +81,7 @@ class HomeController extends GetxController {
       banners.value =
           snapshot.docs.map((doc) => doc['imgUrl'].toString()).toList();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load banners');
+      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 

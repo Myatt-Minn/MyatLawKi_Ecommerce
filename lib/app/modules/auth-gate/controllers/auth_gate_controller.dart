@@ -9,13 +9,13 @@ class AuthGateController extends GetxController {
   final Connectivity _connectivity = Connectivity();
   RxBool hasInternet = true.obs; // Observable for internet connection status
   var isLoading = false.obs;
+  var selectedLanguage = 'ENG'.obs;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   @override
   void onInit() {
     super.onInit();
-
     // Listen for connectivity changes
     // _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
     //   if (result == ConnectivityResult.none) {

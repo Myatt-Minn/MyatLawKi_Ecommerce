@@ -29,7 +29,8 @@ class OrderHistoryTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(vertical: 10),
       title: Text(
         'ID: ${order.orderId}',
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

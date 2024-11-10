@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/cart_model.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
 import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
@@ -112,7 +113,7 @@ class ProductDetailsController extends GetxController {
   void addToCart() {
     final selectedSizeValue = selectedSize.value;
 
-    if (selectedSizeValue != 0) {
+    if (selectedSizeValue != "0") {
       // Find the selected size's price and quantity
       var selectedSizeData = sizeList.firstWhere(
           (sizeData) => sizeData.size == selectedSizeValue.toString());
@@ -147,6 +148,7 @@ class ProductDetailsController extends GetxController {
           price: price,
           imageUrl: product.value.images![0],
           size: selectedSize.value,
+          color: selectedColor.value,
           quantity: quantity.value,
         );
 
@@ -157,12 +159,12 @@ class ProductDetailsController extends GetxController {
           'Success',
           '${product.value.name} added to cart successfully!',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: const Color(0xFF95CCA9),
+          backgroundColor: ConstsConfig.secondarycolor,
           colorText: Colors.black,
         );
       }
     } else {
-      Get.snackbar("Error", "Please select a size.");
+      Get.snackbar("Error", "select_item".tr);
     }
   }
 }

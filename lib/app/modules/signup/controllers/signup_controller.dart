@@ -13,10 +13,11 @@ class SignupController extends GetxController {
   var isPasswordHidden = true.obs;
   var isConfirmPasswordHidden = true.obs;
   var isLoading = false.obs;
+  var agreeTerms = false.obs;
 
   // Controllers for input fields
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -52,7 +53,7 @@ class SignupController extends GetxController {
     }
 
     // Email validation
-    if (!GetUtils.isEmail(emailController.text)) {
+    if (!GetUtils.isEmail(phoneController.text)) {
       emailError.value = 'Please enter a valid email';
       isValid = false;
     } else {
@@ -86,7 +87,7 @@ class SignupController extends GetxController {
       isLoading.value = true;
       // Firebase Auth sign up
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
+        email: phoneController.text.trim(),
         password: passwordController.text.trim(),
       );
 
@@ -96,7 +97,7 @@ class SignupController extends GetxController {
       await firestore.collection('users').doc(uid).set({
         'uid': uid,
         'name': nameController.text.trim(),
-        'email': emailController.text.trim(),
+        'email': phoneController.text.trim(),
         'profilepic': "", // Default profile picture URL
         "role": "user",
         "phoneNumber": "",

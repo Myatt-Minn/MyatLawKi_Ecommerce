@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/order_history/views/widgets/orderlisttile.dart';
 
 import '../controllers/order_history_controller.dart';
@@ -9,6 +10,7 @@ class OrderHistoryView extends GetView<OrderHistoryController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
         title: const Text('Order History'),
         elevation: 0,

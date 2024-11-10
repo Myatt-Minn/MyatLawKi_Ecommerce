@@ -80,9 +80,9 @@ class NotificationView extends GetView<NotificationController> {
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.notifications,
-                        color: Color(0xFF95CCA9),
+                        color: ConstsConfig.secondarycolor,
                         size: 36,
                       ),
                       title: Text(

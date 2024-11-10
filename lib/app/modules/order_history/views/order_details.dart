@@ -15,6 +15,7 @@ class OrderDetails extends GetView<OrderHistoryController> {
     final OrderItem order = Get.arguments as OrderItem;
 
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
         title: const Text(
           'Order History Detail',
@@ -60,14 +61,15 @@ class OrderDetails extends GetView<OrderHistoryController> {
         Column(children: [
           Text(
             order.orderId!,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(
             height: 5,
           ),
           Text(
             order.totalPrice!.toString(),
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16, color: Colors.white),
           ),
         ]),
         Column(
@@ -81,7 +83,10 @@ class OrderDetails extends GetView<OrderHistoryController> {
               height: 5,
             ),
             Text(
-              controller.formatDate(order.orderDate!.toString()),
+              controller.formatDate(
+                order.orderDate!.toString(),
+              ),
+              style: TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -281,32 +286,33 @@ class OrderDetails extends GetView<OrderHistoryController> {
         ListTile(
           title: const Text(
             "Subtotal",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           trailing: Text(
             "${order.totalPrice! - ConstsConfig.deliveryfee} MMK",
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16, color: Colors.white),
           ),
         ),
         const ListTile(
           title: Text(
             "Delivery Fees",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           trailing: Text(
             "${ConstsConfig.deliveryfee} MMK",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16, color: Colors.white),
           ),
         ),
         const Divider(),
         ListTile(
           title: const Text(
             "Total Cost",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           trailing: Text(
             "${order.totalPrice} MMK",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
           ),
         ),
       ],
