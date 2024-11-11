@@ -1,5 +1,5 @@
 class CategoryModel {
-  String id;
+  int id;
   String title;
 
   CategoryModel({
@@ -19,7 +19,7 @@ class CategoryModel {
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'],
-      title: json['title'],
+      title: json['name'],
     );
   }
 }

@@ -19,8 +19,6 @@ import '../modules/category/bindings/category_binding.dart';
 import '../modules/category/views/category_view.dart';
 import '../modules/check_out/bindings/check_out_binding.dart';
 import '../modules/check_out/views/check_out_view.dart';
-import '../modules/comments/bindings/comments_binding.dart';
-import '../modules/comments/views/comments_view.dart';
 import '../modules/contact_us/bindings/contact_us_binding.dart';
 import '../modules/contact_us/views/contact_us_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
@@ -171,11 +169,11 @@ class AppPages {
       page: () => const AllCategoryProductsView(),
       binding: AllCategoryProductsBinding(),
     ),
-    GetPage(
-      name: _Paths.COMMENTS,
-      page: () => const CommentsView(),
-      binding: CommentsBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.COMMENTS,
+    //   page: () => const CommentsView(),
+    //   binding: CommentsBinding(),
+    // ),
     GetPage(
       name: _Paths.WISHLIST,
       page: () => const WishlistView(),

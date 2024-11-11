@@ -9,7 +9,7 @@ class PrivacyPolicyView extends GetView<PrivacyPolicyController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Privacy Policy'),
+        title: Text('privacy_policy'.tr),
         centerTitle: true,
       ),
       body: FutureBuilder<String?>(

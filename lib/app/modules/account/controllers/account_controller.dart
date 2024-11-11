@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AccountController extends GetxController {
@@ -61,6 +62,13 @@ class AccountController extends GetxController {
 
   void signOut() {
     FirebaseAuth.instance.signOut();
+  }
+
+  Future<void> logout() async {
+    final authService = Tokenhandler();
+    await authService.clearToken();
+
+    Get.offAllNamed('/login');
   }
 
   Future<void> makePhoneCall() async {

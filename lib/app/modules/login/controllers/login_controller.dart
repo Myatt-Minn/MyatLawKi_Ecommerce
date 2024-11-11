@@ -16,6 +16,27 @@ class LoginController extends GetxController {
 
   // Firebase Auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
+// Future<void> login(String email, String password) async {
+//   final url = 'https://your-api-url/api/v1/login';
+//   final response = await http.post(
+//     Uri.parse(url),
+//     headers: {'Content-Type': 'application/json'},
+//     body: json.encode({'email': email, 'password': password}),
+//   );
+
+//   if (response.statusCode == 200) {
+//     final jsonData = json.decode(response.body);
+//     final token = jsonData['token']; // Adjust according to your API response
+
+//     // Save the token in SharedPreferences
+//     final authService = AuthService();
+//     await authService.saveToken(token);
+
+//     // Navigate to the home page or perform other actions after login
+//   } else {
+//     throw Exception('Failed to login');
+//   }
+// }
 
   // Login function
   Future<void> loginUser() async {

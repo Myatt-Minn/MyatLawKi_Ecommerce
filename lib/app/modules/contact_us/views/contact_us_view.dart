@@ -14,7 +14,7 @@ class ContactUsView extends GetView<ContactUsController> {
       appBar: AppBar(
         backgroundColor: Color(0xFF4B1E16),
         title: Text(
-          'ဝန်ဆောင်မှုဆိုင်ရာ',
+          'contact_info'.tr,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,

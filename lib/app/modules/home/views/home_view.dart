@@ -159,7 +159,7 @@ class HomeView extends GetView<HomeController> {
                     itemCount: controller.banners.length,
                     itemBuilder: (context, index) {
                       return FancyShimmerImage(
-                        imageUrl: controller.banners[index],
+                        imageUrl: controller.banners[index].imgUrl,
                         boxFit: BoxFit.cover,
                         height: 160,
                       );

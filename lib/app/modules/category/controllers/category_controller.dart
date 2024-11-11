@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/brand_model.dart';
 import 'package:myat_ecommerence/app/data/category_model.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
 
 class CategoryController extends GetxController {
@@ -35,17 +39,38 @@ class CategoryController extends GetxController {
     }
   }
 
-  // Fetch categories from Firestore
+  // Fetch categories
+
   Future<void> fetchCategories() async {
+    final url = '$baseUrl/api/v1/categories';
+    // final authService = Tokenhandler();
+    // final token = await authService.getToken();
+
     try {
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('categories').get();
-      categories.value = snapshot.docs
-          .map((doc) =>
-              CategoryModel.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        // Check if 'data' key exists and is a list
+        if (jsonData['data'] is List) {
+          categories.value = (jsonData['data'] as List)
+              .map((data) => CategoryModel.fromJson(data))
+              .toList();
+        } else {
+          throw Exception('Invalid data format');
+        }
+      } else {
+        throw Exception('Failed to load categories');
+      }
     } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
+      print('Error fetching categories: $e');
     }
   }
 

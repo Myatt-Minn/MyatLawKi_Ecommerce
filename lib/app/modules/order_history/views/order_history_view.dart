@@ -12,7 +12,7 @@ class OrderHistoryView extends GetView<OrderHistoryController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text('Order History'),
+        title: Text('order_history'.tr),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

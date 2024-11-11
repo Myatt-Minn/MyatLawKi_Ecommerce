@@ -11,8 +11,8 @@ class CategoryView extends GetView<CategoryController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text(
-          'Category',
+        title: Text(
+          'categories'.tr,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.brown,

@@ -18,7 +18,7 @@ class CheckOutView extends GetView<CheckOutController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: Text('Check Out', style: TextStyle(color: Colors.white)),
+        title: Text('checkout'.tr, style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -35,7 +35,10 @@ class CheckOutView extends GetView<CheckOutController> {
               phoneNumberController: controller.phoneNumberController,
             ),
             const SizedBox(height: 12),
-            AddressSection(addressController: controller.addressController),
+            AddressSection(
+              addressController: controller.addressController,
+              controller: controller,
+            ),
             const SizedBox(height: 18),
             CartItems(cartController: cartController),
             SummarySection(

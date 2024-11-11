@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +7,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/cart_model.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/order_model.dart';
+import 'package:myat_ecommerence/app/data/payment_model.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
 import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
@@ -21,32 +25,14 @@ class PaymentController extends GetxController {
   var isOrder = false.obs;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  var payments = <Map<String, dynamic>>[].obs; // List to store payment data
+  var payments = <PaymentModel>[].obs; // List to store payment data
   var selectedPayment = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchPayments(); // Fetch payment data when the controller initializes
+    fetchPayment(); // Fetch payment data when the controller initializes
     isProfileImageChooseSuccess.value = false;
-  }
-
-  // Fetch payment data from Firestore
-  void fetchPayments() async {
-    try {
-      QuerySnapshot snapshot = await firestore.collection('payments').get();
-      payments.value = snapshot.docs
-          .map((doc) => {
-                'name': doc['name'],
-                'title': doc['title'],
-                'imgUrl': doc['imgUrl'],
-                'phone':
-                    doc['phone'], // Assuming each document has a 'phone' field
-              })
-          .toList();
-    } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
-    }
   }
 
   // Method to select payment method
@@ -65,6 +51,41 @@ class PaymentController extends GetxController {
     } else {
       // User canceled the picker
       Get.snackbar("Cancel", "No Image");
+    }
+  }
+
+  Future<void> fetchPayment() async {
+    final url = '$baseUrl/api/v1/payments';
+    // final authService = Tokenhandler();
+    // final token = await authService.getToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        // Check if 'data' key exists and is a list
+        if (jsonData['data'] is List) {
+          payments.value = (jsonData['data'] as List)
+              .map((data) => PaymentModel.fromJson(data))
+              .toList();
+        } else {
+          throw Exception('Invalid data format');
+        }
+      } else {
+        Get.snackbar("Sorry", "Something went wrong with the server");
+        print("Response status code: ${response.statusCode}");
+        print("Response body: ${response.body}");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Error fetching payments");
     }
   }
 
@@ -220,7 +241,7 @@ class PaymentController extends GetxController {
       // Create the OrderModel instance
       final order = OrderItem(
         userId: user.uid,
-        orderId: docRef.id,
+        orderId: int.parse(docRef.id),
         orderDate: dateTime,
         status: status, // Initial status
         totalPrice: totalPrice,

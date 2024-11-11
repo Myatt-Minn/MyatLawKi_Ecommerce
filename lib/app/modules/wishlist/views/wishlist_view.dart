@@ -12,7 +12,7 @@ class WishlistView extends GetView<WishlistController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Product Wishlist"),
+        title: Text('wishlist'.tr),
       ),
       backgroundColor: ConstsConfig.primarycolor,
       body: Column(

@@ -12,7 +12,7 @@ class EditProfileView extends GetView<EditProfileController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text('profile'.tr),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

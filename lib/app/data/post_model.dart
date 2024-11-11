@@ -1,34 +1,57 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myat_ecommerence/app/data/comment_model.dart';
 
 class Post {
-  final String username;
-  final String postId;
-  final DateTime datePublished;
+  final int id;
+  final int userId;
+  final String poster;
   final String description;
-  final String postUrl;
-  final String profImg;
-  final List likes;
-  const Post(
-      {required this.username,
-      required this.postId,
-      required this.datePublished,
-      required this.description,
-      required this.postUrl,
-      required this.profImg,
-      required this.likes});
+  final List<PostImage> images;
+  final List<CommentModel> comments;
 
-  static Post fromSnap(DocumentSnapshot snapshot) {
-    var snap = (snapshot.data() as Map<String, dynamic>);
+  Post({
+    required this.id,
+    required this.userId,
+    required this.poster,
+    required this.description,
+    required this.images,
+    required this.comments,
+  });
 
+  factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-      username: snap["username"],
-      description: snap["description"],
-      postId: snap["postId"],
-      datePublished:
-          (snap['datePublished'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      postUrl: snap["postUrl"],
-      profImg: snap["profileImg"],
-      likes: snap['likes'] ?? [],
+      id: json['id'],
+      userId: json['user_id'],
+      poster: json['poster'],
+      description: json['description'],
+      images: (json['images'] as List)
+          .map((item) => PostImage.fromJson(item))
+          .toList(),
+      comments: (json['comments'] as List)
+          .map((item) => CommentModel.fromMap(item))
+          .toList(),
+    );
+  }
+}
+
+class PostImage {
+  final int id;
+  final int postId;
+  final String path;
+  final String description;
+
+  PostImage({
+    required this.id,
+    required this.postId,
+    required this.path,
+    required this.description,
+  });
+
+  factory PostImage.fromJson(Map<String, dynamic> json) {
+    return PostImage(
+      id: json['id'],
+      postId: json['post_id'],
+      path: json['path'],
+      description: json['description'],
     );
   }
 }

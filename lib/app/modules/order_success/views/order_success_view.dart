@@ -13,7 +13,7 @@ class OrderSuccessView extends GetView<OrderSuccessController> {
     return Scaffold(
       appBar: AppBar(
         title:
-            const Text('Order Success', style: TextStyle(color: Colors.black)),
+            Text('payment_success'.tr, style: TextStyle(color: Colors.black)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -39,8 +39,8 @@ class OrderSuccessView extends GetView<OrderSuccessController> {
                 ),
               ),
               const SizedBox(height: 30),
-              const Text(
-                "Your order is successfully placed.\nThank you for shopping with us.",
+              Text(
+                "order_placed_success".tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,

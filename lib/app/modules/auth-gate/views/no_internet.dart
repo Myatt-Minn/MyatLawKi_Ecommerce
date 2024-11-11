@@ -10,7 +10,7 @@ class NoInternetScreen extends StatelessWidget {
     final AuthGateController controller = Get.find<AuthGateController>();
     return Scaffold(
         appBar: AppBar(
-          title: const Text('No Internet Connection'),
+          title: Text('no_connection'.tr),
           centerTitle: true,
         ),
         body: Center(

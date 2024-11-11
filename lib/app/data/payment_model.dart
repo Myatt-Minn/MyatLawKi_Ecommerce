@@ -1,26 +1,26 @@
 class PaymentModel {
-  String id;
-  String imgUrl;
+  int id;
+  String payment_logo;
   String name;
-  String phone;
-  String title;
+  String number;
+  String payment_type;
 
   PaymentModel({
     required this.id,
-    required this.imgUrl,
+    required this.payment_logo,
     required this.name,
-    required this.phone,
-    required this.title,
+    required this.number,
+    required this.payment_type,
   });
 
   // Factory method to create an instance from Firestore document snapshot
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
       id: json['id'],
-      imgUrl: json['imgUrl'] ?? '',
+      payment_logo: json['payment_logo'] ?? '',
       name: json['name'] ?? '',
-      phone: json['phone'] ?? '',
-      title: json['title'] ?? '',
+      number: json['number'] ?? '',
+      payment_type: json['payment_type'] ?? '',
     );
   }
 
@@ -28,10 +28,10 @@ class PaymentModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'imgUrl': imgUrl,
+      'payment_logo': payment_logo,
       'name': name,
-      'phone': phone,
-      'title': title,
+      'number': number,
+      'payment_type': payment_type,
     };
   }
 }

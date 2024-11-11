@@ -12,8 +12,8 @@ class PaymentView extends GetView<PaymentController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text(
-          'Confirm Payment',
+        title: Text(
+          'confirm_payment'.tr,
           style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
@@ -26,7 +26,7 @@ class PaymentView extends GetView<PaymentController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Choose Payment',
+            Text('payment_method'.tr,
                 style: TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 8),
             // Wrap the payment options in an Obx to observe changes
@@ -38,19 +38,19 @@ class PaymentView extends GetView<PaymentController> {
               return Column(
                 children: controller.payments.map((payment) {
                   return PaymentOption(
-                    name: payment['name'],
-                    phone: payment[
-                        'phone'], // Assuming each payment has a 'phone' field
-                    image: payment['imgUrl'],
+                    name: payment.name,
+                    phone: payment
+                        .number, // Assuming each payment has a 'phone' field
+                    image: payment.payment_logo,
                     isSelected:
-                        controller.selectedPayment.value == payment['title'],
-                    onSelect: () => controller.selectPayment(payment['title']),
+                        controller.selectedPayment.value == payment.name,
+                    onSelect: () => controller.selectPayment(payment.name),
                   );
                 }).toList(),
               );
             }),
             const SizedBox(height: 16),
-            const Text('Upload Screenshot of Payment transaction',
+            Text('upload_screenshot'.tr,
                 style: TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 8),
             GestureDetector(
@@ -95,7 +95,7 @@ class PaymentView extends GetView<PaymentController> {
                 ),
                 child: controller.isOrder.value
                     ? const CircularProgressIndicator()
-                    : const Text('Confirm',
+                    : Text('confirm'.tr,
                         style: TextStyle(fontSize: 18, color: Colors.black)),
               );
             }),

@@ -22,7 +22,7 @@ class AccountView extends GetView<AccountController> {
         backgroundColor: const Color(0xFF693A36),
         actions: [
           TextButton(
-            onPressed: controller.signOut,
+            onPressed: controller.logout,
             child: Text(
               'logout'.tr,
               style: TextStyle(color: Colors.yellow),

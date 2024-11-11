@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myat_ecommerence/app/data/cart_model.dart';
 
 class OrderItem {
-  final String? orderId;
+  final int? orderId;
   final String? userId;
   final String? name;
   final String? phoneNumber;

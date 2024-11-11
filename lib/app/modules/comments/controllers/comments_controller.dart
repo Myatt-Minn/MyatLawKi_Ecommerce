@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/comment_model.dart';
 import 'package:myat_ecommerence/app/data/post_model.dart';
-import 'package:uuid/uuid.dart';
 
 class CommentsController extends GetxController {
   //TODO: Implement CommentsController
@@ -15,36 +14,52 @@ class CommentsController extends GetxController {
   var username = ''.obs;
   var profileImg = ''.obs;
   var isProfileImageChooseSuccess = false.obs;
+  RxInt commentLength = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     post = Get.arguments;
-    fetchComments();
+    getCmtLen(post!.id.toString());
+    // fetchComments();
     fetchUserData();
   }
 
-  Future<void> fetchComments() async {
+  void getCmtLen(String postId) async {
     try {
-      final snapshot = await FirebaseFirestore.instance
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection("posts")
-          .doc(post!.postId)
+          .doc(postId)
           .collection("comments")
-          .orderBy('datePublished', descending: true)
           .get();
-      comments.value = snapshot.docs.map((doc) {
-        // Check if the document data is null
-        final data = doc.data() as Map<String, dynamic>?;
-        if (data == null) {
-          throw Exception('Null data in document');
-        }
-        return CommentModel.fromMap(data);
-      }).toList();
-      print("Document count: ${snapshot.docs.length}");
-    } catch (e) {
-      print(e.toString());
+
+      commentLength.value = snapshot.docs.length;
+    } catch (err) {
+      Get.snackbar("Error", "failed_to_fetch_data".tr);
     }
   }
+
+  // Future<void> fetchComments() async {
+  //   try {
+  //     final snapshot = await FirebaseFirestore.instance
+  //         .collection("posts")
+  //         .doc(post!.id)
+  //         .collection("comments")
+  //         .orderBy('datePublished', descending: true)
+  //         .get();
+  //     comments.value = snapshot.docs.map((doc) {
+  //       // Check if the document data is null
+  //       final data = doc.data() as Map<String, dynamic>?;
+  //       if (data == null) {
+  //         throw Exception('Null data in document');
+  //       }
+  //       return CommentModel.fromMap(data);
+  //     }).toList();
+  //     getCmtLen(post!.postId);
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   // Function to retrieve the profile picture from Firestore
   Future<void> fetchUserData() async {
@@ -68,39 +83,39 @@ class CommentsController extends GetxController {
     }
   }
 
-  Future<void> addComment(
-      String text, String uid, String username, String userprofile) async {
-    try {
-      if (text.isNotEmpty) {
-        final String cmtId = const Uuid().v1();
+  // Future<void> addComment(
+  //     String text, String uid, String username, String userprofile) async {
+  //   try {
+  //     if (text.isNotEmpty) {
+  //       final String cmtId = const Uuid().v1();
 
-        // Create a CommentModel instance
-        CommentModel comment = CommentModel(
-          commentid: cmtId,
-          postId: post!.postId,
-          uid: uid,
-          username: username,
-          userProfileUrl: userprofile,
-          text: text,
-          datePublished: DateTime.now(),
-        );
+  //       // Create a CommentModel instance
+  //       CommentModel comment = CommentModel(
+  //         commentid: cmtId,
+  //         postId: post!.postId,
+  //         uid: uid,
+  //         username: username,
+  //         userProfileUrl: userprofile,
+  //         text: text,
+  //         datePublished: DateTime.now(),
+  //       );
 
-        // Use CommentModel's toMap() method to convert it to a Map<String, dynamic>
-        await FirebaseFirestore.instance
-            .collection("posts")
-            .doc(post!.postId)
-            .collection("comments")
-            .doc(cmtId)
-            .set(comment.toMap());
+  //       // Use CommentModel's toMap() method to convert it to a Map<String, dynamic>
+  //       await FirebaseFirestore.instance
+  //           .collection("posts")
+  //           .doc(post!.postId)
+  //           .collection("comments")
+  //           .doc(cmtId)
+  //           .set(comment.toMap());
 
-        Get.snackbar("Success", "Comment Added Successfully");
+  //       Get.snackbar("Success", "Comment Added Successfully");
 
-        fetchComments();
-      } else {
-        Get.snackbar("Error", "Please enter a comment.");
-      }
-    } catch (err) {
-      Get.snackbar("Error", "Failed to add comment");
-    }
-  }
+  //       fetchComments();
+  //     } else {
+  //       Get.snackbar("Error", "Please enter a comment.");
+  //     }
+  //   } catch (err) {
+  //     Get.snackbar("Error", "Failed to add comment");
+  //   }
+  // }
 }

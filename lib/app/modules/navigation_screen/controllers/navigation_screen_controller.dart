@@ -18,7 +18,6 @@ class NavigationScreenController extends GetxController {
     super.onInit();
     initializeController(currentIndex.value);
     await SendNotificationHandler().initNotification();
-    Get.put(ProductCardController(), permanent: true);
   }
 
   void initializeController(int index) {
@@ -26,6 +25,7 @@ class NavigationScreenController extends GetxController {
     switch (index) {
       case 0:
         Get.put(FeedsController());
+        Get.put(ProductCardController(), permanent: true);
         break;
       case 1:
         Get.put(HomeController());

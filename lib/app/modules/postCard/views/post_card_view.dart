@@ -1,49 +1,22 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:myat_ecommerence/app/data/consts_config.dart';
 // import 'package:myat_ecommerence/app/data/post_model.dart';
 
-// class PostCard extends StatefulWidget {
+// import 'package:myat_ecommerence/app/modules/postCard/controllers/post_card_controller.dart';
+
+// class PostCardView extends GetView<PostCardController> {
 //   final Post post;
-//   const PostCard({super.key, required this.post});
-
-//   @override
-//   State<PostCard> createState() => _PostCardState();
-// }
-
-// class _PostCardState extends State<PostCard> {
-//   int _commentLength = 0;
-//   @override
-//   void initState() {
-//     super.initState();
-//     getCmtLen();
-//   }
-
-//   void getCmtLen() async {
-//     try {
-//       QuerySnapshot snapshot = await FirebaseFirestore.instance
-//           .collection("posts")
-//           .doc(widget.post.postId)
-//           .collection("comments")
-//           .get();
-
-//       setState(() {
-//         _commentLength = snapshot.docs.length;
-//       });
-//     } catch (err) {
-//       Get.snackbar("Error", "failed_to_fetch_data".tr);
-//     }
-//   }
+//   const PostCardView({super.key, required this.post});
 
 //   @override
 //   Widget build(BuildContext context) {
 //     var userId = FirebaseAuth.instance.currentUser!.uid;
-
+    
 //     return GestureDetector(
 //       onTap: () {
-//         Get.offAndToNamed('/comments', arguments: widget.post);
+//         Get.toNamed('/comments', arguments: post);
 //       },
 //       child: Container(
 //         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -61,7 +34,10 @@
 //             const SizedBox(height: 10),
 //             _buildImageSection(),
 //             const SizedBox(height: 10),
-//             _buildBottomSection(widget.post, userId, _commentLength),
+//             Obx(
+//               () => _buildBottomSection(
+//                   post, userId, controller.commentLength.value),
+//             ),
 //           ],
 //         ),
 //       ),
@@ -72,12 +48,12 @@
 //     return Row(
 //       children: [
 //         CircleAvatar(
-//           backgroundImage: NetworkImage(widget.post.images[0]),
+//           backgroundImage: NetworkImage(post.profImg),
 //         ),
 //         const SizedBox(width: 10),
 //         Expanded(
 //           child: Text(
-//             widget.post.username,
+//             post.username,
 //             style: const TextStyle(
 //               fontWeight: FontWeight.bold,
 //               fontSize: 16,
@@ -91,7 +67,7 @@
 
 //   Widget _buildDescriptionSection() {
 //     return Text(
-//       widget.post.description,
+//       post.description,
 //       maxLines: 3,
 //       overflow: TextOverflow.ellipsis,
 //       style: const TextStyle(
@@ -105,7 +81,7 @@
 //     return ClipRRect(
 //       borderRadius: BorderRadius.circular(10),
 //       child: Image.network(
-//         widget.post.postUrl,
+//         post.postUrl,
 //         fit: BoxFit.cover,
 //       ),
 //     );

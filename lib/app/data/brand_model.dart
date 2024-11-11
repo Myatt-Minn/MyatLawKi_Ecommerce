@@ -1,5 +1,5 @@
 class BrandModel {
-  String id;
+  int id;
   String imgUrl;
   String title;
 

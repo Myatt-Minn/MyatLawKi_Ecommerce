@@ -1,6 +1,6 @@
 class UserModel {
   String email;
-  String name;
+  int name;
   String phoneNumber;
   String profilepic;
   String role;

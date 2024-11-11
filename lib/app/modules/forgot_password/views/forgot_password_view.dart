@@ -12,7 +12,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
       appBar: AppBar(
         backgroundColor: Color(0xFF4B1E16),
         title: Text(
-          'ကုတ်ဝှက်ပြောင်းခြင်း',
+          'password_reset'.tr,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,

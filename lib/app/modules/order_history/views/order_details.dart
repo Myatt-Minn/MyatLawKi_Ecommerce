@@ -17,8 +17,8 @@ class OrderDetails extends GetView<OrderHistoryController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text(
-          'Order History Detail',
+        title: Text(
+          "${'order_history'.tr} details",
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
@@ -60,7 +60,7 @@ class OrderDetails extends GetView<OrderHistoryController> {
       children: [
         Column(children: [
           Text(
-            order.orderId!,
+            order.orderId!.toString(),
             style: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),

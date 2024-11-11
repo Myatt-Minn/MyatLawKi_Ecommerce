@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CommentModel {
-  final String commentid;
+  final int commentid;
   final String username;
   final String userProfileUrl;
   final String text;

@@ -22,10 +22,29 @@ class SummarySection extends StatelessWidget {
         Obx(() {
           return Column(
             children: [
-              _summaryRow('Subtotal', '${cartController.totalAmount} MMK'),
-              _summaryRow('Delivery Fees', '${ConstsConfig.deliveryfee} MMK'),
+              _summaryRow('subtotal'.tr, '${cartController.totalAmount} MMK'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Delivery Fee',
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white)),
+                    checkOutController.selectedFee.value != null
+                        ? Text(
+                            "${checkOutController.selectedFee.value!.fee} MMK",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          )
+                        : Text("0 MMK"),
+                  ],
+                ),
+              ),
               _summaryRow(
-                  'Total Cost', '${checkOutController.finaltotalcost} MMK'),
+                  'total_price'.tr, '${checkOutController.finaltotalcost} MMK'),
             ],
           );
         }),
@@ -39,7 +58,7 @@ class SummarySection extends StatelessWidget {
                   ? const CircularProgressIndicator()
                   : Expanded(
                       child: _buildPaymentButton(
-                        label: 'Cash on Delivery',
+                        label: 'cash_on_deli'.tr,
                         color: Colors.grey,
                         onPressed: () {
                           checkOutController.setOrder()
@@ -54,7 +73,7 @@ class SummarySection extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: _buildPaymentButton(
-                label: 'Online Payment',
+                label: 'online_pay'.tr,
                 color: ConstsConfig.secondarycolor,
                 onPressed: () {
                   checkOutController.setOrder()

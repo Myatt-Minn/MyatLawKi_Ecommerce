@@ -11,6 +11,7 @@ abstract class Routes {
   static const WISHLIST = _Paths.WISHLIST;
   static const CONTACT_US = _Paths.CONTACT_US;
   static const PRODUCT_CARD = _Paths.PRODUCT_CARD;
+  static const NAVIGATION = _Paths.NAVIGATION_SCREEN;
 }
 
 abstract class _Paths {
@@ -43,4 +44,5 @@ abstract class _Paths {
   static const TERMS_AND_CONDITIONS = '/terms-and-conditions';
   static const CONTACT_US = '/contact-us';
   static const PRODUCT_CARD = '/product-card';
+  static const POST_CARD = '/post-card';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/modules/check_out/views/widgets/customtextfield.dart';
 
 class ContactInformation extends StatelessWidget {
@@ -21,8 +22,8 @@ class ContactInformation extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
-            "Contact Information",
+          Text(
+            "contact_info".tr,
             style: TextStyle(fontSize: 18, color: Colors.black),
           ),
           const SizedBox(height: 8),

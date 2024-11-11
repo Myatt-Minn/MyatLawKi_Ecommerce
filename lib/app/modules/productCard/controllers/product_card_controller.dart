@@ -14,7 +14,8 @@ class ProductCardController extends GetxController {
   Future<void> toggleSaveStatus(Product product) async {
     try {
       final userDocRef = _firestore.collection('users').doc(userId);
-      final postRef = userDocRef.collection('savedProducts').doc(product.id);
+      final postRef =
+          userDocRef.collection('savedProducts').doc(product.id.toString());
 
       if (savedStatusMap[product.id]?.value ?? false) {
         // Remove if already saved
@@ -25,7 +26,7 @@ class ProductCardController extends GetxController {
       } else {
         // Save post data if not already saved
         await postRef.set(product.toJson());
-        savedStatusMap[product.id!] = true.obs;
+        savedStatusMap[product.id!.toString()] = true.obs;
         Get.snackbar("Saved", "Product saved to Wishlist",
             backgroundColor: ConstsConfig.secondarycolor);
       }
@@ -39,8 +40,8 @@ class ProductCardController extends GetxController {
         .collection('users')
         .doc(userId)
         .collection('savedProducts')
-        .doc(product.id);
+        .doc(product.id.toString());
     final doc = await productRef.get();
-    savedStatusMap[product.id!] = RxBool(doc.exists);
+    savedStatusMap[product.id!.toString()] = RxBool(doc.exists);
   }
 }

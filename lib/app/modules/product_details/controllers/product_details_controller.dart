@@ -143,7 +143,7 @@ class ProductDetailsController extends GetxController {
       } else {
         // Create a CartItem using the current product, selected size, color, and quantity
         CartItem cartItem = CartItem(
-          productId: product.value.id!,
+          productId: product.value.id!.toString(),
           name: product.value.name!,
           price: price,
           imageUrl: product.value.images![0],

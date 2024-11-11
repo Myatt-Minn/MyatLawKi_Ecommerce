@@ -33,7 +33,7 @@ class Product {
   // From JSON constructor
   factory Product.fromMap(Map<dynamic, dynamic> json) {
     return Product(
-      id: json['id'] as String?,
+      id: json['id'],
       name: json['name'] as String?,
       colors: List<ColorOption>.from(
           json['colors']?.map((x) => ColorOption.fromMap(x)) ?? []),

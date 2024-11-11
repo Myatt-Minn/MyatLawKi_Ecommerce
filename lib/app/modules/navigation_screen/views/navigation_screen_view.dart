@@ -44,23 +44,23 @@ class NavigationScreenView extends GetView<NavigationScreenController> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'စာမျက်နှာ',
+              label: 'feed'.tr,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.inventory),
-              label: 'ပစ္စည်းများ',
+              label: 'items'.tr,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.category),
-              label: 'အမျိုးအစား',
+              label: 'categories'.tr,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
-              label: 'ဝယ်ယူခြင်း',
+              label: 'cart'.tr,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              label: 'မှတ်တမ်း',
+              label: 'profile'.tr,
             ),
           ],
           selectedLabelStyle: const TextStyle(

@@ -100,7 +100,30 @@ class SignupView extends GetView<SignupController> {
                       ],
                     ),
                     const SizedBox(height: 15),
-
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'အီးမေးလ်',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 5),
+                        TextField(
+                          controller: controller.emailController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelStyle: TextStyle(color: Colors.black),
+                            hintText: 'E.g Myat@gmail.com',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     // Phone Number TextField
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +171,8 @@ class SignupView extends GetView<SignupController> {
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.visibility_off),
                               onPressed: () {
-                                // Add toggle visibility function if needed
+                                controller.isPasswordHidden.value =
+                                    !controller.isPasswordHidden.value;
                               },
                             ),
                             border: OutlineInputBorder(
@@ -159,6 +183,7 @@ class SignupView extends GetView<SignupController> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 15),
 
                     // Confirm Password TextField
@@ -181,7 +206,8 @@ class SignupView extends GetView<SignupController> {
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.visibility_off),
                               onPressed: () {
-                                // Add toggle visibility function if needed
+                                controller.isPasswordHidden.value =
+                                    !controller.isPasswordHidden.value;
                               },
                             ),
                             border: OutlineInputBorder(
@@ -192,6 +218,7 @@ class SignupView extends GetView<SignupController> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 20),
 
                     // Terms & Conditions Checkbox

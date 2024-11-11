@@ -12,7 +12,7 @@ class TermsAndConditionView extends GetView<TermsAndConditionController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: const Text('Terms and Conditions'),
+        title: Text('terms_and_conditions'.tr),
         centerTitle: true,
       ),
       body: FutureBuilder<String?>(

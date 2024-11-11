@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/cart_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/order_model.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
+import 'package:myat_ecommerence/app/data/region_deli_model.dart';
 import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
 class CheckOutController extends GetxController {
@@ -15,17 +19,19 @@ class CheckOutController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  RxList<DeliFeeModel> deliFees = <DeliFeeModel>[].obs;
+  var selectedFee = Rxn<DeliFeeModel>();
 
   @override
   void onInit() {
     super.onInit();
-
+    fetchDeliFees();
     fetchUserData();
   }
 
   int get finaltotalcost {
     return Get.find<CartController>().totalAmount.value +
-        ConstsConfig.deliveryfee;
+        int.parse(selectedFee.value!.fee);
   }
 
   bool setOrder() {
@@ -35,6 +41,26 @@ class CheckOutController extends GetxController {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<void> fetchDeliFees() async {
+    final url = '$baseUrl/api/v1/delivery-fees';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List<dynamic> data = jsonData['data'];
+
+      deliFees.value = data.map((json) => DeliFeeModel.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load delivery fees');
     }
   }
 
@@ -145,7 +171,7 @@ class CheckOutController extends GetxController {
       // Create the OrderModel instance
       final order = OrderItem(
         userId: user.uid,
-        orderId: docRef.id,
+        orderId: int.parse(docRef.id),
         orderDate: dateTime,
         status: status, // Initial status
         totalPrice: totalPrice,
