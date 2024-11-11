@@ -27,15 +27,37 @@ class CategoryController extends GetxController {
   }
 
   // Fetch brands from Firestore
+
   Future<void> fetchBrands() async {
+    final url = '$baseUrl/api/v1/brands';
+    // final authService = Tokenhandler();
+    // final token = await authService.getToken();
+
     try {
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('brand').get();
-      brands.value = snapshot.docs
-          .map((doc) => BrandModel.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        // Check if 'data' key exists and is a list
+        if (jsonData['data'] is List) {
+          brands.value = (jsonData['data'] as List)
+              .map((data) => BrandModel.fromJson(data))
+              .toList();
+        } else {
+          throw Exception('Invalid data format');
+        }
+      } else {
+        Get.snackbar("Error", "Something went wrong");
+      }
     } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
+      Get.snackbar("Error", "fail to fetch brands");
     }
   }
 
