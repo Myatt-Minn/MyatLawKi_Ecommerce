@@ -1,17 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
+import 'package:myat_ecommerence/app/data/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AccountController extends GetxController {
-  var username = ''.obs;
-  var profileImg = ''.obs;
+  var currentUser = Rxn<UserModel>();
   var selectedLanguage = 'ENG'.obs;
   var goDarkMode = true.obs;
   var notificationsEnabled = true.obs;
@@ -19,14 +19,12 @@ class AccountController extends GetxController {
   var isProfileImageChooseSuccess = false.obs;
   late File file;
   final storage = GetStorage();
-  final String userId =
-      FirebaseAuth.instance.currentUser!.uid; // Replace with actual user ID
 
   @override
   void onInit() {
     super.onInit();
     goDarkMode.value = false;
-    fetchUserData(); // Fetch profile pic when the controller initializes
+    fetchUserData();
     selectedLanguage.value = storage.read('language') ?? 'ENG';
     updateLocale();
   }
@@ -60,15 +58,9 @@ class AccountController extends GetxController {
     languageSelected.value = language;
   }
 
-  void signOut() {
-    FirebaseAuth.instance.signOut();
-  }
-
   Future<void> logout() async {
-    final authService = Tokenhandler();
-    await authService.clearToken();
-
     Get.offAllNamed('/login');
+    Tokenhandler().clearToken();
   }
 
   Future<void> makePhoneCall() async {
@@ -80,6 +72,36 @@ class AccountController extends GetxController {
       await launchUrl(launchUri);
     } else {
       throw 'Could not launch $ConstsConfig.phoneNumber';
+    }
+  }
+
+  Future<void> fetchUserData() async {
+    final url = '$baseUrl/api/v1/customer';
+    final token = await Tokenhandler()
+        .getToken(); // Make sure to replace this with your method for retrieving the token.
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] == true) {
+          currentUser.value = UserModel.fromJson(jsonData['data']);
+        } else {
+          Get.snackbar("Error", "Error fetching data");
+        }
+      } else {
+        Get.snackbar("Fail", "Error fetching data");
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+      return;
     }
   }
 
@@ -118,18 +140,17 @@ class AccountController extends GetxController {
               // Close the dialog without doing anything
               Get.back();
             },
-            child: const Text(
-              'Cancel',
+            child: Text(
+              'cancel'.tr,
               style: TextStyle(color: Colors.red),
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              deleteUser();
               Get.back(); // Close the dialog after action
               Get.snackbar(
-                'Account Deleted',
-                'Your account has been successfully deleted.',
+                'အောင်မြင်သည်',
+                'အကောင့်ဖျက်မှုအောင်မြင်ပါသည်',
                 backgroundColor: ConstsConfig.primarycolor,
                 colorText: Colors.white,
               );
@@ -140,57 +161,11 @@ class AccountController extends GetxController {
                 borderRadius: BorderRadius.circular(16.0),
               ),
             ),
-            child: const Text('Delete'),
+            child: const Text('ဖျက်ရန်'),
           ),
         ],
       ),
       barrierDismissible: false, // Prevent dismissing by tapping outside
     );
-  }
-
-  Future<void> deleteUser() async {
-    try {
-      // Delete user data from Firestore
-      await FirebaseFirestore.instance.collection('users').doc(userId).delete();
-
-      // Delete user account from Firebase Authentication
-      await FirebaseAuth.instance.currentUser!.delete();
-
-      Get.snackbar(
-        'Account Deleted',
-        'Your account has been successfully deleted.',
-        backgroundColor: ConstsConfig.primarycolor,
-        colorText: Colors.white,
-      );
-    } catch (e) {
-      if (e is FirebaseAuthException && e.code == 'requires-recent-login') {
-        print('Error: User needs to re-authenticate before account deletion.');
-        // Handle re-authentication here if needed
-      } else {
-        print('Error deleting user: $e');
-      }
-    }
-  }
-
-  // Function to retrieve the profile picture from Firestore
-  Future<void> fetchUserData() async {
-    try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-      if (userDoc.exists && userDoc.data() != null) {
-        // Assuming that the profile pic URL is stored in the 'profilepic' field
-        profileImg.value = userDoc['profilepic'] ??
-            ''; // Use an empty string if the field is null
-        username.value = userDoc['name'];
-
-        isProfileImageChooseSuccess.value = true;
-      } else {
-        Get.snackbar('Error', 'User document does not exist.');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
-    }
   }
 }

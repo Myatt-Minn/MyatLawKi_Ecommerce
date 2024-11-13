@@ -35,15 +35,18 @@ class EditProfileView extends GetView<EditProfileController> {
             // Profile Picture
             Center(
               child: Obx(() {
+                if (controller.currentUser.value == null) {
+                  return CircularProgressIndicator(); // Loading indicator
+                }
+
                 return Stack(
                   children: [
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage:
-                          controller.isProfileImageChooseSuccess.value
-                              ? FileImage(controller.file)
-                              : const AssetImage('assets/person.png')
-                                  as ImageProvider,
+                      backgroundImage: controller
+                              .isProfileImageChooseSuccess.value
+                          ? FileImage(controller.profileImage!)
+                          : NetworkImage(controller.currentUser.value!.image),
                     ),
                     Positioned(
                       bottom: 0,
@@ -83,7 +86,12 @@ class EditProfileView extends GetView<EditProfileController> {
               'Please enter a valid phone number', // Validation message
             ),
             const SizedBox(height: 30),
-
+            // Phone Number Field
+            buildEditableField(
+              'Email',
+              controller.emailController,
+              'Please enter a valid email', // Validation message
+            ),
             // Update Button
             ElevatedButton(
               onPressed: controller.updateUserProfile,
@@ -112,7 +120,8 @@ class EditProfileView extends GetView<EditProfileController> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 5),
         Obx(() {

@@ -1,41 +1,31 @@
 class UserModel {
-  String email;
-  int name;
-  String phoneNumber;
-  String profilepic;
-  String role;
-  String uid;
+  final int id;
+  final String name;
+  final String phone;
+  final String email;
+  final String fcmTokenKey;
+  final bool isBanned;
+  final String image;
 
   UserModel({
-    required this.email,
+    required this.id,
     required this.name,
-    required this.phoneNumber,
-    required this.profilepic,
-    required this.role,
-    required this.uid,
+    required this.phone,
+    required this.email,
+    required this.fcmTokenKey,
+    required this.isBanned,
+    required this.image,
   });
 
-  // Convert Firestore document data to UserModel object
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      email: json['email'] ?? '',
-      name: json['name'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? '',
-      profilepic: json['profilepic'] ?? '',
-      role: json['role'] ?? '',
-      uid: json['uid'] ?? '',
+      id: json['id'],
+      name: json['name'],
+      phone: json['phone'],
+      email: json['email'],
+      fcmTokenKey: json['fcm_token_key'] ?? '',
+      isBanned: json['is_banned'] == '1',
+      image: json['image'],
     );
-  }
-
-  // Convert UserModel object to JSON (for saving to Firestore)
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'profilepic': profilepic,
-      'role': role,
-      'uid': uid,
-    };
   }
 }

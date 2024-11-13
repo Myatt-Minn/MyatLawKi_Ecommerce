@@ -47,20 +47,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCOiQX5IpdEyrZA4x7HG_N7fbKyRQAp5nE',
-    appId: '1:638749066043:android:b769f487592778efcced1e',
-    messagingSenderId: '638749066043',
-    projectId: 'taxiproj-b2f9d',
-    storageBucket: 'taxiproj-b2f9d.appspot.com',
+    apiKey: 'AIzaSyA5E4uEp0E_7svv-G4jl7OHAuxFNXg33wY',
+    appId: '1:191405085984:android:c8fb393753112ffcbcb345',
+    messagingSenderId: '191405085984',
+    projectId: 'myatecommerce',
+    storageBucket: 'myatecommerce.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDpdmKN1GhZIgr8HgNxIf_bRT1C2CiAtIo',
-    appId: '1:638749066043:ios:cdfbbe079f9918eecced1e',
-    messagingSenderId: '638749066043',
-    projectId: 'taxiproj-b2f9d',
-    storageBucket: 'taxiproj-b2f9d.appspot.com',
-    androidClientId: '638749066043-ebtmguv64k44ig9k8mumeo2blbgpcuki.apps.googleusercontent.com',
+    apiKey: 'AIzaSyB9njwNfnfuKv2Zo3sNk8iQW12TV0fQcio',
+    appId: '1:191405085984:ios:42e01fd359506a54bcb345',
+    messagingSenderId: '191405085984',
+    projectId: 'myatecommerce',
+    storageBucket: 'myatecommerce.firebasestorage.app',
     iosBundleId: 'app.com.mm.myatEcommerence',
   );
 

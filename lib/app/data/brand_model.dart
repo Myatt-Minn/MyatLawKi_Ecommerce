@@ -1,11 +1,10 @@
 class BrandModel {
   int id;
-  String imgUrl;
+
   String title;
 
   BrandModel({
     required this.id,
-    required this.imgUrl,
     required this.title,
   });
 
@@ -13,8 +12,7 @@ class BrandModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'imgUrl': imgUrl,
-      'title': title,
+      'name': title,
     };
   }
 
@@ -22,8 +20,7 @@ class BrandModel {
   factory BrandModel.fromJson(Map<String, dynamic> json) {
     return BrandModel(
       id: json['id'],
-      imgUrl: json['imgUrl'],
-      title: json['title'],
+      title: json['name'],
     );
   }
 }

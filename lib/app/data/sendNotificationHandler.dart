@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -17,23 +16,24 @@ class SendNotificationHandler {
   String? serverKeyGG;
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  static String fcmToken = "";
 
   Future<String> getAccessToken() async {
     // Your client ID and client secret obtained from Google Cloud Console
     final serviceAccountJson = {
       "type": "service_account",
-      "project_id": "taxiproj-b2f9d",
-      "private_key_id": "590e0dd9df8674038fc649def852ca2c00610a6c",
+      "project_id": "myatecommerce",
+      "private_key_id": "d9f000d339b877c33aa901d787a13db8c444ed2f",
       "private_key":
-          "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDK7Cmf+XdrMzyX\nuKky+RtDbKkp0qP+nwH/jtaNAvuUFO6V+G6HILWdjc1dxNMH1HXjX/mJWsb36yDC\nK/zoB/ClxZb1Xnf0A9Xn423B7Bgki4eNcu1ODrP1l4kQCOBktpaxS1UhTdXcJkyq\ndszH1ndJ8MFpQFR98U2t4ojZ0pPcSxR6FOQ53va4HJVuw/XSSgea1Pgvz8pT8QKI\nd6u34j9HJV90t6kXzREV1qwu+VvdTIS+wuzjbAWtH/pWYgNKxcx3p2KfVJyWXI3B\nG0xNm3EGYu5prWcxu/jyaiqpWV2A5+Di8VYy2MDdwvtaOlY0+H77Exs6/Az1PbiH\nsNo2SxCBAgMBAAECgf8UfRjfQHGmaQ04RIAOI27VwvGw+Rnr4pETasDZbH+X4m5e\nCQKdV5GP9gMufmsY43ATTbPAmxE0Y9ysLkApsAHdEhjai0k1CtkcvNQuOiMyzKWZ\nCLBCMvBCRQspnSaU2zb4alJ4Pa7NxS9LZ0eRlhFN8lvVOdascMcY1ooJUQqShMnD\noJznrYDflgo8z65EJ5fSWWtSWfTbjMf/mXZmkSmkVk1BkNcUdOYBsLgihapAfnAn\nFM+MW8rj8L3bwAbbBDJ/9XUe4WtBflw4sK47ZH/CiyBLD7jx58+1AH0oHZDza+n2\nXHTGbxUvLqbC3/YCV+e2eOECnXCUwuFF8XWTbWkCgYEA6A/nFDXoMtzdbdn4epGR\nKGftQwhKp7L5SzUp+nzNMCWShrt8B35G3Suz/1namWM8FBl2qWdRPTgpJuKojkKj\nZRP3C0ZbCss2Iwe9CN9Tr50OekEpa60IXvQwOEke7Rv9BvwfFb22RcSTOg1UWo6M\n4iDAjzXJWK9OuUQE7NCNMlUCgYEA39rEIY2Qw1R52kbGjpgZovJbv6Fmyybjg+cu\nJE7wPo+utccdcm0Qc4gpPUULz4+Q36WBwTqsaJChNtc0/aOQcuB4C9wc0t0eEeJj\nvpkfA5Ca2YmY+o2edUWqEAAk7K35rt1XMvAy55z3uPVyd8baFk/mPQXcB0bZh50y\nCPnCiX0CgYEAxrE/CEXzrwD+slzL7J4QbEk3k4pY6WdLHcLCU49h3BR/dc63Lm9H\nW31c24jiqyyVNxxqRjeJDmK0kW/GJDAYWKYUgtnVf9NoYevxRdR5gcZ2q+R5A5Ge\ntjZbxwWMbjXlmoJqVyIdG3VpHW5mSDb/l2m1lajW4ZEQVX5QvTb/fhUCgYA3ek41\nSpJf9mWklPnMiSGBYrMeUO/a1S55mCe1U+LyfkV8Q3amzyTOnSYrSxtcO2ZaJvh7\nXQExgPaTUs6NNaYs8jiOJ+T01VwIbqTtraEkDwhxdUp2ffaRdcxp3r9H8O36Sly8\nAQ98m0hBjILr8FpIQVD8OqGHJCXxGCI4Wz29OQKBgQCCUKZKOJFCMSMdlLwuF2cA\nFTlvmX7N+Tx/qfTcOrQMhIDMsl9vFiZe0NolXAx7MJsD9VT1VpFEHxxGmwmFNp6w\n7QqBo1kA9imh0p7i/qHoee/Fk/RnAnGizBBT7Yc2fuEubjaQIAfUnDSo3Pdtk8aI\nQWDOp8xTIAfdYpCnVk8pRw==\n-----END PRIVATE KEY-----\n",
-      "client_email": "myatecommerce@taxiproj-b2f9d.iam.gserviceaccount.com",
-      "client_id": "100759835886263192963",
+          "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCV4adnkdZc+Mje\nrdyRoBGINOZJrhVukT0vSiaUA8bUY9iZLc0f+8AEOEa9JvNwuURckxJOwLWGJ7Ru\nkEj9vAooJiwqzLawgNVXrtCvdcSt/hTfri5RgS83bpRZMm0KD1cEwgaIubAqfM48\nplnfaoGREDHgV1yPQjXNk6joSazW1e5l4oT8osBfEgzrTtZEk0zApNNhrnJ9bf2R\nxDpwwgS168VzNlBckIHcjEdRYyWjUY2UqrsZt2S5SJ6uvD/nCR0x+TBwdLD+X2NM\nXxl694Exn/jEH08srBcnfUqNhmOEFfp2fGkj/j8Pa0DjVXuUgN4NDv7NlfQXtbpz\nIuRJP4svAgMBAAECggEAKCrS3d9IJx9nWcIXcBGJUUr4Anv8c2bKEm/ZWeaPNSFT\nDW4oYG9r/NWGI7AaIrYL+5FQoTllDIB8ivrxDMsFn8/nG0tElJXaVwbbF4LExGpo\n9q8r65zm5gClEiiA72bAB97luGOnMiPDc56TTFwzQAiqjThsblosqBzv8dy4zNQc\nXwx41FaJMgqlEStI9poQ591c6LyH30xkVXgX9QXHMs8hGFdgGw7OjIWWMssv6mxT\n5VpAdn8cj1dXNLllTD+mwQ0uC4RdprGGRO//65Jh9KuRS/HDp9h7iWhSYuDARfHK\nGQP5yTQCsV6r+lQVJQiShjXb7E3pxgQypYJhGEn5YQKBgQDLpmoi/AsgnoSZt42B\nq4dr1n/9aHvCDFU5/WRlJ+zcbDShL01JHLmN5D/V5SlRhwsaA8BEfYUukASIB1e/\nv5xHRnHUYpITasKgWEQw10w4dYiQH/lrgAghQUicIaj7okM5V2/pJFokAnJtQLda\ncXMmK9f5xx/e48tTaakmxkSBYQKBgQC8aOSaDG/eTXU+2VoH2epAmuCeHjMCIFux\njwxJUd+Y/j653tmm2Ma6jS/uCDHUq4V+b9lJ364y47+q8EqXjZvT3KXfU8bj38+7\ntcDzICBc5kBSu9jglS3MFU1H4sOVMBJn4JGwLQhdsyEjUgrdSu/Qv8A39SP0ez39\n3PfkK9MGjwKBgAUP3OGDvE8SQZ+EhXrspZATo9jLqQ/YuKGZX8534JZWBjTfdR9V\nHHOfccrCSHWjUq5R24yYRiAzKjmrXQ4CGENZR+kMji73X2EW8JL6NwXMPhm/Abcf\nVpRlCAYBfC7NCLi7KKf15Fuyx99ZVXVlDoSrYFHwFiW3Kc2n+bFiCj/hAoGAFlli\n9JsREg+iHshtk4zX6r30cw0mA9SOy+sqC/B4U4+lJSs4KkCAolRpIRU7w/xso2jl\nH4w2/7ZgYAiM8JlNqL39txYa+6Dq5VtT/gMLk7mEW8wIl+taOWE1f5d4l9PR+xx6\na6mL2oGLJsNuon1nIR390SV1FGUiH2D8zsYcDCUCgYBmvzJ9cVx2RDGWGPnZ6X4K\n1K03uxjdZKCn/dUtCzR7SCeNRXVrfdYDS3qK/TZ02yp+M1bQM+hTou+WJ1odOpE4\nJBCTkB/wt15pwG7RNRu8kMZ691a7fOaf0P8Zbfgqt12N+XkA76B8OtqFTqeFtCwI\nfdKinpSa+qPNEO8Q/w+ZAA==\n-----END PRIVATE KEY-----\n",
+      "client_email": "myatecomm@myatecommerce.iam.gserviceaccount.com",
+      "client_id": "116955830035983094531",
       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
       "token_uri": "https://oauth2.googleapis.com/token",
       "auth_provider_x509_cert_url":
           "https://www.googleapis.com/oauth2/v1/certs",
       "client_x509_cert_url":
-          "https://www.googleapis.com/robot/v1/metadata/x509/myatecommerce%40taxiproj-b2f9d.iam.gserviceaccount.com",
+          "https://www.googleapis.com/robot/v1/metadata/x509/myatecomm%40myatecommerce.iam.gserviceaccount.com",
       "universe_domain": "googleapis.com"
     };
 
@@ -92,18 +92,22 @@ class SendNotificationHandler {
 
   Future<void> initNotification() async {
     await messaging.requestPermission();
-    final fCMToken = await messaging.getToken();
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
-      "token": fCMToken,
-    }, SetOptions(merge: true));
-    print("Token $fCMToken");
 
     initPushNotification();
   }
 
+  static Future<String> getDeviceTokenToSendNotification() async {
+    fcmToken = (await FirebaseMessaging.instance.getToken()).toString();
+    print("FCM Token: $fcmToken");
+
+    return fcmToken;
+  }
+  // static Future<String> getDeviceTokenToSendNotification() async {
+  //    await messaging.requestPermission();
+  //   final fCMToken = await messaging.getToken();
+
+  //   return fcmToken;
+  // }
   static void displayNotification(RemoteMessage message) async {
     try {
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -186,7 +190,7 @@ class SendNotificationHandler {
     required String body,
   }) async {
     final Uri url = Uri.parse(
-        'https://fcm.googleapis.com/v1/projects/taxiproj-b2f9d/messages:send');
+        'https://fcm.googleapis.com/v1/projects/myatecommerce/messages:send');
 
     final Map<String, String> headers = {
       'Content-Type': 'application/json',

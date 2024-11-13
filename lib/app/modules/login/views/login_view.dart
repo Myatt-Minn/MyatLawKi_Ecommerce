@@ -44,9 +44,13 @@ class LoginView extends GetView<LoginController> {
               // Phone Number input
               TextField(
                 controller: controller.phoneController,
+                keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
+                  errorText: controller.emailError.value.isEmpty
+                      ? null
+                      : controller.emailError.value,
                   labelText: 'ဖုန်းနံပါတ်',
                   labelStyle: TextStyle(color: Colors.black),
                   hintText: 'E.g 09123456',
@@ -66,6 +70,9 @@ class LoginView extends GetView<LoginController> {
                     obscureText: controller.isPasswordHidden.value,
                     decoration: InputDecoration(
                       filled: true,
+                      errorText: controller.passwordError.value.isEmpty
+                          ? null
+                          : controller.passwordError.value,
                       fillColor: Colors.white,
                       labelText: 'စကားဝှက်',
                       labelStyle: TextStyle(color: Colors.black),
@@ -95,7 +102,7 @@ class LoginView extends GetView<LoginController> {
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: () {
-                        controller.loginUser();
+                        controller.login();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.yellow[700],
@@ -110,6 +117,10 @@ class LoginView extends GetView<LoginController> {
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     )),
+              Text(
+                controller.generalError.value,
+                style: TextStyle(color: Colors.red),
+              ),
               const SizedBox(height: 20),
 
               // Forgot Password link

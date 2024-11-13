@@ -13,11 +13,12 @@ import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/order_model.dart';
 import 'package:myat_ecommerence/app/data/payment_model.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
 class PaymentController extends GetxController {
   // Rx variables for payment options
-  RxList<SizeOption> sizeList = <SizeOption>[].obs;
+
   var transitionImage = "".obs;
   late File file;
   var isProfileImageChooseSuccess = false.obs;
@@ -50,14 +51,14 @@ class PaymentController extends GetxController {
       await uploadImage(file);
     } else {
       // User canceled the picker
-      Get.snackbar("Cancel", "No Image");
+      Get.snackbar("cancel".tr, "No Image");
     }
   }
 
   Future<void> fetchPayment() async {
     final url = '$baseUrl/api/v1/payments';
-    // final authService = Tokenhandler();
-    // final token = await authService.getToken();
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
     try {
       final response = await http.get(
@@ -122,190 +123,190 @@ class PaymentController extends GetxController {
     }
   }
 
-  void confirmPayment() async {
-    // Validate if a payment method is selected
-    if (selectedPayment.value.isEmpty) {
-      Get.snackbar('Invalid Payment', 'Please select a payment method.',
-          backgroundColor: Colors.red, colorText: Colors.white);
-      return;
-    }
+  // void confirmPayment() async {
+  //   // Validate if a payment method is selected
+  //   if (selectedPayment.value.isEmpty) {
+  //     Get.snackbar('Invalid Payment', 'Please select a payment method.',
+  //         backgroundColor: Colors.red, colorText: Colors.white);
+  //     return;
+  //   }
 
-    // Validate if an image has been uploaded
-    if (transitionImage.value.isEmpty) {
-      Get.snackbar('Invalid Image', 'Please upload a transaction screenshot.',
-          backgroundColor: Colors.red, colorText: Colors.white);
-      return;
-    }
+  //   // Validate if an image has been uploaded
+  //   if (transitionImage.value.isEmpty) {
+  //     Get.snackbar('Invalid Image', 'Please upload a transaction screenshot.',
+  //         backgroundColor: Colors.red, colorText: Colors.white);
+  //     return;
+  //   }
 
-    isLoading.value = true;
+  //   isLoading.value = true;
 
-    // Perform stock check for all items in the cart before placing the order
-    bool isStockAvailable = await checkStockForOrder(
-      Get.find<CartController>().cartItems,
-    );
+  //   // Perform stock check for all items in the cart before placing the order
+  //   bool isStockAvailable = await checkStockForOrder(
+  //     Get.find<CartController>().cartItems,
+  //   );
 
-    if (!isStockAvailable) {
-      Get.snackbar(
-          'Stock Error', 'Not enough stock for one or more items in your cart.',
-          backgroundColor: Colors.red);
-      isLoading.value = false;
-      return;
-    }
+  //   if (!isStockAvailable) {
+  //     Get.snackbar(
+  //         'Stock Error', 'Not enough stock for one or more items in your cart.',
+  //         backgroundColor: Colors.red);
+  //     isLoading.value = false;
+  //     return;
+  //   }
 
-    // Proceed with order creation if stock is sufficient
-    await createOrder(
-      name: Get.arguments['name'],
-      phoneNumber: Get.arguments['phoneNumber'],
-      cartItems: Get.find<CartController>().cartItems,
-      totalPrice: Get.arguments['totalCost'],
-      address: Get.arguments['address'],
-      status: "Pending",
-    );
+  //   // Proceed with order creation if stock is sufficient
+  //   await createOrder(
+  //     name: Get.arguments['name'],
+  //     phoneNumber: Get.arguments['phoneNumber'],
+  //     cartItems: Get.find<CartController>().cartItems,
+  //     totalPrice: Get.arguments['totalCost'],
+  //     address: Get.arguments['address'],
+  //     status: "Pending",
+  //   );
 
-    Get.offNamed('/order-success');
-    isLoading.value = false;
-  }
+  //   Get.offNamed('/order-success');
+  //   isLoading.value = false;
+  // }
 
 // Function to check if there's enough stock for each item in the cart
-  Future<bool> checkStockForOrder(List<CartItem> cartItems) async {
-    for (var cartItem in cartItems) {
-      // Fetch the latest stock from Firestore for the specific product
-      var productDoc = await FirebaseFirestore.instance
-          .collection('new_arrivals')
-          .doc(cartItem.productId)
-          .get();
+  // Future<bool> checkStockForOrder(List<CartItem> cartItems) async {
+  //   for (var cartItem in cartItems) {
+  //     // Fetch the latest stock from Firestore for the specific product
+  //     var productDoc = await FirebaseFirestore.instance
+  //         .collection('new_arrivals')
+  //         .doc(cartItem.productId)
+  //         .get();
 
-      if (!productDoc.exists) {
-        Get.snackbar('Stock Error', 'Product not found.');
-        return false; // Exit if product doesn't exist
-      }
+  //     if (!productDoc.exists) {
+  //       Get.snackbar('Stock Error', 'Product not found.');
+  //       return false; // Exit if product doesn't exist
+  //     }
 
-      // Retrieve the product data and map it to the Product model
-      var productData = productDoc.data();
-      var product = Product.fromMap(productData!);
+  //     // Retrieve the product data and map it to the Product model
+  //     var productData = productDoc.data();
+  //     var product = Product.fromJson(productData!);
 
-      // Find the color option that matches the cart item's color
-      var colorOption = product.colors?.firstWhereOrNull(
-        (color) => color.color == cartItem.color,
-      );
+  //     // Find the color option that matches the cart item's color
+  //     var colorOption = product.colors?.firstWhereOrNull(
+  //       (color) => color.color == cartItem.color,
+  //     );
 
-      if (colorOption == null) {
-        Get.snackbar('Stock Error', 'Color not found for ${cartItem.name}.');
-        return false; // Exit if color is not found
-      }
+  //     if (colorOption == null) {
+  //       Get.snackbar('Stock Error', 'Color not found for ${cartItem.name}.');
+  //       return false; // Exit if color is not found
+  //     }
 
-      // Find the size option within the color option
-      var sizeOption = colorOption.sizes.firstWhereOrNull(
-        (size) => size.size == cartItem.size,
-      );
+  //     // Find the size option within the color option
+  //     var sizeOption = colorOption.sizes.firstWhereOrNull(
+  //       (size) => size.size == cartItem.size,
+  //     );
 
-      if (sizeOption == null) {
-        Get.snackbar('Stock Error',
-            'Size not found for ${cartItem.name}, color: ${cartItem.color}.');
-        return false; // Exit if size not found
-      }
+  //     if (sizeOption == null) {
+  //       Get.snackbar('Stock Error',
+  //           'Size not found for ${cartItem.name}, color: ${cartItem.color}.');
+  //       return false; // Exit if size not found
+  //     }
 
-      // Check if there is enough stock
-      int availableStock = sizeOption.quantity;
-      if (cartItem.quantity > availableStock) {
-        Get.snackbar('Stock Error',
-            'Not enough stock for ${cartItem.name}, color: ${cartItem.color}, size: ${cartItem.size}.',
-            backgroundColor: Colors.red);
-        return false; // Exit if stock is insufficient
-      }
-    }
+  //     // Check if there is enough stock
+  //     int availableStock = sizeOption.quantity;
+  //     if (cartItem.quantity > availableStock) {
+  //       Get.snackbar('Stock Error',
+  //           'Not enough stock for ${cartItem.name}, color: ${cartItem.color}, size: ${cartItem.size}.',
+  //           backgroundColor: Colors.red);
+  //       return false; // Exit if stock is insufficient
+  //     }
+  //   }
 
-    return true; // Return true if stock is sufficient for all items
-  }
+  //   return true; // Return true if stock is sufficient for all items
+  // }
 
-  Future<void> createOrder({
-    required List<CartItem> cartItems, // List of CartItem objects
-    required int totalPrice,
-    required String address,
-    required String status,
-    required String name,
-    required String phoneNumber,
-  }) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
+  // Future<void> createOrder({
+  //   required List<CartItem> cartItems, // List of CartItem objects
+  //   required int totalPrice,
+  //   required String address,
+  //   required String status,
+  //   required String name,
+  //   required String phoneNumber,
+  // }) async {
+  //   try {
+  //     final user = FirebaseAuth.instance.currentUser;
 
-      if (user == null) {
-        throw Exception("User not logged in");
-      }
+  //     if (user == null) {
+  //       throw Exception("User not logged in");
+  //     }
 
-      final docRef = FirebaseFirestore.instance.collection('orders').doc();
-      Timestamp timestamp =
-          Timestamp.now(); // Assuming 'orderDate' is a Timestamp field
-      DateTime dateTime = timestamp.toDate();
+  //     final docRef = FirebaseFirestore.instance.collection('orders').doc();
+  //     Timestamp timestamp =
+  //         Timestamp.now(); // Assuming 'orderDate' is a Timestamp field
+  //     DateTime dateTime = timestamp.toDate();
 
-      // Create the OrderModel instance
-      final order = OrderItem(
-        userId: user.uid,
-        orderId: int.parse(docRef.id),
-        orderDate: dateTime,
-        status: status, // Initial status
-        totalPrice: totalPrice,
-        paymentMethod: selectedPayment.value,
-        transationUrl: transitionImage.value,
-        name: name,
-        phoneNumber: phoneNumber,
-        address: address,
-        items: cartItems, // Convert CartItems to Maps
-      );
+  //     // Create the OrderModel instance
+  //     final order = OrderItem(
+  //       userId: user.uid,
+  //       orderId: int.parse(docRef.id),
+  //       orderDate: dateTime,
+  //       status: status, // Initial status
+  //       totalPrice: totalPrice,
+  //       paymentMethod: selectedPayment.value,
+  //       transationUrl: transitionImage.value,
+  //       name: name,
+  //       phoneNumber: phoneNumber,
+  //       address: address,
+  //       items: cartItems, // Convert CartItems to Maps
+  //     );
 
-      // Add the order to Firestore
-      await docRef.set(order.toMap());
+  //     // Add the order to Firestore
+  //     await docRef.set(order.toMap());
 
-      // Update stock for each product, color, and size
-      for (var cartItem in cartItems) {
-        // Fetch the product document from Firestore
-        var productDoc = await FirebaseFirestore.instance
-            .collection('new_arrivals')
-            .doc(cartItem.productId)
-            .get();
+  //     // Update stock for each product, color, and size
+  //     for (var cartItem in cartItems) {
+  //       // Fetch the product document from Firestore
+  //       var productDoc = await FirebaseFirestore.instance
+  //           .collection('new_arrivals')
+  //           .doc(cartItem.productId)
+  //           .get();
 
-        if (productDoc.exists) {
-          var productData = productDoc.data();
-          var product = Product.fromMap(productData!);
+  //       if (productDoc.exists) {
+  //         var productData = productDoc.data();
+  //         var product = Product.fromMap(productData!);
 
-          // Find the specific color option within the product
-          var colorOption = product.colors?.firstWhereOrNull(
-            (color) => color.color == cartItem.color,
-          );
+  //         // Find the specific color option within the product
+  //         var colorOption = product.colors?.firstWhereOrNull(
+  //           (color) => color.color == cartItem.color,
+  //         );
 
-          if (colorOption != null) {
-            // Find the specific size option within the color option
-            var sizeOption = colorOption.sizes.firstWhereOrNull(
-              (size) => size.size == cartItem.size,
-            );
+  //         if (colorOption != null) {
+  //           // Find the specific size option within the color option
+  //           var sizeOption = colorOption.sizes.firstWhereOrNull(
+  //             (size) => size.size == cartItem.size,
+  //           );
 
-            if (sizeOption != null) {
-              // Update the stock quantity
-              int updatedQuantity = sizeOption.quantity - cartItem.quantity;
-              sizeOption.quantity = updatedQuantity < 0 ? 0 : updatedQuantity;
+  //           if (sizeOption != null) {
+  //             // Update the stock quantity
+  //             int updatedQuantity = sizeOption.quantity - cartItem.quantity;
+  //             sizeOption.quantity = updatedQuantity < 0 ? 0 : updatedQuantity;
 
-              // Update Firestore with the modified product data
-              await FirebaseFirestore.instance
-                  .collection('new_arrivals')
-                  .doc(cartItem.productId)
-                  .update({
-                'colors':
-                    product.colors?.map((color) => color.toMap()).toList(),
-              });
-            } else {
-              Get.snackbar("Stock Error",
-                  "Size not found for ${cartItem.name}, color: ${cartItem.color}.");
-            }
-          } else {
-            Get.snackbar(
-                "Stock Error", "Color not found for ${cartItem.name}.");
-          }
-        }
-      }
+  //             // Update Firestore with the modified product data
+  //             await FirebaseFirestore.instance
+  //                 .collection('new_arrivals')
+  //                 .doc(cartItem.productId)
+  //                 .update({
+  //               'colors':
+  //                   product.colors?.map((color) => color.toMap()).toList(),
+  //             });
+  //           } else {
+  //             Get.snackbar("Stock Error",
+  //                 "Size not found for ${cartItem.name}, color: ${cartItem.color}.");
+  //           }
+  //         } else {
+  //           Get.snackbar(
+  //               "Stock Error", "Color not found for ${cartItem.name}.");
+  //         }
+  //       }
+  //     }
 
-      print("Order created, stock updated, and cart cleared successfully!");
-    } catch (e) {
-      Get.snackbar("Error", "Sorry, error creating order: $e");
-    }
-  }
+  //     print("Order created, stock updated, and cart cleared successfully!");
+  //   } catch (e) {
+  //     Get.snackbar("Error", "Sorry, error creating order: $e");
+  //   }
+  // }
 }

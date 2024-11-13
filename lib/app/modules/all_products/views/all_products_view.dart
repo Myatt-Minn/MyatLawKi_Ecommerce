@@ -51,10 +51,9 @@ class AllProductsView extends GetView<AllProductsController> {
                 itemCount: controller.filteredProducts.length,
                 itemBuilder: (context, index) {
                   Product product = controller.filteredProducts[index];
-                  controller.displayProductSizes(product);
+
                   return ProductCardView(
                     product: product,
-                    sizeOptions: controller.sizeList,
                   );
                 },
               );

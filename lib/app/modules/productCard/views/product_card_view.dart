@@ -1,26 +1,24 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
-
-import '../controllers/product_card_controller.dart';
+import 'package:myat_ecommerence/app/modules/productCard/controllers/product_card_controller.dart';
 
 class ProductCardView extends GetView<ProductCardController> {
   final Product product;
-  final List<SizeOption> sizeOptions;
 
   const ProductCardView({
     super.key,
     required this.product,
-    required this.sizeOptions,
   });
 
   @override
   Widget build(BuildContext context) {
     if (!controller.savedStatusMap.containsKey(product.id)) {
-      controller.checkIfSaved(product);
+      // Uncomment if you want to check saved status:
+      // controller.checkIfSaved(product);
     }
+
     return GestureDetector(
       onTap: () {
         Get.toNamed('/product-details', arguments: product);
@@ -48,7 +46,8 @@ class ProductCardView extends GetView<ProductCardController> {
                     topRight: Radius.circular(15),
                   ),
                   child: FancyShimmerImage(
-                    imageUrl: product.images![0],
+                    imageUrl:
+                        product.images.isNotEmpty ? product.images[0] : '',
                     width: double.infinity,
                     height: 120,
                     boxFit: BoxFit.cover,
@@ -59,13 +58,17 @@ class ProductCardView extends GetView<ProductCardController> {
                   right: 0,
                   child: Obx(() => IconButton(
                         icon: Icon(
-                          controller.savedStatusMap[product.id]?.value == true
+                          controller.savedStatusMap[product.id.toString()]
+                                      ?.value ==
+                                  true
                               ? Icons.favorite
                               : Icons.favorite_border_outlined,
-                          color: ConstsConfig.secondarycolor,
+                          color: Colors.redAccent,
                           size: 28,
                         ),
-                        onPressed: () => controller.toggleSaveStatus(product),
+                        // Uncomment to enable save functionality:
+                        // onPressed: () => controller.toggleSaveStatus(product),
+                        onPressed: () {},
                       )),
                 ),
               ],
@@ -76,7 +79,7 @@ class ProductCardView extends GetView<ProductCardController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name!,
+                    product.name,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: const TextStyle(
@@ -87,7 +90,7 @@ class ProductCardView extends GetView<ProductCardController> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    product.brand!,
+                    product.brand,
                     style: const TextStyle(color: Colors.green),
                   ),
                   const SizedBox(height: 4),
@@ -95,7 +98,7 @@ class ProductCardView extends GetView<ProductCardController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "${sizeOptions[0].price} MMK",
+                        "${product.variations.isNotEmpty && product.variations[0].options.isNotEmpty ? product.variations[0].options[0][0].price.toString() : 'N/A'} MMK",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,

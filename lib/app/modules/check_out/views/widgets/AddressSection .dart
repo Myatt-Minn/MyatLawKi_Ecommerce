@@ -33,7 +33,7 @@ class AddressSection extends StatelessWidget {
                 );
               }).toList(),
               onChanged: (DeliFeeModel? newValue) {
-                controller.selectedFee.value = newValue;
+                controller.selectedFee.value = newValue!;
               },
             ),
           ),

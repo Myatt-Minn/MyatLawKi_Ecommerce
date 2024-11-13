@@ -249,10 +249,9 @@ class HomeView extends GetView<HomeController> {
                         itemCount: controller.productList.length,
                         itemBuilder: (context, index) {
                           final product = controller.productList[index];
-                          controller.displayProductSizes(product);
+
                           return ProductCardView(
                             product: product,
-                            sizeOptions: controller.sizeList,
                           );
                         },
                       );

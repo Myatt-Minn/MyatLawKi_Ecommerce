@@ -45,13 +45,10 @@ class AccountView extends GetView<AccountController> {
                       () => CircleAvatar(
                         radius: 70,
                         backgroundColor: Colors.blueGrey,
-                        backgroundImage: controller.profileImg.value.isNotEmpty
-                            ? NetworkImage(controller.profileImg.value)
-                            : null,
-                        child: controller.profileImg.value.isEmpty
-                            ? const Icon(Icons.person,
-                                size: 70, color: Colors.white)
-                            : null,
+                        backgroundImage: controller.currentUser.value != null &&
+                                controller.currentUser.value!.image.isNotEmpty
+                            ? NetworkImage(controller.currentUser.value!.image)
+                            : AssetImage('assets/person.png'),
                       ),
                     ),
                     Positioned(
@@ -72,14 +69,18 @@ class AccountView extends GetView<AccountController> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  controller.username.value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Obx(
+                  () => Text(
+                    controller.currentUser.value != null
+                        ? controller.currentUser.value!.name
+                        : "User",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -193,11 +194,7 @@ class AccountView extends GetView<AccountController> {
                 child: Text('cancel'.tr),
               ),
               TextButton(
-                onPressed: () {
-                  controller.deleteUser();
-                  Get.back();
-                  controller.signOut();
-                },
+                onPressed: () {},
                 child: Text(
                   'delete'.tr,
                   style: TextStyle(color: Colors.red),

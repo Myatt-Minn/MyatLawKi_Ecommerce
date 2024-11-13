@@ -9,12 +9,13 @@ import 'package:myat_ecommerence/app/data/banner_model.dart';
 import 'package:myat_ecommerence/app/data/category_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 import 'package:myat_ecommerence/app/modules/notification/controllers/notification_controller.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxList<Product> productList = <Product>[].obs;
-  RxList<SizeOption> sizeList = <SizeOption>[].obs;
+
   RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late PageController pageController;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -36,25 +37,43 @@ class HomeController extends GetxController {
     fetchCategories();
   }
 
-  Future<void> getAllProducts() async {
-    // Retrieve all documents from the "products" collection
-    try {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection('new_arrivals').get();
+  Future<void> getAllProducts({int page = 1, int limit = 10}) async {
+    final url = '$baseUrl/api/v1/products?page=$page&limit=$limit';
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
-      // Iterate over each document and convert it to a ProductModel
-      for (var doc in querySnapshot.docs) {
-        productList.add(Product.fromMap(doc.data()));
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        // Check if 'data' key exists and is a list
+        if (jsonData['data'] is List) {
+          productList.value = (jsonData['data'] as List)
+              .map((data) => Product.fromJson(data))
+              .toList();
+        } else {
+          throw Exception('Invalid data format');
+        }
+      } else {
+        throw Exception('Failed to load banners');
       }
     } catch (e) {
-      Get.snackbar("GG", e.toString());
+      print('Error fetching banners: $e');
     }
   }
 
   Future<void> fetchBanners() async {
     final url = '$baseUrl/api/v1/banners';
-    // final authService = Tokenhandler();
-    // final token = await authService.getToken();
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
     try {
       final response = await http.get(
@@ -84,13 +103,13 @@ class HomeController extends GetxController {
     }
   }
 
-  void displayProductSizes(Product product) {
-    for (var colorOption in product.colors!) {
-      for (var sizeOption in colorOption.sizes) {
-        sizeList.add(sizeOption);
-      }
-    }
-  }
+  // void displayProductSizes(Product product) {
+  //   for (var colorOption in product.colors!) {
+  //     for (var sizeOption in colorOption.sizes) {
+  //       sizeList.add(sizeOption);
+  //     }
+  //   }
+  // }
 
 // Function to change the current page
   void changePage(int value) {
@@ -99,8 +118,8 @@ class HomeController extends GetxController {
 
   Future<void> fetchCategories() async {
     final url = '$baseUrl/api/v1/categories';
-    // final authService = Tokenhandler();
-    // final token = await authService.getToken();
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
     try {
       final response = await http.get(
@@ -123,10 +142,10 @@ class HomeController extends GetxController {
           throw Exception('Invalid data format');
         }
       } else {
-        throw Exception('Failed to load categories');
+        Get.snackbar("Fail", "Fail to load categories");
       }
     } catch (e) {
-      print('Error fetching categories: $e');
+      Get.snackbar("Error", "Error loading data");
     }
   }
 

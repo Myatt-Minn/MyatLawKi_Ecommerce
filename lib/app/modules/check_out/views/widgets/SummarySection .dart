@@ -20,9 +20,11 @@ class SummarySection extends StatelessWidget {
       children: [
         const SizedBox(height: 10),
         Obx(() {
+          final fee = checkOutController.selectedFee.value;
           return Column(
             children: [
-              _summaryRow('subtotal'.tr, '${cartController.totalAmount} MMK'),
+              _summaryRow(
+                  'subtotal'.tr, '${cartController.totalAmount.value} MMK'),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Row(
@@ -31,15 +33,19 @@ class SummarySection extends StatelessWidget {
                     Text('Delivery Fee',
                         style:
                             const TextStyle(fontSize: 16, color: Colors.white)),
-                    checkOutController.selectedFee.value != null
+                    fee != null && fee.fee.isNotEmpty
                         ? Text(
-                            "${checkOutController.selectedFee.value!.fee} MMK",
+                            "${fee.fee} MMK",
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           )
-                        : Text("0 MMK"),
+                        : Text("0 MMK",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
                   ],
                 ),
               ),
@@ -61,11 +67,11 @@ class SummarySection extends StatelessWidget {
                         label: 'cash_on_deli'.tr,
                         color: Colors.grey,
                         onPressed: () {
-                          checkOutController.setOrder()
-                              ? checkOutController.confirmPayment()
-                              : Get.snackbar(
-                                  "Empty TextBox", "fill_all_information".tr,
-                                  backgroundColor: Colors.red);
+                          // checkOutController.setOrder()
+                          //     ? checkOutController.confirmPayment()
+                          //     : Get.snackbar(
+                          //         "Empty TextBox", "fill_all_information".tr,
+                          //         backgroundColor: Colors.red);
                         },
                       ),
                     );

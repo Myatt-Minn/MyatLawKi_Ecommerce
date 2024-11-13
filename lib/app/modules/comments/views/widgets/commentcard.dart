@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:myat_ecommerence/app/data/comment_model.dart';
 import 'package:myat_ecommerence/app/modules/comments/controllers/comments_controller.dart';
 
@@ -19,7 +18,9 @@ class CmtCard extends GetView<CommentsController> {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(comment.userProfileUrl),
+              backgroundImage: comment.image.isNotEmpty
+                  ? NetworkImage(comment.image)
+                  : AssetImage('assets/person.png'),
               radius: 18,
             ),
             Expanded(
@@ -32,12 +33,12 @@ class CmtCard extends GetView<CommentsController> {
                     RichText(
                       text: TextSpan(children: [
                         TextSpan(
-                          text: comment.username,
+                          text: comment.poster,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.black),
                         ),
                         TextSpan(
-                          text: " ${comment.text}",
+                          text: " ${comment.body}",
                           style: const TextStyle(color: Colors.black),
                         ),
                       ]),
@@ -45,8 +46,8 @@ class CmtCard extends GetView<CommentsController> {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        DateFormat.yMMMd().format(comment.datePublished),
-                      ),
+                          // DateFormat.yMMMd().format(comment.createdAt),
+                          comment.createdAt),
                     ),
                   ],
                 ),

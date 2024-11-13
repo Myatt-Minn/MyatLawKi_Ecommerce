@@ -1,34 +1,35 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class AuthGateController extends GetxController {
   //TODO: Implement AuthGateController
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final Connectivity _connectivity = Connectivity();
   RxBool hasInternet = true.obs; // Observable for internet connection status
   var isLoading = false.obs;
   var selectedLanguage = 'ENG'.obs;
 
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
-
   @override
   void onInit() {
     super.onInit();
     // Listen for connectivity changes
-    // _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
-    //   if (result == ConnectivityResult.none) {
-    //     // No internet connection
-    //     hasInternet.value = false;
-    //     Get.offAllNamed('/no-internet');
-    //     isLoading.value = false; // Stop loading after the check
-    //   } else {
-    //     // Internet is available
-    //     hasInternet.value = true;
-    //     _checkAuthentication();
-    //   }
-    // });
+    // Listen for connectivity changes using the connectivity_plus stream
+    _connectivity.onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
+      // Check if the list contains any active network connection type
+      if (results.contains(ConnectivityResult.none)) {
+        hasInternet.value = false;
+        Get.offAllNamed('/no-internet');
+        isLoading.value = false;
+      } else {
+        hasInternet.value = true;
+        _checkAuthentication();
+      }
+    });
 
     // Initial check for internet and authentication
     _checkInternetConnection();
@@ -49,39 +50,57 @@ class AuthGateController extends GetxController {
     isLoading.value = false; // Stop loading after the check
   }
 
-  void _checkAuthentication() {
+  Future<void> _checkAuthentication() async {
     isLoading.value = true; // Show loading while checking authentication
-    authStateChanges.listen((User? user) {
-      if (user == null) {
-        Get.offNamed('/login');
-        isLoading.value = false; // Stop loading after the check
-      } else {
-        String userId = user.uid;
-        DocumentReference userDocRef =
-            FirebaseFirestore.instance.collection('users').doc(userId);
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
-        userDocRef.get().then((DocumentSnapshot userDoc) {
-          if (userDoc.exists) {
-            Map<String, dynamic>? userData =
-                userDoc.data() as Map<String, dynamic>?;
-            if (userData != null) {
-              if (userData['role'] == 'admin') {
-                Get.offAllNamed('/admin-panel');
-              } else if (userData['role'] == 'premium') {
-                Get.offAllNamed('/premium');
-              } else {
-                Get.offAllNamed('/navigation-screen');
-              }
-            }
+    if (token == null) {
+      // No token found, navigate to login
+      Get.offNamed('/login');
+      isLoading.value = false;
+      return;
+    }
+
+    try {
+      // Validate token and fetch user data
+      final url = '$baseUrl/api/v1/customer';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        if (jsonData['success'] == true) {
+          final userData = jsonData['data'];
+
+          // Check user role and navigate accordingly
+          if (userData['role'] == 'admin') {
+            Get.offAllNamed('/admin-panel');
+          } else if (userData['role'] == 'premium') {
+            Get.offAllNamed('/premium');
           } else {
-            print('User document does not exist');
-            Get.offNamed('/login');
+            Get.offAllNamed('/navigation-screen');
           }
-        }).catchError((error) {
-          print('Error getting user document: $error');
-        });
+        } else {
+          // Invalid response, navigate to login
+          Get.offNamed('/login');
+        }
+      } else {
+        // Token might be invalid or expired, navigate to login
+        Get.offNamed('/login');
       }
-    });
+    } catch (error) {
+      print('Error checking authentication: $error');
+      Get.offNamed('/login');
+    } finally {
+      isLoading.value = false; // Stop loading after the check
+    }
   }
 
   retryConnection() {

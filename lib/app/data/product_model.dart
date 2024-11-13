@@ -1,92 +1,131 @@
 class Product {
-  String? id;
-  String? name;
-  String? category;
-  String? description;
-  List<String>? images;
-  List<ColorOption>? colors;
-  String? brand;
+  final int id;
+  final String name;
+  final String description;
+  final String brand;
+  final String category;
+  final double price;
+  final List<dynamic> volumePrices; // Empty array, possibly used in future
+  final String status;
+  final List<String> images;
+  final int stock;
+  final List<Variation> variations;
+  final DateTime createdAt;
 
   Product({
-    this.id,
-    this.name,
-    this.category,
-    this.description,
-    this.images,
-    this.brand,
-    this.colors,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.brand,
+    required this.category,
+    required this.price,
+    required this.volumePrices,
+    required this.status,
+    required this.images,
+    required this.stock,
+    required this.variations,
+    required this.createdAt,
   });
 
-  // Convert Product to JSON
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      brand: json['brand'],
+      category: json['category'],
+      price: (json['price'] as num).toDouble(),
+      volumePrices: List<dynamic>.from(json['volume_prices']),
+      status: json['status'],
+      images: List<String>.from(json['images']),
+      stock: json['stock'],
+      variations: (json['variations'] as List)
+          .map((v) => Variation.fromJson(v))
+          .toList(),
+      createdAt: DateTime.parse(json['created_at']),
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'description': description,
-      'image': images,
       'brand': brand,
       'category': category,
-      'colors': colors?.map((colorOption) => colorOption.toMap()).toList(),
+      'price': price,
+      'volume_prices': volumePrices,
+      'status': status,
+      'images': images,
+      'stock': stock,
+      'variations': variations.map((v) => v.toJson()).toList(),
+      'created_at': createdAt.toIso8601String(),
     };
   }
+}
 
-  // From JSON constructor
-  factory Product.fromMap(Map<dynamic, dynamic> json) {
-    return Product(
+class Variation {
+  final int id;
+  final String name;
+  final String type;
+  final List<List<VariationOption>> options;
+
+  Variation({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.options,
+  });
+
+  factory Variation.fromJson(Map<String, dynamic> json) {
+    return Variation(
       id: json['id'],
-      name: json['name'] as String?,
-      colors: List<ColorOption>.from(
-          json['colors']?.map((x) => ColorOption.fromMap(x)) ?? []),
-      description: json['description'] as String?,
-      category: json['category'] as String?,
-      images: json['image'] != null ? List<String>.from(json['image']) : [],
-      brand: json['brand'] as String?,
+      name: json['name'],
+      type: json['type'],
+      options: (json['options'] as List)
+          .map((optionList) => (optionList as List)
+              .map((option) => VariationOption.fromJson(option))
+              .toList())
+          .toList(),
     );
   }
-}
 
-class ColorOption {
-  String color;
-  List<SizeOption> sizes;
-
-  ColorOption({required this.color, required this.sizes});
-
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
-      'color': color,
-      'sizes': sizes.map((size) => size.toMap()).toList(),
+      'id': id,
+      'name': name,
+      'type': type,
+      'options': options
+          .map((optionList) => optionList.map((o) => o.toJson()).toList())
+          .toList(),
     };
   }
-
-  factory ColorOption.fromMap(Map<String, dynamic> map) {
-    return ColorOption(
-      color: map['color'] ?? '',
-      sizes: List<SizeOption>.from(
-          map['sizes']?.map((x) => SizeOption.fromMap(x)) ?? []),
-    );
-  }
 }
 
-class SizeOption {
-  String size;
-  int quantity;
-  int price;
+class VariationOption {
+  final String name;
+  final int quantity;
+  final double price;
 
-  SizeOption({required this.size, required this.quantity, required this.price});
+  VariationOption({
+    required this.name,
+    required this.quantity,
+    required this.price,
+  });
 
-  Map<String, dynamic> toMap() {
+  factory VariationOption.fromJson(Map<String, dynamic> json) {
+    return VariationOption(
+      name: json['name'],
+      quantity: json['quantity'],
+      price: (json['price'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
-      'size': size,
+      'name': name,
       'quantity': quantity,
       'price': price,
     };
-  }
-
-  factory SizeOption.fromMap(Map<String, dynamic> map) {
-    return SizeOption(
-      size: map['size'] ?? "",
-      quantity: map['quantity'] ?? 0,
-      price: map['price'] ?? 0,
-    );
   }
 }

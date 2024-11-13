@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/sendNotificationHandler.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class SignupController extends GetxController {
@@ -28,10 +27,6 @@ class SignupController extends GetxController {
   var emailError = ''.obs;
   var passwordError = ''.obs;
   var confirmPasswordError = ''.obs;
-
-  // Firebase authentication and Firestore instance
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // Toggles for password visibility
   void togglePasswordVisibility() {
@@ -83,49 +78,23 @@ class SignupController extends GetxController {
     } else {
       confirmPasswordError.value = '';
     }
+    if (agreeTerms.value != true) {
+      Get.snackbar("Error", "Please accept our terms and conditions");
+      isValid = false;
+    } else {
+      confirmPasswordError.value = '';
+    }
 
     return isValid;
   }
 
-  // Sign up function
-  // Future<void> signUp() async {
-  //   if (!validate()) return; // Do not proceed if validation fails
-
-  //   try {
-  //     isLoading.value = true;
-  //     // Firebase Auth sign up
-  //     UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-  //       email: phoneController.text.trim(),
-  //       password: passwordController.text.trim(),
-  //     );
-
-  //     String uid = userCredential.user!.uid;
-
-  //     // Save user info to Firestore
-  //     await firestore.collection('users').doc(uid).set({
-  //       'uid': uid,
-  //       'name': nameController.text.trim(),
-  //       'email': phoneController.text.trim(),
-  //       'profilepic': "", // Default profile picture URL
-  //       "role": "user",
-  //       "phoneNumber": "",
-  //     });
-  //     isLoading.value = false;
-  //     // Show success message
-  //     Get.snackbar('Success', 'Account created successfully!',
-  //         snackPosition: SnackPosition.TOP,
-  //         backgroundColor: ConstsConfig.primarycolor,
-  //         colorText: Colors.white);
-  //   } catch (e) {
-  //     // Handle sign up error
-  //     Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
-  //   }
-  // }
   // Login function
   Future<void> signUp() async {
     if (validate()) {
       try {
         final url = '$baseUrl/api/v1/register';
+        var fcmToken =
+            await SendNotificationHandler.getDeviceTokenToSendNotification();
         final response = await http.post(
           Uri.parse(url),
           headers: {'Content-Type': 'application/json'},
@@ -135,7 +104,7 @@ class SignupController extends GetxController {
             'phone': phoneController.text,
             'password': passwordController.text,
             'password_confirmation': confirmPasswordController.text,
-            'fcm_token_key': 'erty'
+            'fcm_token_key': fcmToken,
           }),
         );
 
@@ -149,7 +118,7 @@ class SignupController extends GetxController {
           await authService.saveToken(token);
 
           // Navigate to the home page or perform other actions after login
-          Get.offAllNamed('/login');
+          Get.offAllNamed('/navigation-screen');
         } else {
           print("Response status code: ${response.statusCode}");
           print("Response body: ${response.body}");

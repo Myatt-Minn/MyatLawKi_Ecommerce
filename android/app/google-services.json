@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "638749066043",
-    "project_id": "taxiproj-b2f9d",
-    "storage_bucket": "taxiproj-b2f9d.appspot.com"
+    "project_number": "191405085984",
+    "project_id": "myatecommerce",
+    "storage_bucket": "myatecommerce.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:638749066043:android:b769f487592778efcced1e",
+        "mobilesdk_app_id": "1:191405085984:android:c8fb393753112ffcbcb345",
         "android_client_info": {
           "package_name": "app.com.mm.myat_ecommerence"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCOiQX5IpdEyrZA4x7HG_N7fbKyRQAp5nE"
+          "current_key": "AIzaSyA5E4uEp0E_7svv-G4jl7OHAuxFNXg33wY"
         }
       ],
       "services": {

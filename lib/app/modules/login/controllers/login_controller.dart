@@ -1,6 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class LoginController extends GetxController {
   // Controllers for TextFields
@@ -14,65 +18,44 @@ class LoginController extends GetxController {
   var passwordError = ''.obs; // Validation error for password
   var generalError = ''.obs; // General error message for login failure
 
-  // Firebase Auth instance
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-// Future<void> login(String email, String password) async {
-//   final url = 'https://your-api-url/api/v1/login';
-//   final response = await http.post(
-//     Uri.parse(url),
-//     headers: {'Content-Type': 'application/json'},
-//     body: json.encode({'email': email, 'password': password}),
-//   );
+  Future<void> login() async {
+    if (validateInput()) {
+      try {
+        final url = '$baseUrl/api/v1/login';
+        final response = await http.post(
+          Uri.parse(url),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'emailOrPhone': phoneController.text,
+            'password': passwordController.text,
+            'fcm_token_key': phoneController.text,
+          }),
+        );
 
-//   if (response.statusCode == 200) {
-//     final jsonData = json.decode(response.body);
-//     final token = jsonData['token']; // Adjust according to your API response
+        if (response.statusCode == 200) {
+          final jsonData = json.decode(response.body);
+          final token =
+              jsonData['token']; // Adjust according to your API response
 
-//     // Save the token in SharedPreferences
-//     final authService = AuthService();
-//     await authService.saveToken(token);
+          // Save the token in SharedPreferences
+          final authService = Tokenhandler();
+          await authService.saveToken(token);
 
-//     // Navigate to the home page or perform other actions after login
-//   } else {
-//     throw Exception('Failed to login');
-//   }
-// }
-
-  // Login function
-  Future<void> loginUser() async {
-    // Clear any previous error messages
-    emailError.value = '';
-    passwordError.value = '';
-    generalError.value = '';
-
-    // Validate input
-    if (!validateInput()) {
-      return;
-    }
-
-    // Start loading
-    isLoading.value = true;
-
-    try {
-      // Attempt to sign in with email and password
-      await _auth.signInWithEmailAndPassword(
-        email: phoneController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      // Handle login errors
-      if (e.code == 'user-not-found') {
-        generalError.value = 'No user found with this email.';
-      } else if (e.code == 'wrong-password') {
-        generalError.value = 'Incorrect password.';
-      } else {
-        generalError.value = 'User not Signed Up/Incorrect Password';
+          // Navigate to the home page or perform other actions after login
+          Get.offAllNamed('/navigation-screen');
+        } else {
+          print("Response status code: ${response.statusCode}");
+          print("Response body: ${response.body}");
+          Get.snackbar('Error', "Fail to signup",
+              snackPosition: SnackPosition.BOTTOM);
+        }
+      } catch (e) {
+        Get.snackbar('Error', e.toString(),
+            snackPosition: SnackPosition.BOTTOM);
       }
-    } catch (e) {
-      generalError.value = 'An unexpected error occurred. Please try again.';
-    } finally {
-      // Stop loading
-      isLoading.value = false;
+    } else {
+      Get.snackbar('Error', "Please fill all the fields",
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -84,7 +67,7 @@ class LoginController extends GetxController {
     if (phoneController.text.trim().isEmpty) {
       emailError.value = 'Please enter your phone number.';
       isValid = false;
-    } else if (!GetUtils.isEmail(phoneController.text.trim())) {
+    } else if (!GetUtils.isNum(phoneController.text.trim())) {
       emailError.value = 'Please enter a valid phone number.';
       isValid = false;
     }

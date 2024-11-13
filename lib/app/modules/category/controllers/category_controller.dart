@@ -7,6 +7,7 @@ import 'package:myat_ecommerence/app/data/brand_model.dart';
 import 'package:myat_ecommerence/app/data/category_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class CategoryController extends GetxController {
   var selectedCategory = 'Categories'.obs; // Observable for category selection
@@ -20,7 +21,7 @@ class CategoryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchProducts(); // Fetch products when the controller initializes
+    // fetchProducts();
     getProductsByBrand('Nike');
     fetchBrands();
     fetchCategories();
@@ -30,8 +31,8 @@ class CategoryController extends GetxController {
 
   Future<void> fetchBrands() async {
     final url = '$baseUrl/api/v1/brands';
-    // final authService = Tokenhandler();
-    // final token = await authService.getToken();
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
     try {
       final response = await http.get(
@@ -65,8 +66,8 @@ class CategoryController extends GetxController {
 
   Future<void> fetchCategories() async {
     final url = '$baseUrl/api/v1/categories';
-    // final authService = Tokenhandler();
-    // final token = await authService.getToken();
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
     try {
       final response = await http.get(
@@ -96,25 +97,6 @@ class CategoryController extends GetxController {
     }
   }
 
-  // Fetch products from Firestore where the 'category' field matches the provided category value
-  Future<void> fetchProducts({String category = 'shoe'}) async {
-    try {
-      // Query the 'products' collection where the 'category' field matches the provided value
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection(
-              'new_arrivals') // Assuming the collection is named 'products'
-          .where('category', isEqualTo: category) // Filter by category field
-          .get();
-
-      // Map Firestore data to the Product model
-      productList.value = snapshot.docs.map((doc) {
-        return Product.fromMap(doc.data() as Map<String, dynamic>);
-      }).toList();
-    } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
-    }
-  }
-
   Future<void> getProductsByBrand(String brand) async {
     try {
       // Query Firestore to retrieve products where 'brand' matches the provided brand
@@ -125,7 +107,7 @@ class CategoryController extends GetxController {
 
       // Map Firestore documents to Product objects and update the RxList
       productsByBrand.value = querySnapshot.docs.map((doc) {
-        return Product.fromMap(doc.data() as Map<String, dynamic>);
+        return Product.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
     } catch (e) {
       Get.snackbar('Error', 'failed_to_fetch_data'.tr);

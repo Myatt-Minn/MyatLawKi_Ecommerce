@@ -1,32 +1,32 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
+import 'package:myat_ecommerence/app/data/user_model.dart';
 import 'package:myat_ecommerence/app/modules/account/controllers/account_controller.dart';
+import 'package:path/path.dart';
 
 class EditProfileController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
-
-  // Reactive variables for the profile fields
-  var fullName = ''.obs;
-  var phoneNumber = ''.obs;
-
+  var currentUser = Rxn<UserModel>();
   var isLoading = false.obs;
   var isProfileImageChooseSuccess = false.obs;
-  var profileImg = "".obs;
+  File? profileImage;
+  var prof = ''.obs;
 
-  late File file;
   // Text controllers for the TextFields
   late TextEditingController fullNameController;
   late TextEditingController phoneController;
+  late TextEditingController emailController;
 
   // Show error message if validation fails
   var showError = false.obs;
+
   @override
   void onReady() {
     super.onReady();
@@ -38,26 +38,39 @@ class EditProfileController extends GetxController {
     super.onInit();
     fullNameController = TextEditingController();
     phoneController = TextEditingController();
-
+    emailController = TextEditingController();
     fetchUserData(); // Fetch user data when the controller initializes
   }
 
-  // Fetch current user data from Firestore
-  void fetchUserData() async {
-    try {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(userId).get();
-      if (userDoc.exists) {
-        fullName.value = userDoc['name'] ?? '';
-        phoneNumber.value = userDoc['phoneNumber'] ?? ''; // Fetch phone number
-        profileImg.value = userDoc['profilepic'] ?? '';
+  // Fetch current user data from API
+  Future<void> fetchUserData() async {
+    final url = '$baseUrl/api/v1/customer';
+    final token = await Tokenhandler().getToken();
 
-        // Set values in TextControllers for initial state
-        fullNameController.text = fullName.value;
-        phoneController.text = phoneNumber.value; // Set phone number
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] == true) {
+          currentUser.value = UserModel.fromJson(jsonData['data']);
+          emailController.text = currentUser.value!.email;
+          fullNameController.text = currentUser.value!.name;
+          phoneController.text = currentUser.value!.phone;
+        } else {
+          Get.snackbar("Error", "Error fetching data");
+        }
+      } else {
+        Get.snackbar("Fail", "Error fetching data");
       }
     } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
+      print('Error fetching user data: $e');
     }
   }
 
@@ -72,62 +85,66 @@ class EditProfileController extends GetxController {
     return controller.text.isEmpty;
   }
 
-  // Update user profile data in Firestore
-  void updateUserProfile() async {
+  // Function to choose an image from File Picker
+  Future<void> chooseImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      profileImage = File(result.files.single.path!);
+      isProfileImageChooseSuccess.value = true;
+    } else {
+      Get.snackbar("cancel".tr, "No Image");
+    }
+  }
+
+  // Function to update user profile
+  Future<void> updateUserProfile() async {
     if (!validateFields()) {
       showError.value = true;
       return;
     }
 
+    final url = '$baseUrl/api/v1/customer?_method=PUT';
+    final token = await Tokenhandler().getToken();
+
     try {
-      isLoading.value = true;
-      await uploadImage(file);
-      await _firestore.collection('users').doc(userId).set({
-        'name': fullNameController.text,
-        'phoneNumber': phoneController.text, // Add phone number
-        'profilepic': profileImg.value,
-      }, SetOptions(merge: true)); // Merge to avoid overwriting
-      Get.find<AccountController>().fetchUserData();
-      Get.back();
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers['Authorization'] = 'Bearer $token';
 
-      isLoading.value = false;
-    } catch (e) {
-      Get.snackbar('Error', 'fill_all_information'.tr);
-      isLoading.value = false;
-    }
-  }
+      // Add text fields
+      request.fields['name'] = fullNameController.text;
+      request.fields['phone'] = phoneController.text;
+      request.fields['email'] = emailController.text;
 
-  // Function to choose an image from File Picker
-  Future<void> chooseImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      file = File(result.files.single.path!);
-      isProfileImageChooseSuccess.value = true;
-    } else {
-      Get.snackbar("Cancel", "No Image");
-    }
-  }
+      // Add image file if selected
+      if (profileImage != null) {
+        final fileName = basename(profileImage!.path);
+        request.files.add(await http.MultipartFile.fromPath(
+          'image',
+          profileImage!.path,
+          filename: fileName,
+        ));
+      }
 
-  Future<void> uploadImage(File imageFile) async {
-    try {
-      if (isProfileImageChooseSuccess.value) {
-        FirebaseStorage storage = FirebaseStorage.instance;
-        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-        Reference storageRef = storage.ref().child('profile_images/$fileName');
+      final response = await request.send();
 
-        UploadTask uploadTask = storageRef.putFile(imageFile);
-        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        final jsonData = json.decode(responseBody);
 
-        String imageUrl = await taskSnapshot.ref.getDownloadURL();
-        profileImg.value = imageUrl;
+        if (jsonData['success'] == true) {
+          currentUser.value = UserModel.fromJson(jsonData['data']);
+          Get.snackbar("Success", "Profile updated successfully");
+          Get.find<AccountController>().fetchUserData();
+        } else {
+          Get.snackbar("Error", "Failed to update profile");
+        }
       } else {
-        Get.snackbar('Image picking failed', 'Sorry, the image is not picked!',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white);
+        print('Failed to update profile. Status code: ${response.statusCode}');
+        Get.snackbar("Update Failed", "Could not update profile data");
       }
     } catch (e) {
-      print('Error uploading image: $e');
+      print('Error updating profile: $e');
+      Get.snackbar("Error", "An error occurred while updating profile");
     }
   }
 }

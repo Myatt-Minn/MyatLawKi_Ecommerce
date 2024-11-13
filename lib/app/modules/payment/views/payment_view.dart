@@ -88,7 +88,8 @@ class PaymentView extends GetView<PaymentController> {
             const SizedBox(height: 16), // Added space before the confirm button
             Obx(() {
               return ElevatedButton(
-                onPressed: () => controller.confirmPayment(),
+                // onPressed: () => controller.confirmPayment(),
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
                   backgroundColor: ConstsConfig.secondarycolor,

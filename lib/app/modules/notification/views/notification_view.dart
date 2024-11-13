@@ -106,7 +106,7 @@ class NotificationView extends GetView<NotificationController> {
                               icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
                                 // Call the delete function here
-                                controller.deleteNotification(notification);
+                                // controller.deleteNotification(notification);
                               },
                             ),
                     ),

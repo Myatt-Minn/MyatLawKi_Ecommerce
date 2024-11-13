@@ -36,6 +36,7 @@ class MyTranslations extends Translations {
           'fill_all_information': 'Please fill all the informations first',
           'continue_shopping': 'Continue Shopping',
           'payment_success': 'Payment Success',
+          'succeed': 'Success',
           'payment_failed': 'Payment Failed',
           'failed_to_fetch_data': 'Failed to fetch/get data',
           'blog': 'Blog',
@@ -115,6 +116,8 @@ class MyTranslations extends Translations {
           'no_reviews': "There is no reviews yet",
           'details': "Product Details",
           'color': 'Color',
+          'stock_error': 'Stock Error',
+          'added_to_cart': "Product added to cart",
           'available_sizes': "Available Sizes",
           'size': 'Size',
           'price': 'Price',
@@ -159,10 +162,12 @@ class MyTranslations extends Translations {
           'total_amount': 'စုစုပေါင်းကျသင့်ငွေ',
           'remove_from_cart': 'စျေးဝယ်ထဲမှ ဖယ်ရှားရန်',
           'empty_cart': 'သင်၏စျေးဝယ်ထဲတွင် ပစ္စည်းမရှိပါ',
+          'added_to_cart': 'ဈေးခြင်းထဲသို့ထည့်ရောက်ရှိပါသည်',
           'continue_shopping': 'စျေးဝယ်လွယ်ကူရန်',
           'payment_success': 'ငွေပေးချေမှုအောင်မြင်ပါသည်',
           'payment_failed': 'ငွေပေးချေမှု မအောင်မြင်ပါ',
           'blog': 'ဘလော့',
+          'succeed': 'အောင်မြင်သည်',
           'read_more': 'နောက်ထပ်ဖတ်ရန်',
           'back_to_home': 'မူလစာမျက်နှာသို့ ပြန်သွားမည်',
           'search': 'ရှာဖွေပါ',
@@ -251,7 +256,8 @@ class MyTranslations extends Translations {
           'confirm': 'အတည်ပြုမည်',
           'upload_screenshot':
               'ငွေပေးချေမှုဆိုင်ရာ မျက်နှာပြင်ဓာတ်ပုံကို အပ်လုဒ်လုပ်ပါ',
-          'notifications': 'အသိပေးချက်များ'
+          'notifications': 'အသိပေးချက်များ',
+          'stock_error': 'ပစ္စည်းပြသနာ',
         }
       };
 }

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:myat_ecommerence/app/modules/comments/bindings/comments_binding.dart';
+import 'package:myat_ecommerence/app/modules/comments/views/comments_view.dart';
 
 import '../modules/Cart/bindings/cart_binding.dart';
 import '../modules/Cart/views/cart_view.dart';
@@ -169,11 +171,11 @@ class AppPages {
       page: () => const AllCategoryProductsView(),
       binding: AllCategoryProductsBinding(),
     ),
-    // GetPage(
-    //   name: _Paths.COMMENTS,
-    //   page: () => const CommentsView(),
-    //   binding: CommentsBinding(),
-    // ),
+    GetPage(
+      name: _Paths.COMMENTS,
+      page: () => const CommentsView(),
+      binding: CommentsBinding(),
+    ),
     GetPage(
       name: _Paths.WISHLIST,
       page: () => const WishlistView(),

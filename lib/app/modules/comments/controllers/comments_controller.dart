@@ -1,121 +1,100 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/comment_model.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/post_model.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
+import 'package:myat_ecommerence/app/data/user_model.dart';
+import 'package:myat_ecommerence/app/modules/Feeds/controllers/feeds_controller.dart';
 
 class CommentsController extends GetxController {
   //TODO: Implement CommentsController
   RxList<CommentModel> comments = RxList<CommentModel>();
   Post? post;
   TextEditingController commentController = TextEditingController();
-  final userId = FirebaseAuth.instance.currentUser!.uid;
-  var username = ''.obs;
-  var profileImg = ''.obs;
   var isProfileImageChooseSuccess = false.obs;
   RxInt commentLength = 0.obs;
+  var currentUser = Rxn<UserModel>();
 
   @override
   void onInit() {
     super.onInit();
     post = Get.arguments;
-    getCmtLen(post!.id.toString());
-    // fetchComments();
+    comments.value = post!.comments;
+    commentLength.value = comments.length;
+
     fetchUserData();
   }
 
-  void getCmtLen(String postId) async {
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection("posts")
-          .doc(postId)
-          .collection("comments")
-          .get();
-
-      commentLength.value = snapshot.docs.length;
-    } catch (err) {
-      Get.snackbar("Error", "failed_to_fetch_data".tr);
-    }
-  }
-
-  // Future<void> fetchComments() async {
-  //   try {
-  //     final snapshot = await FirebaseFirestore.instance
-  //         .collection("posts")
-  //         .doc(post!.id)
-  //         .collection("comments")
-  //         .orderBy('datePublished', descending: true)
-  //         .get();
-  //     comments.value = snapshot.docs.map((doc) {
-  //       // Check if the document data is null
-  //       final data = doc.data() as Map<String, dynamic>?;
-  //       if (data == null) {
-  //         throw Exception('Null data in document');
-  //       }
-  //       return CommentModel.fromMap(data);
-  //     }).toList();
-  //     getCmtLen(post!.postId);
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
-
-  // Function to retrieve the profile picture from Firestore
   Future<void> fetchUserData() async {
-    try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-      if (userDoc.exists && userDoc.data() != null) {
-        // Assuming that the profile pic URL is stored in the 'profilepic' field
-        profileImg.value = userDoc['profilepic'] ??
-            ''; // Use an empty string if the field is null
-        username.value = userDoc['name'];
+    final url = '$baseUrl/api/v1/customer';
+    final token = await Tokenhandler()
+        .getToken(); // Make sure to replace this with your method for retrieving the token.
 
-        isProfileImageChooseSuccess.value = true;
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] == true) {
+          currentUser.value = UserModel.fromJson(jsonData['data']);
+        } else {
+          Get.snackbar("Error", "Error fetching data");
+        }
       } else {
-        Get.snackbar('Error', 'User document does not exist.');
+        Get.snackbar("Fail", "Error fetching data");
       }
     } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
+      print('Error fetching user data: $e');
+      return;
     }
   }
 
-  // Future<void> addComment(
-  //     String text, String uid, String username, String userprofile) async {
-  //   try {
-  //     if (text.isNotEmpty) {
-  //       final String cmtId = const Uuid().v1();
+  Future<void> addComment(int postId, String commentText) async {
+    final url = '$baseUrl/api/v1/posts/$postId/comment';
+    final authService =
+        Tokenhandler(); // Assuming you have a token handler class
+    final token =
+        await authService.getToken(); // Retrieve the saved bearer token
 
-  //       // Create a CommentModel instance
-  //       CommentModel comment = CommentModel(
-  //         commentid: cmtId,
-  //         postId: post!.postId,
-  //         uid: uid,
-  //         username: username,
-  //         userProfileUrl: userprofile,
-  //         text: text,
-  //         datePublished: DateTime.now(),
-  //       );
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'user_id': currentUser.value!.id,
+          'post_id': postId,
+          'body': commentText, // Replace 'comment' key based on API requirement
+        }),
+      );
 
-  //       // Use CommentModel's toMap() method to convert it to a Map<String, dynamic>
-  //       await FirebaseFirestore.instance
-  //           .collection("posts")
-  //           .doc(post!.postId)
-  //           .collection("comments")
-  //           .doc(cmtId)
-  //           .set(comment.toMap());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.snackbar("Submitted", 'လုပ်ဆောင်မှုအောင်မြင်ပါသည်');
+        // getAllComments(postId);
+        final responseData = json.decode(response.body);
 
-  //       Get.snackbar("Success", "Comment Added Successfully");
-
-  //       fetchComments();
-  //     } else {
-  //       Get.snackbar("Error", "Please enter a comment.");
-  //     }
-  //   } catch (err) {
-  //     Get.snackbar("Error", "Failed to add comment");
-  //   }
-  // }
+        // Convert responseData to CommentModel and add to comments
+        final newComment = CommentModel.fromMap(responseData['data']);
+        comments.add(newComment);
+        Get.find<FeedsController>().fetchAllPosts();
+      } else {
+        print('Failed to add comment. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error adding comment: $e');
+    }
+  }
 }

@@ -31,10 +31,9 @@ class WishlistView extends GetView<WishlistController> {
                 itemCount: controller.products.length,
                 itemBuilder: (context, index) {
                   Product product = controller.products[index];
-                  controller.displayProductSizes(product);
+                  // controller.displayProductSizes(product);
                   return SavedProductCard(
                     product: product,
-                    sizeOptions: controller.sizeList,
                   );
                 },
               );

@@ -6,7 +6,7 @@ class AllCategoryProductsController extends GetxController {
   //TODO: Implement AllCategoryProductsController
 
   RxList<Product> products = <Product>[].obs; // List of all products
-  RxList<SizeOption> sizeList = <SizeOption>[].obs; // List of all products
+
   RxList<Product> filteredProducts =
       <Product>[].obs; // Filtered list based on search
   RxString searchQuery = ''.obs;
@@ -16,48 +16,16 @@ class AllCategoryProductsController extends GetxController {
   void onInit() {
     super.onInit();
     categorygg!.value = Get.arguments;
-    fetchProducts(category: categorygg!.value);
+    // fetchProducts(category: categorygg!.value);
   }
 
-  Future<void> fetchProducts({required String category}) async {
-    try {
-      isLoading.value = true;
-
-      // Query Firestore to get products based on the 'category' field
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('new_arrivals')
-          .where('category', isEqualTo: category)
-          .get();
-
-      // Map Firestore data to the Product model with null checks
-      products.value = snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>?;
-        if (data == null) {
-          throw Exception('Null data in document');
-        }
-        return Product.fromMap(data);
-      }).toList();
-
-      // Update the filteredProducts list
-      filteredProducts.assignAll(products);
-    } catch (e, stacktrace) {
-      print('Error: $e');
-      print('Stacktrace: $stacktrace');
-
-      // Display error in the UI
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  void displayProductSizes(Product product) {
-    for (var colorOption in product.colors!) {
-      for (var sizeOption in colorOption.sizes) {
-        sizeList.add(sizeOption);
-      }
-    }
-  }
+  // void displayProductSizes(Product product) {
+  //   for (var colorOption in product.colors!) {
+  //     for (var sizeOption in colorOption.sizes) {
+  //       sizeList.add(sizeOption);
+  //     }
+  //   }
+  // }
 
   void searchProducts(String query) {
     searchQuery.value = query;
