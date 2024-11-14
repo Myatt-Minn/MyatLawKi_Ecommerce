@@ -45,9 +45,6 @@ class NavigationScreenController extends GetxController {
   void disposeController(int index) {
     // Delete the controller from memory when navigating away
     switch (index) {
-      case 0:
-        Get.delete<FeedsController>();
-        break;
       case 1:
         Get.delete<HomeController>();
         Get.delete<NotificationController>();

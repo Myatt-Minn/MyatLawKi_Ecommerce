@@ -11,12 +11,6 @@ class WishlistController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final RxMap<String, RxBool> savedStatusMap = <String, RxBool>{}.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    // fetchproducts();
-  }
-
   // Future<void> fetchproducts() async {
   //   try {
   //     final QuerySnapshot snapshot = await FirebaseFirestore.instance

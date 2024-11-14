@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
 
@@ -35,8 +34,8 @@ class AllCategoryProductsController extends GetxController {
       filteredProducts.assignAll(
         products
             .where((product) =>
-                product.name!.toLowerCase().contains(query.toLowerCase()) ||
-                product.brand!.toLowerCase().contains(query.toLowerCase()))
+                product.name.toLowerCase().contains(query.toLowerCase()) ||
+                product.brand.toLowerCase().contains(query.toLowerCase()))
             .toList(),
       );
     }

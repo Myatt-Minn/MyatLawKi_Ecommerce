@@ -1,7 +1,7 @@
 class CartItem {
   final String productId;
   final String name;
-  final int price;
+  final double price;
   int quantity;
   final String size;
   final String color;

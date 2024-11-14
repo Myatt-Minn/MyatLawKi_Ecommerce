@@ -3,18 +3,13 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:myat_ecommerence/app/data/cart_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
-import 'package:myat_ecommerence/app/data/order_model.dart';
 import 'package:myat_ecommerence/app/data/payment_model.dart';
-import 'package:myat_ecommerence/app/data/product_model.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
-import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
 class PaymentController extends GetxController {
   // Rx variables for payment options

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
 
@@ -8,12 +7,6 @@ class AllProductsController extends GetxController {
       <Product>[].obs; // Filtered list based on search
   RxString searchQuery = ''.obs;
   RxBool isLoading = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    // fetchProducts();
-  }
 
   // void displayProductSizes(Product product) {
   //   for (var colorOption in product.colors!) {
@@ -31,8 +24,8 @@ class AllProductsController extends GetxController {
       filteredProducts.assignAll(
         products
             .where((product) =>
-                product.name!.toLowerCase().contains(query.toLowerCase()) ||
-                product.brand!.toLowerCase().contains(query.toLowerCase()))
+                product.name.toLowerCase().contains(query.toLowerCase()) ||
+                product.brand.toLowerCase().contains(query.toLowerCase()))
             .toList(),
       );
     }

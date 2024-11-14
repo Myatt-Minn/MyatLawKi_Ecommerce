@@ -8,7 +8,7 @@ class CartController extends GetxController {
   var isLoading = false.obs;
 
   var cartItems = <CartItem>[].obs;
-  var totalAmount = 0.obs;
+  var totalAmount = 0.0.obs;
 
   @override
   void onInit() {
@@ -46,8 +46,8 @@ class CartController extends GetxController {
 
   // Update the total amount
   void updateTotalAmount() {
-    totalAmount.value = cartItems.fold<int>(0, (sum, item) {
-      int itemTotal = (item.price * item.quantity);
+    totalAmount.value = cartItems.fold<double>(0, (sum, item) {
+      double itemTotal = (item.price * item.quantity);
       return sum + itemTotal;
     });
   }

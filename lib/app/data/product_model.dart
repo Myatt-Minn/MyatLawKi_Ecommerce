@@ -5,7 +5,7 @@ class Product {
   final String brand;
   final String category;
   final double price;
-  final List<dynamic> volumePrices; // Empty array, possibly used in future
+  final List<VolumePrice> volumePrices;
   final String status;
   final List<String> images;
   final int stock;
@@ -35,7 +35,9 @@ class Product {
       brand: json['brand'],
       category: json['category'],
       price: (json['price'] as num).toDouble(),
-      volumePrices: List<dynamic>.from(json['volume_prices']),
+      volumePrices: (json['volume_prices'] as List)
+          .map((vp) => VolumePrice.fromJson(vp))
+          .toList(),
       status: json['status'],
       images: List<String>.from(json['images']),
       stock: json['stock'],
@@ -54,7 +56,7 @@ class Product {
       'brand': brand,
       'category': category,
       'price': price,
-      'volume_prices': volumePrices,
+      'volume_prices': volumePrices.map((vp) => vp.toJson()).toList(),
       'status': status,
       'images': images,
       'stock': stock,
@@ -64,11 +66,55 @@ class Product {
   }
 }
 
+class VolumePrice {
+  final int id;
+  final int productId;
+  final int quantity;
+  final String discountPrice;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int productVariationId;
+
+  VolumePrice({
+    required this.id,
+    required this.productId,
+    required this.quantity,
+    required this.discountPrice,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.productVariationId,
+  });
+
+  factory VolumePrice.fromJson(Map<String, dynamic> json) {
+    return VolumePrice(
+      id: json['id'],
+      productId: json['product_id'],
+      quantity: json['quantity'],
+      discountPrice: json['discount_price'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      productVariationId: json['product_variation_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'product_id': productId,
+      'quantity': quantity,
+      'discount_price': discountPrice,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+      'product_variation_id': productVariationId,
+    };
+  }
+}
+
 class Variation {
   final int id;
   final String name;
   final String type;
-  final List<List<VariationOption>> options;
+  final List<VariationOption> options;
 
   Variation({
     required this.id,
@@ -83,9 +129,7 @@ class Variation {
       name: json['name'],
       type: json['type'],
       options: (json['options'] as List)
-          .map((optionList) => (optionList as List)
-              .map((option) => VariationOption.fromJson(option))
-              .toList())
+          .map((option) => VariationOption.fromJson(option))
           .toList(),
     );
   }
@@ -95,9 +139,7 @@ class Variation {
       'id': id,
       'name': name,
       'type': type,
-      'options': options
-          .map((optionList) => optionList.map((o) => o.toJson()).toList())
-          .toList(),
+      'options': options.map((o) => o.toJson()).toList(),
     };
   }
 }

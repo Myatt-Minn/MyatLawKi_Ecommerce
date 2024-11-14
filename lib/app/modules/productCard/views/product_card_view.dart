@@ -94,19 +94,6 @@ class ProductCardView extends GetView<ProductCardController> {
                     style: const TextStyle(color: Colors.green),
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${product.variations.isNotEmpty && product.variations[0].options.isNotEmpty ? product.variations[0].options[0][0].price.toString() : 'N/A'} MMK",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

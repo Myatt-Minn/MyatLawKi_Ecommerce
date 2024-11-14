@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:myat_ecommerence/app/data/order_model.dart';
@@ -9,12 +7,6 @@ class OrderHistoryController extends GetxController {
 
   var orderList = <OrderItem>[].obs; // Reactive list to store orders
   var isLoading = true.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    // fetchOrderHistory(); // Fetch data when the controller is initialized
-  }
 
   // Future<void> fetchOrderHistory() async {
   //   try {

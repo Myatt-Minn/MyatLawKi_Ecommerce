@@ -1,13 +1,9 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:myat_ecommerence/app/data/cart_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
-import 'package:myat_ecommerence/app/data/product_model.dart';
 import 'package:myat_ecommerence/app/data/region_deli_model.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 import 'package:myat_ecommerence/app/data/user_model.dart';
@@ -60,7 +56,7 @@ class CheckOutController extends GetxController {
     }
   }
 
-  int get finaltotalcost {
+  double get finaltotalcost {
     if (selectedFee.value != null) {
       return Get.find<CartController>().totalAmount.value +
           int.parse(selectedFee.value!.fee);

@@ -126,10 +126,8 @@ class CategoryController extends GetxController {
     } else {
       return productList
           .where((product) =>
-              product.name!.toLowerCase().contains(searchText.toLowerCase()) ||
-              product.category!
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
+              product.name.toLowerCase().contains(searchText.toLowerCase()) ||
+              product.category.toLowerCase().contains(searchText.toLowerCase()))
           .toList();
     }
   }
@@ -141,8 +139,8 @@ class CategoryController extends GetxController {
     } else {
       return productsByBrand
           .where((product) =>
-              product.name!.toLowerCase().contains(searchText.toLowerCase()) ||
-              product.brand!.toLowerCase().contains(searchText.toLowerCase()))
+              product.name.toLowerCase().contains(searchText.toLowerCase()) ||
+              product.brand.toLowerCase().contains(searchText.toLowerCase()))
           .toList();
     }
   }

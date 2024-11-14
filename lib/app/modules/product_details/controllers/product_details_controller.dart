@@ -1,164 +1,134 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myat_ecommerence/app/data/cart_model.dart';
+import 'package:myat_ecommerence/app/data/product_model.dart';
+import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
 class ProductDetailsController extends GetxController {
-//   var product = Rxn<Product>();
+  Rxn<Product> product = Rxn<Product>();
+  RxInt selectedImageIndex = 0.obs;
+  RxString selectedColor = ''.obs;
+  var selectedSizeIndex = 0.obs;
+  RxInt quantity = 0.obs;
+  var selectedSize = ''.obs;
+  var selectedquantity = 1.obs;
+  var price = 0.0.obs;
 
-//   var selectedSize = "".obs;
+  @override
+  void onInit() {
+    super.onInit();
+    product.value = Get.arguments;
+    selectedColor = product.value!.variations.first.options.first.name.obs;
+  }
 
-//   var quantity = 1.obs;
-//   var selectedImageIndex = 0.obs;
-//   var selectedColor = ''.obs; // Track selected color
+  void changeImage(int index) {
+    selectedImageIndex.value =
+        index; // Change the main image based on selected thumbnail
+  }
 
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // Get the product passed from the Product List
-//     product.value = Get.arguments as Product;
-//     displayProductSizes();
-//   }
+// Method to select a size and update colors based on the size selected
+  void selectSize(String sizeType) {
+    selectedSize.value = sizeType;
+    // Reset selected color when size is changed
+    selectedColor.value = '';
+    selectedquantity.value = 1;
+    updatePriceAndQuantity(); // Set price and quantity for initial state
+  }
 
-//   // void changeSize(int index) {
-//   //   selectedSize.value = index;
-//   // }
-//   List<ColorOption> get colorOptions => product.value.colors ?? [];
-//   List<SizeOption> get sizeList {
-//     final color = colorOptions.firstWhere(
-//       (colorOption) => colorOption.color == selectedColor.value,
-//       orElse: () => ColorOption(color: '', sizes: []),
-//     );
-//     return color.sizes;
-//   }
+  // Method to select a color and update price and quantity based on color
+  void selectColor(String colorName) {
+    selectedColor.value = colorName;
+    updatePriceAndQuantity();
+  }
 
-//   void selectColor(String color) {
-//     selectedColor.value = color;
-//     selectedSize.value = ''; // Reset size selection when color changes
-//   }
+  // Updates price and quantity based on selected size and color
+  void updatePriceAndQuantity() {
+    try {
+      final sizeVariation = product.value!.variations
+          .firstWhere((variation) => variation.type == selectedSize.value);
+      final colorOption = sizeVariation.options
+          .firstWhere((option) => option.name == selectedColor.value);
 
-//   Color getColorFromName(String colorName) {
-//     switch (colorName.toLowerCase()) {
-//       case 'red':
-//         return Colors.red;
-//       case 'blue':
-//         return Colors.blue;
-//       case 'yellow':
-//         return Colors.yellow;
-//       case 'brown':
-//         return Colors.brown;
-//       case 'orange':
-//         return Colors.orange;
-//       case 'green':
-//         return Colors.green;
-//       case 'white':
-//         return Colors.white;
-//       case 'black':
-//         return Colors.black;
-//       // Add more colors as needed
-//       default:
-//         return Colors.grey; // Fallback color
-//     }
-//   }
+      price.value = colorOption.price;
+      quantity.value = colorOption.quantity;
+    } catch (e) {
+      // If selected size or color is not found, reset price and quantity
+      price.value = 0.0;
+      quantity.value = 0;
+    }
+  }
 
-//   // Function to increase quantity
-//   void increaseQuantity() {
-//     if (selectedSize.value.isNotEmpty) {
-//       var selectedSizeData = sizeList
-//           .firstWhere((sizeData) => sizeData.size == selectedSize.value);
+  // Returns list of available colors for the selected size
+  List<String> getAvailableColors() {
+    try {
+      final sizeVariation = product.value!.variations
+          .firstWhere((variation) => variation.type == selectedSize.value);
+      return sizeVariation.options.map((option) => option.name).toList();
+    } catch (e) {
+      return []; // Return empty list if size is not selected
+    }
+  }
 
-//       int availableStock = selectedSizeData.quantity;
+  void chosenColor() {}
+  // Decrease quantity
+  void decreaseQuantity() {
+    if (selectedquantity.value > 1) {
+      selectedquantity.value--;
+    }
+  }
 
-//       // Allow increasing only if less than available stock
-//       if (quantity.value < availableStock) {
-//         quantity.value++;
-//       } else {
-//         Get.snackbar(
-//             "Stock Limit", "You have reached the maximum available stock.",
-//             backgroundColor: Colors.red, colorText: Colors.black);
-//       }
-//     }
-//   }
+  void addToCart() {
+    final selectedSize = product.value!.variations[selectedSizeIndex.value];
+    final selectedOption = selectedSize.options.firstWhereOrNull(
+      (option) => option.name == selectedColor.value,
+    );
 
-//   void displayProductSizes() {
-//     for (var colorOption in product.value.colors!) {
-//       colorList.add(colorOption);
+    // Check if size and color are selected
+    if (selectedOption == null) {
+      Get.snackbar("Selection Error", "Please select size and color",
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
 
-//       for (var sizeOption in colorOption.sizes) {
-//         sizeList.add(sizeOption);
-//       }
-//     }
-//   }
+    // Check stock availability
+    if (selectedOption.quantity <= 0) {
+      Get.snackbar("Out of Stock", "The selected option is out of stock",
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
 
-//   void decreaseQuantity() {
-//     if (quantity.value > 1) {
-//       quantity.value--;
-//     }
-//   }
+    // Create a CartItem with the selected product details
+    CartItem cartItem = CartItem(
+      imageUrl: product.value!.images[0],
+      productId: product.value!.id.toString(),
+      name: product.value!.name,
+      price: selectedOption.price,
+      size: selectedSize.type,
+      color: selectedOption.name,
+      quantity: selectedquantity.value,
+    );
 
-//   void changeImage(int index) {
-//     selectedImageIndex.value =
-//         index; // Change the main image based on selected thumbnail
-//   }
+    // Add item to cart
+    Get.find<CartController>().addItem(cartItem);
 
-// // Function to select size
-//   void selectSize(String size) {
-//     selectedSize.value = size;
-//     quantity.value = 1; // Reset quantity when a new size is selected
-//   }
+    Get.snackbar("Success", "Item added to cart",
+        backgroundColor: Colors.green, colorText: Colors.white);
+  }
 
-//   void addToCart() {
-//     final selectedSizeValue = selectedSize.value;
+  void increaseQuantity() {
+    final product = this.product.value;
+    final selectedSize = product?.variations[selectedSizeIndex.value];
+    final selectedOption = selectedSize?.options.firstWhereOrNull(
+      (option) => option.name == selectedColor.value,
+    );
 
-//     if (selectedSizeValue != "0") {
-//       // Find the selected size's price and quantity
-//       var selectedSizeData = sizeList.firstWhere(
-//           (sizeData) => sizeData.size == selectedSizeValue.toString());
-
-//       int price = selectedSizeData.price;
-//       int stock = selectedSizeData.quantity;
-
-//       // Get an instance of the CartController
-//       final cartController = Get.find<CartController>();
-
-//       // Calculate total quantity of the same product and size already in the cart
-//       int totalInCart = cartController.cartItems
-//           .where((item) =>
-//               item.productId == product.value.id! &&
-//               item.size == selectedSizeValue)
-//           .fold(0, (sum, item) => sum + item.quantity);
-
-//       // Check if adding the new quantity would exceed stock
-//       if (totalInCart + quantity.value > stock) {
-//         Get.snackbar(
-//           "Stock Limit Exceeded",
-//           "You can only add ${stock - totalInCart} more of this item to the cart.",
-//           snackPosition: SnackPosition.BOTTOM,
-//           backgroundColor: Colors.redAccent,
-//           colorText: Colors.white,
-//         );
-//       } else {
-//         // Create a CartItem using the current product, selected size, color, and quantity
-//         CartItem cartItem = CartItem(
-//           productId: product.value.id!.toString(),
-//           name: product.value.name!,
-//           price: price,
-//           imageUrl: product.value.images![0],
-//           size: selectedSize.value,
-//           color: selectedColor.value,
-//           quantity: quantity.value,
-//         );
-
-//         // Add the item to the cart
-//         cartController.addItem(cartItem);
-
-//         Get.snackbar(
-//           'succeed'.tr,
-//           'added_to_cart'.tr,
-//           snackPosition: SnackPosition.BOTTOM,
-//           backgroundColor: ConstsConfig.secondarycolor,
-//           colorText: Colors.black,
-//         );
-//       }
-//     } else {
-//       Get.snackbar("Error", "select_item".tr);
-//     }
-//   }
+    // Check if the selected option has enough stock
+    if (selectedOption != null && selectedquantity.value < quantity.value) {
+      selectedquantity.value++;
+    } else {
+      // Show snackbar if trying to exceed available stock
+      Get.snackbar("Stock Limit", "Cannot exceed available stock",
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+  }
 }
