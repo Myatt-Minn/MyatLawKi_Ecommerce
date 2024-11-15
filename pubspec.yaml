@@ -26,6 +26,9 @@ dependencies:
   gap: ^3.0.1
   google_fonts: ^6.2.1
   modal_bottom_sheet: ^3.0.0
+  circular_image: ^0.0.6
+  bot_toast: ^4.1.3
+
 
 
 
