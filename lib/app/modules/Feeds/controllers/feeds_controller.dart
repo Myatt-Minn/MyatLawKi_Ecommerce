@@ -81,19 +81,19 @@ class FeedsController extends GetxController {
     final authService = Tokenhandler();
     final token = await authService.getToken();
 
-    FormData formData;
+    final formData;
     if(isReply.value==false){
-      formData = FormData({
+      formData = {
         "user_id": user_id.toString(),
         "post_id": post_id.toString(),
         "body": body.toString(),
-      });
+      };
     }else{
-      formData = FormData({
+      formData = {
         "user_id": user_id.toString(),
         "body": body.toString(),
         "parent_id": parient_id.toString(),
-      });
+      };
     }
 
     try {
@@ -101,7 +101,6 @@ class FeedsController extends GetxController {
         Uri.parse(url),body: formData,
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
           'Application': 'application/json',
         },
       );
@@ -110,7 +109,7 @@ class FeedsController extends GetxController {
         print("ResponComment>>>"+response.body.toString());
         isCommentLoading.value=false;
         commentController.text="";
-       // getPostDetail(post_id: post_id);
+        getPostDetail(post_id: post_id);
 
       } else {
         Get.snackbar("Fail", "Failed to load posts");
@@ -123,7 +122,6 @@ class FeedsController extends GetxController {
       BotToast.closeAllLoading();
       FocusManager.instance.primaryFocus?.unfocus();
     }
-
 
   }
 
@@ -142,7 +140,6 @@ class FeedsController extends GetxController {
         Uri.parse(url),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
           'Application': 'application/json',
         },
       );

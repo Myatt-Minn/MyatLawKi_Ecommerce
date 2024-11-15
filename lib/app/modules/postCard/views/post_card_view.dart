@@ -5,6 +5,7 @@ import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/post_model.dart';
 import 'package:myat_ecommerence/app/modules/Feeds/controllers/feeds_controller.dart';
 import 'package:myat_ecommerence/app/modules/postCard/controllers/post_card_controller.dart';
+import 'package:myat_ecommerence/global_widgets/newfeed_detail.dart';
 
 import '../../../../global_widgets/comment_alert.dart';
 import '../../../../global_widgets/my_cache_img.dart';
@@ -23,7 +24,7 @@ class PostCardView extends GetView<FeedsController> {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/comments', arguments: post);
+        Get.to(NewfeedDetailPage(id: post.id!, controller: controller, postData: post));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
