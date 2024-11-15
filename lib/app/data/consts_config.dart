@@ -11,6 +11,8 @@ class ConstsConfig {
   static const int deliveryfee = 2000;
   static const Color primarycolor = Color(0xFF4E221D);
   static const Color secondarycolor = Color(0xFFFFDD00);
+  static const Color bgColor= Color(0xFFF4F6FA);
+
 }
 
 const String baseUrl =

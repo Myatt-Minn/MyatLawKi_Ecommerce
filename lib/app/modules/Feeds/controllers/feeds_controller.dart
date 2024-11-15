@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/consts_config.dart';
@@ -13,6 +14,16 @@ class FeedsController extends GetxController {
   var isSavedClicked = false.obs;
   var commentLength = 0.obs;
   var isPostSaved = false.obs;
+
+  Rx<Post> postData = Post().obs;
+
+  final TextEditingController commentController = TextEditingController();
+
+
+  RxBool isReply = false.obs;
+  RxInt parent_id = 0.obs;
+
+  RxInt replyID = 0.obs;
 
   @override
   void onInit() {

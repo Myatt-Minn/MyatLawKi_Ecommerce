@@ -1,7 +1,11 @@
 import 'package:get/get.dart';
 
 class PostCardController extends GetxController {
-  //TODO: Implement PostCardController
+
+
+
+
+//TODO: Implement PostCardController
 
   // @override
   // void onInit() {

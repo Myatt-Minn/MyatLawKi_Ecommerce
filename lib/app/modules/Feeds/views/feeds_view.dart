@@ -16,6 +16,7 @@ class FeedsView extends GetView<FeedsController> {
       backgroundColor:
           ConstsConfig.primarycolor, // Set the brown background color
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor:
             const Color(0xFF5D3A2D), // Same color as the background
         title: Image.asset(

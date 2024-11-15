@@ -23,7 +23,7 @@ class CommentsController extends GetxController {
   void onInit() {
     super.onInit();
     post = Get.arguments;
-    comments.value = post!.comments;
+    comments.value = post!.comments!;
     commentLength.value = comments.length;
 
     fetchUserData();
@@ -86,7 +86,7 @@ class CommentsController extends GetxController {
         final responseData = json.decode(response.body);
 
         // Convert responseData to CommentModel and add to comments
-        final newComment = CommentModel.fromMap(responseData['data']);
+        final newComment = CommentModel.fromJson(responseData['data']);
         comments.add(newComment);
         Get.find<FeedsController>().fetchAllPosts();
       } else {
