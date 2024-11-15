@@ -56,16 +56,17 @@ class CartItems extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              'Color: ${item.color}   ,',
+                              '${'color'.tr}: ${item.color},',
                               style: const TextStyle(color: Colors.black),
                             ),
-                            const SizedBox(width: 10),
-                            Text('Size: ${item.size}',
+                            Text('  ${'size'.tr}: ${item.size}',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                                 style: const TextStyle(
                                     fontSize: 14, color: Colors.black)),
                           ],
                         ),
-                        Text('Quantity: ${item.quantity}',
+                        Text('${'quantity'.tr}: ${item.quantity}',
                             style: const TextStyle(
                                 fontSize: 14, color: Colors.black)),
                       ],

@@ -1,99 +1,115 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/product_model.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
+import 'package:myat_ecommerence/app/modules/productCard/controllers/product_card_controller.dart';
 
 class WishlistController extends GetxController {
-  //TODO: Implement WishlistController
-//TODO: Implement SavedproductsController
-
   RxList<Product> products = <Product>[].obs;
+  final RxMap<int, RxBool> savedStatusMap = <int, RxBool>{}.obs;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final RxMap<String, RxBool> savedStatusMap = <String, RxBool>{}.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchWishList();
+  }
 
-  // Future<void> fetchproducts() async {
-  //   try {
-  //     final QuerySnapshot snapshot = await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(userId)
-  //         .collection('savedProducts')
-  //         .get();
+  Future<void> fetchWishList() async {
+    final url = '$baseUrl/api/v1/wishlist';
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
 
-  //     // Convert each document into a BlogModel
-  //     List<Product> fetchproducts = snapshot.docs.map((doc) {
-  //       return Product.fromMap(doc.data() as Map<String, dynamic>);
-  //     }).toList();
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
 
-  //     products.value = fetchproducts;
-  //   } catch (e) {
-  //     print('Error fetching saved products: $e');
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
 
-  // void displayProductSizes(Product product) {
-  //   for (var colorOption in product.colors!) {
-  //     for (var sizeOption in colorOption.sizes) {
-  //       sizeList.add(sizeOption);
-  //     }
-  //   }
-  // }
+        // Check if 'data' key exists and is a list
+        if (jsonData['data'] is List) {
+          products.value = (jsonData['data'] as List)
+              .map((data) => Product.fromJson(data))
+              .toList();
+        } else {
+          throw Exception('Invalid data format');
+        }
+      } else {
+        throw Exception('Failed to load banners');
+      }
+    } catch (e) {
+      print('Error fetching banners: $e');
+    }
+  }
 
-  // Future<void> toggleSaveStatus(Product product) async {
-  //   try {
-  //     final userDocRef = _firestore.collection('users').doc(userId);
-  //     final postRef =
-  //         userDocRef.collection('savedProducts').doc(product.id.toString());
+  Future<void> toggleSaveStatus(Product product) async {
+    try {
+      // Determine the new status to send in the API request
+      bool isCurrentlySaved =
+          savedStatusMap[product.id]?.value ?? false; // Default to false
+      bool newStatus = !isCurrentlySaved;
+      final authService = Tokenhandler();
+      final token = await authService.getToken();
+      // Make the POST request to change the save status
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/v1/wishlist/change'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'product_id': product.id,
+        }),
+      );
 
-  //     if (savedStatusMap[product.id]?.value ?? false) {
-  //       // Remove if already saved
-  //       await postRef.delete();
-  //       savedStatusMap[product.id]?.value = false;
-  //     } else {
-  //       // Save post data if not already saved
-  //       await postRef.set(product.toJson());
-  //       savedStatusMap[product.id!.toString()] = true.obs;
-  //     }
-  //   } catch (e) {
-  //     print('Error saving post: $e');
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        // Update the local saved status map if the API call succeeds
+        savedStatusMap[product.id] = RxBool(newStatus);
+        if (newStatus) {
+          products.add(product); // Add to wishlist
+        } else {
+          products
+              .removeWhere((p) => p.id == product.id); // Remove from wishlist
+          Get.find<ProductCardController>()
+              .savedproducts
+              .removeWhere((p) => p.id == product.id); // Remove from wishlist
+        }
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to update wishlist status.',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'An error occurred while updating the wishlist.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
 
-  // Future<void> checkIfSaved(Product product) async {
-  //   final productRef = _firestore
-  //       .collection('users')
-  //       .doc(userId)
-  //       .collection('savedProducts')
-  //       .doc(product.id.toString());
-  //   final doc = await productRef.get();
-  //   savedStatusMap[product.id!.toString()] = RxBool(doc.exists);
-  // }
+  // Checks if a product is saved locally in the savedStatusMap
+  Future<void> checkIfSaved(Product product) async {
+    if (savedStatusMap.isEmpty) {
+      // Fetch wishlist if it's not already loaded
+      await fetchWishList();
+    }
 
-  // Future<void> toggleSaveStatus(Product product) async {
-  //   try {
-  //     final userDocRef = _firestore.collection('users').doc(userId);
-  //     final postRef = userDocRef.collection('savedProducts').doc(product.id);
-
-  //     if (savedStatusMap[product.id]?.value ?? false) {
-  //       // Remove if already saved
-  //       await postRef.delete();
-  //       savedStatusMap[product.id]?.value = false;
-  //     } else {
-  //       // Save post data if not already saved
-  //       await postRef.set(product.toJson());
-  //       savedStatusMap[product.id!] = true.obs;
-  //     }
-  //   } catch (e) {
-  //     print('Error saving post: $e');
-  //   }
-  // }
-
-  // Future<void> checkIfSaved(Product product) async {
-  //   final productRef = _firestore
-  //       .collection('users')
-  //       .doc(userId)
-  //       .collection('savedProducts')
-  //       .doc(product.id);
-  //   final doc = await productRef.get();
-  //   savedStatusMap[product.id!] = RxBool(doc.exists);
-  // }
+    // Determine the save status for the product
+    bool isSaved = products.any((p) => p.id == product.id);
+    savedStatusMap[product.id] = RxBool(isSaved);
+  }
 }

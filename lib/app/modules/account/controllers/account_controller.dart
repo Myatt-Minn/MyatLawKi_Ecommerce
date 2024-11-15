@@ -106,7 +106,7 @@ class AccountController extends GetxController {
   }
 
   void goToWebsite() async {
-    Uri url = Uri.parse(ConstsConfig.websiteLink);
+    Uri url = Uri.parse(ConstsConfig.termsAndConditionLink);
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {

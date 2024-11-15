@@ -5,6 +5,8 @@ import '../controllers/navigation_screen_controller.dart';
 class NavigationScreenBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(NavigationScreenController(), permanent: true);
+    Get.lazyPut<NavigationScreenController>(
+      () => NavigationScreenController(),
+    );
   }
 }

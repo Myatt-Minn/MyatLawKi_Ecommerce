@@ -13,47 +13,23 @@ class NotificationView extends GetView<NotificationController> {
       appBar: AppBar(
         title: Text(
           'notifications'.tr,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () => Get.offAndToNamed('/navigation-screen'),
         ),
         backgroundColor: ConstsConfig.primarycolor,
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Obx(() => ElevatedButton(
-                      onPressed: () {
-                        controller.toggleNotificationView();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ConstsConfig.secondarycolor,
-                        textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      child: Text(
-                        controller.isViewingAllNotifications.value
-                            ? 'View My Notifications'
-                            : 'View All Notifications',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )),
-              ],
-            ),
-          ),
           Expanded(
             child: Obx(() {
-              final notifications = controller.isViewingAllNotifications.value
-                  ? controller.notifications
-                  : controller.usernotifications;
-
-              if (notifications.isEmpty) {
+              if (controller.notifications.isEmpty) {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
@@ -69,9 +45,9 @@ class NotificationView extends GetView<NotificationController> {
               return ListView.builder(
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                itemCount: notifications.length,
+                itemCount: controller.notifications.length,
                 itemBuilder: (context, index) {
-                  final notification = notifications[index];
+                  final notification = controller.notifications[index];
 
                   return Card(
                     elevation: 4,
@@ -85,14 +61,7 @@ class NotificationView extends GetView<NotificationController> {
                         color: ConstsConfig.secondarycolor,
                         size: 36,
                       ),
-                      title: Text(
-                        notification.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Padding(
+                      title: Padding(
                         padding: const EdgeInsets.only(top: 6),
                         child: Text(
                           notification.body,

@@ -1,47 +1,101 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:myat_ecommerence/app/data/cart_model.dart';
+import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class CartController extends GetxController {
-  // RxList of CartItem objects
-  final storage = GetStorage();
-  var isLoading = false.obs;
-
   var cartItems = <CartItem>[].obs;
   var totalAmount = 0.0.obs;
-
+  final storage = GetStorage();
+  // Getter for cart item count
+  int get itemCount => cartItems.length;
   @override
   void onInit() {
     super.onInit();
-    loadCartFromStorage(); // Load cart items from storage
+    cartItems
+        .listen((_) => calculateTotalAmount()); // Recalculate when cart changes
   }
 
-  // Getter for cart item count
-  int get itemCount => cartItems.length;
-
-  // Add item to the cart
   void addItem(CartItem item) {
-    // Check if the item already exists in the cart based on productId and size
-    var existingItem = cartItems.firstWhereOrNull((element) =>
-        element.productId == item.productId && element.size == item.size);
+    // Check if item already exists in the cart
+    var existingItemIndex = cartItems.indexWhere(
+      (cartItem) =>
+          cartItem.productId == item.productId &&
+          cartItem.size == item.size &&
+          cartItem.color == item.color,
+    );
 
-    if (existingItem != null) {
-      // If the item exists, just increase the quantity
-      existingItem.quantity += 1;
+    if (existingItemIndex != -1) {
+      // Item exists, increase quantity
+      var existingItem = cartItems[existingItemIndex];
+      if (existingItem.quantity + item.quantity <= item.stock) {
+        cartItems[existingItemIndex] = existingItem.copyWith(
+          quantity: existingItem.quantity + item.quantity,
+        );
+      } else {
+        Get.snackbar(
+          "Stock Limit",
+          "You cannot add more than ${item.stock} of this item",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
     } else {
-      // Otherwise, add the item to the cart
-      cartItems.add(item);
+      // Add as a new item
+      if (item.quantity <= item.stock) {
+        cartItems.add(item);
+      } else {
+        Get.snackbar(
+          "Stock Limit",
+          "You cannot add more than ${item.stock} of this item",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
     }
 
-    updateTotalAmount();
+    calculateTotalAmount();
+    saveCartToStorage(); // Save to persistent storage
+  }
+
+  void calculateTotalAmount() {
+    double total = 0.0;
+    for (var item in cartItems) {
+      total += item.price * item.quantity;
+    }
+    totalAmount.value = total;
+  }
+
+  void removeItem(CartItem item) {
+    cartItems.remove(item);
+    calculateTotalAmount();
+    saveCartToStorage(); // Save to persistent storage
+  }
+
+  void clearCart() {
+    cartItems.clear();
+    calculateTotalAmount();
     saveCartToStorage();
   }
 
-  // Remove item from the cart
-  void removeItem(int index) {
-    cartItems.removeAt(index);
-    updateTotalAmount();
-    saveCartToStorage();
+  void checkAndPromptLogin() async {
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
+
+    if (token == null) {
+      Get.defaultDialog(
+        title: "Login First",
+        content: Text('to_proceed'.tr),
+        textConfirm: "OK",
+        onConfirm: () {
+          Get.offNamed('/login'); // Navigate to the login screen
+        },
+      );
+    } else {
+      // Proceed to checkout if logged in
+      Get.toNamed('/check-out');
+    }
   }
 
   // Update the total amount
@@ -67,12 +121,5 @@ class CartController extends GetxController {
             CartItem.fromJson(item)) // Assuming you have a fromJson method
         .toList();
     updateTotalAmount();
-  }
-
-  void clearCart() {
-    cartItems.clear(); // Clear the in-memory cart items
-    storage.remove('cart'); // Remove cart data from storage
-    updateTotalAmount(); // Reset total amount
-    update(); // Notify listeners
   }
 }

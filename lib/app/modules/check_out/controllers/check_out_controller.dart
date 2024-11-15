@@ -13,16 +13,21 @@ class CheckOutController extends GetxController {
   //TODO: Implement CheckOutController
   var currentUser = Rxn<UserModel>();
   var isLoading = false.obs;
+  RxList<RegionModel> regions = <RegionModel>[].obs;
+  RxList<DeliFeeModel> deliFees = <DeliFeeModel>[].obs;
+  Rx<RegionModel?> selectedRegion = Rx<RegionModel?>(null);
+  RxList<String> citiesForSelectedRegion = <String>[].obs;
+  RxString selectedCity = ''.obs;
+  RxString selectedFee = ''.obs;
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  RxList<DeliFeeModel> deliFees = <DeliFeeModel>[].obs;
-  var selectedFee = Rxn<DeliFeeModel>();
 
   @override
   void onInit() {
     super.onInit();
     fetchDeliFees();
+    fetchRegions();
     fetchUserData();
   }
 
@@ -44,6 +49,8 @@ class CheckOutController extends GetxController {
         final jsonData = json.decode(response.body);
         if (jsonData['success'] == true) {
           currentUser.value = UserModel.fromJson(jsonData['data']);
+          nameController.text = currentUser.value!.name;
+          phoneNumberController.text = currentUser.value!.phone;
         } else {
           Get.snackbar("Error", "Error fetching data");
         }
@@ -57,9 +64,9 @@ class CheckOutController extends GetxController {
   }
 
   double get finaltotalcost {
-    if (selectedFee.value != null) {
+    if (selectedFee.isNotEmpty) {
       return Get.find<CartController>().totalAmount.value +
-          int.parse(selectedFee.value!.fee);
+          int.parse(selectedFee.value);
     } else {
       return Get.find<CartController>().totalAmount.value;
     }
@@ -69,17 +76,17 @@ class CheckOutController extends GetxController {
     if (nameController.text.isNotEmpty &&
         phoneNumberController.text.isNotEmpty &&
         addressController.text.isNotEmpty &&
-        selectedFee.value != null) {
+        selectedFee.value.isNotEmpty) {
       return true;
     } else {
       return false;
     }
   }
 
-  Future<void> fetchDeliFees() async {
-    final url = '$baseUrl/api/v1/delivery-fees';
-    final authService = Tokenhandler();
-    final token = await authService.getToken();
+  Future<void> fetchRegions() async {
+    final url = '$baseUrl/api/v1/regions';
+    final token = await Tokenhandler().getToken();
+
     final response = await http.get(
       Uri.parse(url),
       headers: {
@@ -89,14 +96,56 @@ class CheckOutController extends GetxController {
     );
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      final List<dynamic> data = jsonData['data'];
-
-      deliFees.value = data.map((json) => DeliFeeModel.fromJson(json)).toList();
+      final data = json.decode(response.body)['data'];
+      regions.value =
+          data.map<RegionModel>((json) => RegionModel.fromJson(json)).toList();
     } else {
-      Get.snackbar("Fail", "Fail to load data");
+      Get.snackbar("Fail", "Failed to load regions");
     }
   }
+
+  Future<void> fetchDeliFees() async {
+    final url = '$baseUrl/api/v1/delivery-fees';
+    final token = await Tokenhandler().getToken();
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['data'];
+      deliFees.value = data
+          .map<DeliFeeModel>((json) => DeliFeeModel.fromJson(json))
+          .toList();
+    } else {
+      Get.snackbar("Fail", "Failed to load delivery fees");
+    }
+  }
+
+  void onRegionSelected(RegionModel region) {
+    selectedRegion.value = region;
+    citiesForSelectedRegion.value = deliFees
+        .where((fee) => fee.regionId == region.id)
+        .map((fee) => fee.city)
+        .toSet()
+        .toList();
+    selectedCity.value = '';
+    selectedFee.value = '';
+  }
+
+  void onCitySelected(String city) {
+    selectedCity.value = city;
+    final fee = deliFees.firstWhere(
+      (fee) => fee.regionId == selectedRegion.value!.id && fee.city == city,
+    );
+    selectedFee.value = fee.fee;
+  }
+
+  // Filter cities based on the selected region
 
 // // Method to confirm the payment
 //   void confirmPayment() async {

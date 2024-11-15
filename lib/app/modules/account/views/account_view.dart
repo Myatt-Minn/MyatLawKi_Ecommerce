@@ -12,6 +12,8 @@ class AccountView extends GetView<AccountController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
+        leading: Container(),
+        centerTitle: true,
         title: Text(
           'profile'.tr,
           style: TextStyle(
@@ -110,7 +112,7 @@ class AccountView extends GetView<AccountController> {
                 }),
                 _buildMenuItem(
                     Icons.description_outlined, 'terms_and_conditions'.tr, () {
-                  Get.toNamed('/terms-and-conditions');
+                  controller.goToWebsite();
                 }),
                 _buildLanguageToggle(),
                 const Divider(color: Colors.grey),

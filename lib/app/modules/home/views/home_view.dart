@@ -61,7 +61,7 @@ class HomeView extends GetView<HomeController> {
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                Get.toNamed('/notification');
+                                controller.checkAndPromptLogin();
                               },
                             ),
                             if (Get.find<NotificationController>().itemCount >
@@ -201,7 +201,7 @@ class HomeView extends GetView<HomeController> {
                       },
                       child: Text(
                         "${'see_all'.tr} >",
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: ConstsConfig.secondarycolor),
                       ),
                     ),
                   ],
@@ -242,7 +242,7 @@ class HomeView extends GetView<HomeController> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.9,
+                          childAspectRatio: 0.8,
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15,
                         ),
@@ -284,9 +284,10 @@ class HomeView extends GetView<HomeController> {
               children: [
                 Text(
                   "see_all".tr,
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color: ConstsConfig.secondarycolor),
                 ),
-                Icon(Icons.arrow_forward_ios, size: 12, color: Colors.blue),
+                Icon(Icons.arrow_forward_ios,
+                    size: 12, color: ConstsConfig.secondarycolor),
               ],
             ),
           ),

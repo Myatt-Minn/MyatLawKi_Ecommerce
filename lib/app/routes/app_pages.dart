@@ -48,8 +48,6 @@ import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/terms_and_condition/bindings/terms_and_condition_binding.dart';
-import '../modules/terms_and_condition/views/terms_and_condition_view.dart';
 import '../modules/wishlist/bindings/wishlist_binding.dart';
 import '../modules/wishlist/views/wishlist_view.dart';
 
@@ -185,11 +183,6 @@ class AppPages {
       name: _Paths.FULL_SCREEN_IMAGE,
       page: () => const FullScreenImageView(),
       binding: FullScreenImageBinding(),
-    ),
-    GetPage(
-      name: _Paths.TERMS_AND_CONDITIONS,
-      page: () => const TermsAndConditionView(),
-      binding: TermsAndConditionBinding(),
     ),
     GetPage(
       name: _Paths.CONTACT_US,

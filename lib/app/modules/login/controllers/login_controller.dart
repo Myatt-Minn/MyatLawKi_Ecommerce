@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/sendNotificationHandler.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class LoginController extends GetxController {
@@ -22,13 +23,15 @@ class LoginController extends GetxController {
     if (validateInput()) {
       try {
         final url = '$baseUrl/api/v1/login';
+        var fcmToken =
+            await SendNotificationHandler.getDeviceTokenToSendNotification();
         final response = await http.post(
           Uri.parse(url),
           headers: {'Content-Type': 'application/json'},
           body: json.encode({
             'emailOrPhone': phoneController.text,
             'password': passwordController.text,
-            'fcm_token_key': phoneController.text,
+            'fcm_token_key': fcmToken,
           }),
         );
 

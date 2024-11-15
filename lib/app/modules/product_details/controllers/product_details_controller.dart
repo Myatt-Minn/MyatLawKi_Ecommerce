@@ -13,6 +13,7 @@ class ProductDetailsController extends GetxController {
   var selectedSize = ''.obs;
   var selectedquantity = 1.obs;
   var price = 0.0.obs;
+  var filteredVolumePrices = <VolumePrice>[].obs;
 
   @override
   void onInit() {
@@ -32,13 +33,57 @@ class ProductDetailsController extends GetxController {
     // Reset selected color when size is changed
     selectedColor.value = '';
     selectedquantity.value = 1;
-    updatePriceAndQuantity(); // Set price and quantity for initial state
+    updatePriceAndQuantity();
+
+    // Filter volume prices based on selected size
+    final selectedVariation = product.value!.variations
+        .firstWhere((variation) => variation.type == sizeType);
+    filteredVolumePrices.value = product.value!.volumePrices
+        .where((price) => price.productVariationId == selectedVariation.id)
+        .toList();
   }
 
   // Method to select a color and update price and quantity based on color
   void selectColor(String colorName) {
     selectedColor.value = colorName;
     updatePriceAndQuantity();
+  }
+
+  void resetPriceToOriginal() {
+    try {
+      final sizeVariation = product.value!.variations
+          .firstWhere((variation) => variation.type == selectedSize.value);
+      final colorOption = sizeVariation.options
+          .firstWhere((option) => option.name == selectedColor.value);
+
+      price.value = colorOption.price; // Restore original price
+    } catch (e) {
+      price.value = 0.0; // Reset if no valid size or color is selected
+    }
+  }
+
+  void applyVolumePricing() {
+    if (filteredVolumePrices.isNotEmpty) {
+      // Sort volume prices by quantity in descending order for easy checking
+      filteredVolumePrices.sort((a, b) => b.quantity.compareTo(a.quantity));
+
+      bool volumePriceApplied = false;
+
+      for (var volumePrice in filteredVolumePrices) {
+        if (selectedquantity.value >= volumePrice.quantity) {
+          price.value = double.parse(volumePrice.discountPrice);
+          volumePriceApplied = true;
+          break;
+        }
+      }
+
+      // If no volume pricing is applied, reset to the original color option price
+      if (!volumePriceApplied) {
+        resetPriceToOriginal();
+      }
+    } else {
+      resetPriceToOriginal();
+    }
   }
 
   // Updates price and quantity based on selected size and color
@@ -51,6 +96,9 @@ class ProductDetailsController extends GetxController {
 
       price.value = colorOption.price;
       quantity.value = colorOption.quantity;
+
+      // Apply volume pricing if applicable
+      applyVolumePricing();
     } catch (e) {
       // If selected size or color is not found, reset price and quantity
       price.value = 0.0;
@@ -69,41 +117,45 @@ class ProductDetailsController extends GetxController {
     }
   }
 
-  void chosenColor() {}
-  // Decrease quantity
-  void decreaseQuantity() {
-    if (selectedquantity.value > 1) {
-      selectedquantity.value--;
-    }
-  }
-
   void addToCart() {
-    final selectedSize = product.value!.variations[selectedSizeIndex.value];
-    final selectedOption = selectedSize.options.firstWhereOrNull(
+    final selectedSizegg = product.value!.variations.firstWhere(
+      (variation) => variation.type == selectedSize.value,
+    );
+    final selectedOption = selectedSizegg.options.firstWhereOrNull(
       (option) => option.name == selectedColor.value,
     );
 
     // Check if size and color are selected
-    if (selectedOption == null) {
+    if (selectedOption == null || quantity.value == 0) {
       Get.snackbar("Selection Error", "Please select size and color",
           backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
     // Check stock availability
-    if (selectedOption.quantity <= 0) {
-      Get.snackbar("Out of Stock", "The selected option is out of stock",
+    int totalCartQuantity = Get.find<CartController>()
+        .cartItems
+        .where((item) =>
+            item.productId == product.value!.id.toString() &&
+            item.size == selectedSizegg.type &&
+            item.color == selectedOption.name)
+        .fold(0, (sum, item) => sum + item.quantity);
+
+    if (totalCartQuantity + selectedquantity.value > selectedOption.quantity) {
+      Get.snackbar("Stock Limit",
+          "You cannot add more than ${selectedOption.quantity} of this item",
           backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
     // Create a CartItem with the selected product details
     CartItem cartItem = CartItem(
+      stock: quantity.value,
       imageUrl: product.value!.images[0],
       productId: product.value!.id.toString(),
       name: product.value!.name,
-      price: selectedOption.price,
-      size: selectedSize.type,
+      price: price.value,
+      size: selectedSizegg.type,
       color: selectedOption.name,
       quantity: selectedquantity.value,
     );
@@ -111,24 +163,40 @@ class ProductDetailsController extends GetxController {
     // Add item to cart
     Get.find<CartController>().addItem(cartItem);
 
-    Get.snackbar("Success", "Item added to cart",
+    Get.snackbar("succeed".tr, "added_to_cart".tr,
         backgroundColor: Colors.green, colorText: Colors.white);
   }
 
   void increaseQuantity() {
     final product = this.product.value;
-    final selectedSize = product?.variations[selectedSizeIndex.value];
-    final selectedOption = selectedSize?.options.firstWhereOrNull(
+    final selectedVariation = product?.variations.firstWhereOrNull(
+      (variation) => variation.type == selectedSize.value,
+    );
+
+    final selectedOption = selectedVariation?.options.firstWhereOrNull(
       (option) => option.name == selectedColor.value,
     );
 
     // Check if the selected option has enough stock
-    if (selectedOption != null && selectedquantity.value < quantity.value) {
+    if (selectedOption != null &&
+        selectedquantity.value < selectedOption.quantity) {
       selectedquantity.value++;
+      applyVolumePricing(); // Update price based on new quantity
     } else {
       // Show snackbar if trying to exceed available stock
-      Get.snackbar("Stock Limit", "Cannot exceed available stock",
-          backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        "Stock Limit",
+        "not_enough_stock".tr,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void decreaseQuantity() {
+    if (selectedquantity.value > 1) {
+      selectedquantity.value--;
+      applyVolumePricing(); // Update price based on new quantity
     }
   }
 }

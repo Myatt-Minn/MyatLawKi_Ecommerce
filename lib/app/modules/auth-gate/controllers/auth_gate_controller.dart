@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +24,7 @@ class AuthGateController extends GetxController {
       // Check if the list contains any active network connection type
       if (results.contains(ConnectivityResult.none)) {
         hasInternet.value = false;
-        Get.offAllNamed('/no-internet');
+        Get.toNamed('/no-internet');
         isLoading.value = false;
       } else {
         hasInternet.value = true;
@@ -38,9 +39,9 @@ class AuthGateController extends GetxController {
   _checkInternetConnection() async {
     isLoading.value = true; // Start loading
     final result = await _connectivity.checkConnectivity();
-    if (result == ConnectivityResult.none) {
+    if (result.contains(ConnectivityResult.none)) {
       hasInternet.value = false;
-      Get.offAllNamed('/no-internet');
+      Get.offAndToNamed('/no-internet');
       isLoading.value = false; // Stop loading if there's no connection
     } else {
       hasInternet.value = true;
@@ -51,19 +52,18 @@ class AuthGateController extends GetxController {
   }
 
   Future<void> _checkAuthentication() async {
-    isLoading.value = true; // Show loading while checking authentication
+    isLoading.value = true;
     final authService = Tokenhandler();
     final token = await authService.getToken();
 
     if (token == null) {
-      // No token found, navigate to login
-      Get.offNamed('/login');
       isLoading.value = false;
+      // Navigate to main screen
+      Get.offAllNamed('/navigation-screen');
       return;
     }
 
     try {
-      // Validate token and fetch user data
       final url = '$baseUrl/api/v1/customer';
       final response = await http.get(
         Uri.parse(url),
@@ -78,15 +78,8 @@ class AuthGateController extends GetxController {
 
         if (jsonData['success'] == true) {
           final userData = jsonData['data'];
-
-          // Check user role and navigate accordingly
-          if (userData['role'] == 'admin') {
-            Get.offAllNamed('/admin-panel');
-          } else if (userData['role'] == 'premium') {
-            Get.offAllNamed('/premium');
-          } else {
-            Get.offAllNamed('/navigation-screen');
-          }
+          // Navigate to main screen
+          Get.offAllNamed('/navigation-screen');
         } else {
           // Invalid response, navigate to login
           Get.offNamed('/login');
@@ -99,7 +92,7 @@ class AuthGateController extends GetxController {
       print('Error checking authentication: $error');
       Get.offNamed('/login');
     } finally {
-      isLoading.value = false; // Stop loading after the check
+      isLoading.value = false;
     }
   }
 

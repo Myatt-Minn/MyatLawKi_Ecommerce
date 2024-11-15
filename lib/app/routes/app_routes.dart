@@ -41,7 +41,6 @@ abstract class _Paths {
   static const COMMENTS = '/comments';
   static const WISHLIST = '/wishlist';
   static const FULL_SCREEN_IMAGE = '/full-screen-image';
-  static const TERMS_AND_CONDITIONS = '/terms-and-conditions';
   static const CONTACT_US = '/contact-us';
   static const PRODUCT_CARD = '/product-card';
 }

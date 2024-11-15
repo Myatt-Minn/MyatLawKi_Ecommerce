@@ -78,11 +78,11 @@ class CartView extends GetView<CartController> {
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                   Text(
-                                    'Size: ${item.size}',
+                                    '${'size'.tr}: ${item.size}',
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                   Text(
-                                    'Color: ${item.color}',
+                                    '${'color'.tr}: ${item.color}',
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                 ],
@@ -208,7 +208,7 @@ class CartView extends GetView<CartController> {
                       child: ElevatedButton(
                         onPressed: controller.cartItems.isNotEmpty
                             ? () {
-                                Get.toNamed('/check-out');
+                                controller.checkAndPromptLogin();
                               }
                             : null,
                         style: ElevatedButton.styleFrom(
@@ -247,7 +247,7 @@ class CartView extends GetView<CartController> {
       textCancel: "No",
       confirmTextColor: Colors.white,
       onConfirm: () {
-        controller.removeItem(controller.cartItems.indexOf(item));
+        controller.removeItem(item);
         Get.back();
       },
       onCancel: () {},

@@ -23,38 +23,68 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: ConstsConfig.primarycolor,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
                 onPressed: () {
                   Get.back();
                 },
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
               ),
             ),
           ),
           title: Text('Detail', style: TextStyle(color: Colors.black)),
           centerTitle: true,
           actions: [
-            badges.Badge(
-              badgeStyle: badges.BadgeStyle(badgeColor: Colors.yellow),
-              position: badges.BadgePosition.topEnd(top: -4, end: -4),
-              badgeContent: Text(
-                '0',
-                style: TextStyle(color: Colors.black),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.shopping_cart, color: Colors.black),
-                onPressed: () {
-                  Get.find<NavigationScreenController>().currentIndex.value = 3;
-                  Get.back();
-                },
-              ),
-            ),
+            Obx(() => Stack(
+                  clipBehavior:
+                      Clip.none, // Allow elements to overflow the stack
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color:
+                            ConstsConfig.primarycolor, // Icon background color
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.shopping_cart,
+                            color: Colors.white),
+                        onPressed: () {
+                          Get.find<NavigationScreenController>()
+                              .currentIndex
+                              .value = 3;
+
+                          Get.back();
+                        },
+                      ),
+                    ),
+                    if (cartController.itemCount > 0)
+                      Positioned(
+                        top: -4,
+                        right: -4,
+                        child: badges.Badge(
+                          badgeContent: Text(
+                            '${cartController.itemCount}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          showBadge: cartController.itemCount > 0,
+                          badgeStyle: badges.BadgeStyle(
+                            badgeColor: Colors.red,
+                            padding: const EdgeInsets.all(4),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                  ],
+                )),
             SizedBox(
-              width: 9.0,
-            )
+              width: 4,
+            ),
           ],
         ),
         body: Stack(children: [
@@ -131,7 +161,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       ),
                       Text(
                         controller.quantity.value == 0
-                            ? "Choose size and color"
+                            ? ""
                             : "${controller.quantity.value} in Stock",
                         style: TextStyle(color: Colors.white),
                       )
@@ -160,7 +190,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                   children: [
                     Column(
                       children: [
-                        Text("Available Size:",
+                        Text("size".tr,
                             style:
                                 TextStyle(fontSize: 14, color: Colors.white)),
                         const SizedBox(height: 5),
@@ -190,7 +220,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                     ),
                     Column(
                       children: [
-                        Text("Color:",
+                        Text("color".tr,
                             style:
                                 TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(
@@ -232,30 +262,25 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            "Whole sale/retail",
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
+                          controller.filteredVolumePrices.isNotEmpty
+                              ? Text(
+                                  "retail".tr,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                )
+                              : Container(),
                         ],
                       ),
                       Column(
-                        children:
-                            controller.product.value!.volumePrices.isNotEmpty
-                                ? controller.product.value!.volumePrices
-                                    .map((price) {
-                                    return Text(
-                                      "${price.quantity} Quantity - ${price.discountPrice} Ks",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    );
-                                  }).toList()
-                                : [
-                                    Text(
-                                      "0 Quantity - 0 MMK",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    ),
-                                  ],
+                        children: controller.filteredVolumePrices.isNotEmpty
+                            ? controller.filteredVolumePrices.map((price) {
+                                return Text(
+                                  "${price.quantity} ${'quantity'.tr} - ${price.discountPrice} Ks",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14),
+                                );
+                              }).toList()
+                            : [Container()],
                       ),
                     ],
                   ),
@@ -264,7 +289,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                   height: 10,
                 ),
                 Text(
-                  "Product description",
+                  "details".tr,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -377,7 +402,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                         Icon(Icons.shopping_bag, color: Colors.black),
                         SizedBox(width: 8),
                         Text(
-                          'Add to Cart',
+                          'add_to_cart',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,

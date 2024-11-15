@@ -33,9 +33,9 @@ class SummarySection extends StatelessWidget {
                     Text('Delivery Fee',
                         style:
                             const TextStyle(fontSize: 16, color: Colors.white)),
-                    fee != null && fee.fee.isNotEmpty
+                    fee.isNotEmpty
                         ? Text(
-                            "${fee.fee} MMK",
+                            "$fee MMK",
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

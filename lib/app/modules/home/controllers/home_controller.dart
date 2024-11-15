@@ -15,7 +15,7 @@ import 'package:myat_ecommerence/app/modules/notification/controllers/notificati
 class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxList<Product> productList = <Product>[].obs;
-
+  RxList<Product> savedproducts = <Product>[].obs;
   RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late PageController pageController;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -35,6 +35,7 @@ class HomeController extends GetxController {
     pageController = PageController(initialPage: currentBanner.value);
     getAllProducts();
     fetchCategories();
+    fetchWishList();
   }
 
   Future<void> getAllProducts({int page = 1, int limit = 10}) async {
@@ -103,13 +104,58 @@ class HomeController extends GetxController {
     }
   }
 
-  // void displayProductSizes(Product product) {
-  //   for (var colorOption in product.colors!) {
-  //     for (var sizeOption in colorOption.sizes) {
-  //       sizeList.add(sizeOption);
-  //     }
-  //   }
-  // }
+  void checkAndPromptLogin() async {
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
+
+    if (token == null) {
+      Get.defaultDialog(
+        title: "Login First",
+        content: Text('to_proceed'.tr),
+        textConfirm: "OK",
+        onConfirm: () {
+          Get.offNamed('/login'); // Navigate to the login screen
+        },
+      );
+    } else {
+      // Proceed to checkout if logged in
+      Get.toNamed('/notification');
+    }
+  }
+
+  Future<void> fetchWishList() async {
+    final url = '$baseUrl/api/v1/wishlist';
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        // Check if 'data' key exists and is a list
+        if (jsonData['data'] is List) {
+          savedproducts.clear();
+          savedproducts.value = (jsonData['data'] as List)
+              .map((data) => Product.fromJson(data))
+              .toList();
+        } else {
+          throw Exception('Invalid data format');
+        }
+      } else {
+        throw Exception('Failed to load banners');
+      }
+    } catch (e) {
+      print('Error fetching banners: $e');
+    }
+  }
 
 // Function to change the current page
   void changePage(int value) {
@@ -148,25 +194,6 @@ class HomeController extends GetxController {
       Get.snackbar("Error", "Error loading data");
     }
   }
-
-// Future<BannerModel?> fetchPost(int postId) async {
-//   final url = '$baseUrl/api/v1/banners/$postId';
-
-//   final response = await http.get(
-//     Uri.parse(url),
-//     headers: {
-//       'Authorization': 'Bearer $token',
-//       'Content-Type': 'application/json',
-//     },
-//   );
-
-//   if (response.statusCode == 200) {
-//     final jsonData = json.decode(response.body);
-//     return BannerModel.fromJson(jsonData);
-//   } else {
-//     throw Exception('Failed to load post');
-//   }
-// }
 
   void startAutoSlide() {
     Timer.periodic(const Duration(seconds: 3), (timer) {

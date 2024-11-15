@@ -101,7 +101,7 @@ class EditProfileController extends GetxController {
       showError.value = true;
       return;
     }
-
+    isLoading.value = true;
     final url = '$baseUrl/api/v1/customer?_method=PUT';
     final token = await Tokenhandler().getToken();
 
@@ -134,6 +134,7 @@ class EditProfileController extends GetxController {
           currentUser.value = UserModel.fromJson(jsonData['data']);
           Get.snackbar("Success", "Profile updated successfully");
           Get.find<AccountController>().fetchUserData();
+          isLoading.value = false;
         } else {
           Get.snackbar("Error", "Failed to update profile");
         }

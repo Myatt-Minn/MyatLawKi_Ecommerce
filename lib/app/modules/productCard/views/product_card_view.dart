@@ -15,8 +15,7 @@ class ProductCardView extends GetView<ProductCardController> {
   @override
   Widget build(BuildContext context) {
     if (!controller.savedStatusMap.containsKey(product.id)) {
-      // Uncomment if you want to check saved status:
-      // controller.checkIfSaved(product);
+      controller.checkIfSaved(product);
     }
 
     return GestureDetector(
@@ -58,17 +57,14 @@ class ProductCardView extends GetView<ProductCardController> {
                   right: 0,
                   child: Obx(() => IconButton(
                         icon: Icon(
-                          controller.savedStatusMap[product.id.toString()]
-                                      ?.value ==
-                                  true
+                          controller.savedStatusMap[product.id]?.value == true
                               ? Icons.favorite
                               : Icons.favorite_border_outlined,
                           color: Colors.redAccent,
                           size: 28,
                         ),
                         // Uncomment to enable save functionality:
-                        // onPressed: () => controller.toggleSaveStatus(product),
-                        onPressed: () {},
+                        onPressed: () => controller.toggleSaveStatus(product),
                       )),
                 ),
               ],
@@ -91,7 +87,12 @@ class ProductCardView extends GetView<ProductCardController> {
                   const SizedBox(height: 4),
                   Text(
                     product.brand,
-                    style: const TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    product.category,
+                    style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 4),
                 ],

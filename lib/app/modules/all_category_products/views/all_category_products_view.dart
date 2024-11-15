@@ -14,7 +14,7 @@ class AllCategoryProductsView extends GetView<AllCategoryProductsController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'All ${controller.categorygg!.value}',
+          'All ${controller.categorygg.value}',
           style: TextStyle(fontSize: 18),
         ),
       ),
