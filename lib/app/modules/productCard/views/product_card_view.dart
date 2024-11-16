@@ -60,7 +60,7 @@ class ProductCardView extends GetView<ProductCardController> {
                           controller.savedStatusMap[product.id]?.value == true
                               ? Icons.favorite
                               : Icons.favorite_border_outlined,
-                          color: Colors.redAccent,
+                          color: Colors.yellow,
                           size: 28,
                         ),
                         // Uncomment to enable save functionality:

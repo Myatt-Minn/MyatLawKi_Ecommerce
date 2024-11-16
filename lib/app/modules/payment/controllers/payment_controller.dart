@@ -125,6 +125,7 @@ class PaymentController extends GetxController {
         http.MultipartRequest('POST', Uri.parse('$baseUrl/api/v1/orders'))
           ..headers.addAll({
             'Authorization': 'Bearer $token',
+            'Accept': 'application/json', // Added Accept header
           })
           ..fields['name'] = name
           ..fields['address'] = address
