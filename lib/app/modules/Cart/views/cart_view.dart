@@ -20,6 +20,7 @@ class CartView extends GetView<CartController> {
         elevation: 0,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Obx(() {
@@ -89,7 +90,6 @@ class CartView extends GetView<CartController> {
                               ),
                             ),
                           ),
-
                           // Quantity Adjusters and Remove Button
                           Padding(
                             padding:
@@ -97,24 +97,9 @@ class CartView extends GetView<CartController> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Row(
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        item.quantity.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
                                     const SizedBox(width: 8),
                                     IconButton(
                                         onPressed: () =>
@@ -122,7 +107,91 @@ class CartView extends GetView<CartController> {
                                         icon: Icon(
                                           Icons.delete,
                                           color: Colors.red,
-                                        ))
+                                        )),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: (){
+                                            if(controller.cartItems[index].quantity!>1){
+                                              for(var map in controller.cartItems){
+                                                if(map.optionId==controller.cartItems[index].optionId){
+                                                  map.quantity=(controller.cartItems[index].quantity!-1)!;
+                                                }
+                                              }
+                                            }else{
+                                              Get.snackbar("Warming", "Can't less than 1");
+                                            }
+
+                                            controller.cartItems.refresh();
+                                            controller.saveCartToStorage();
+
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 14, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              "-",
+                                              style: const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 21,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            item.quantity.toString(),
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        InkWell(
+                                          onTap: (){
+                                            for(var map in controller.cartItems){
+                                              if(map.optionId==controller.cartItems[index].optionId){
+                                                map.quantity=(controller.cartItems[index].quantity!+1)!;
+                                              }
+                                            }
+                                            controller.cartItems.refresh();
+                                            controller.saveCartToStorage();
+
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              "+",
+                                              style: const TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 19,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+
                                   ],
                                 ),
                               ],
@@ -169,7 +238,7 @@ class CartView extends GetView<CartController> {
                         ),
                         Obx(() {
                           int totalQuantity = controller.cartItems
-                              .fold(0, (sum, item) => sum + item.quantity);
+                              .fold(0, (sum, item) => sum + item.quantity!);
                           return Text(
                             totalQuantity.toString(),
                             style: const TextStyle(
@@ -238,7 +307,9 @@ class CartView extends GetView<CartController> {
       ),
     );
   }
+  
 
+  
   void _showDeleteConfirmation(CartItem item) {
     Get.defaultDialog(
       title: "Delete Item",

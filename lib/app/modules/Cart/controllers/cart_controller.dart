@@ -33,7 +33,7 @@ class CartController extends GetxController {
       // Item exists, increase quantity
       var existingItem = cartItems[existingItemIndex];
       cartItems[existingItemIndex] = existingItem.copyWith(
-        quantity: existingItem.quantity + item.quantity,
+        quantity: existingItem.quantity! + item.quantity!,
       );
     } else {
       // Add as a new item
@@ -47,7 +47,7 @@ class CartController extends GetxController {
   void calculateTotalAmount() {
     double total = 0.0;
     for (var item in cartItems) {
-      total += item.price * item.quantity;
+      total += item.price * item.quantity!;
     }
     totalAmount.value = total;
   }
@@ -86,7 +86,7 @@ class CartController extends GetxController {
   // Update the total amount
   void updateTotalAmount() {
     totalAmount.value = cartItems.fold<double>(0, (sum, item) {
-      double itemTotal = (item.price * item.quantity);
+      double itemTotal = (item.price * item.quantity!);
       return sum + itemTotal;
     });
   }
