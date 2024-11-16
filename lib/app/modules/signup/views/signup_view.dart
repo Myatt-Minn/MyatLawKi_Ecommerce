@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../controllers/signup_controller.dart';
+import 'package:myat_ecommerence/app/modules/signup/controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
   const SignupView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +49,6 @@ class SignupView extends GetView<SignupController> {
                           ),
                           const SizedBox(
                               height: 5), // Reduced for a tighter layout
-
                           // Subtitle
                           const Text(
                             'Fill your information below to create an account',
@@ -68,7 +67,6 @@ class SignupView extends GetView<SignupController> {
                 ),
               ),
               const SizedBox(height: 10),
-
               // Form Container
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -100,6 +98,7 @@ class SignupView extends GetView<SignupController> {
                       ],
                     ),
                     const SizedBox(height: 15),
+                    // Email TextField
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -124,6 +123,7 @@ class SignupView extends GetView<SignupController> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 15),
                     // Phone Number TextField
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +150,6 @@ class SignupView extends GetView<SignupController> {
                       ],
                     ),
                     const SizedBox(height: 15),
-
                     // Password TextField
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,32 +159,34 @@ class SignupView extends GetView<SignupController> {
                           style: TextStyle(color: Colors.white),
                         ),
                         const SizedBox(height: 5),
-                        TextField(
-                          controller: controller.passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: '*************',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.visibility_off),
-                              onPressed: () {
-                                controller.isPasswordHidden.value =
-                                    !controller.isPasswordHidden.value;
-                              },
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                        Obx(
+                          () => TextField(
+                            controller: controller.passwordController,
+                            obscureText: controller.isPasswordHidden.value,
+                            decoration: InputDecoration(
+                              hintText: '*************',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              filled: true,
+                              fillColor: Colors.white,
+                              suffixIcon: IconButton(
+                                icon: Icon(controller.isPasswordHidden.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  controller.isPasswordHidden.value =
+                                      !controller.isPasswordHidden.value;
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 15),
-
                     // Confirm Password TextField
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,57 +196,58 @@ class SignupView extends GetView<SignupController> {
                           style: TextStyle(color: Colors.white),
                         ),
                         const SizedBox(height: 5),
-                        TextField(
-                          controller: controller.confirmPasswordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: '*************',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.visibility_off),
-                              onPressed: () {
-                                controller.isPasswordHidden.value =
-                                    !controller.isPasswordHidden.value;
-                              },
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                        Obx(
+                          () => TextField(
+                            controller: controller.confirmPasswordController,
+                            obscureText: controller.isPasswordHidden.value,
+                            decoration: InputDecoration(
+                              hintText: '*************',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              filled: true,
+                              fillColor: Colors.white,
+                              suffixIcon: IconButton(
+                                icon: Icon(controller.isPasswordHidden.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  controller.isPasswordHidden.value =
+                                      !controller.isPasswordHidden.value;
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 20),
-
                     // Terms & Conditions Checkbox
-                    Obx(() => Row(
-                          children: [
-                            Checkbox(
-                              value: controller.agreeTerms.value,
-                              onChanged: (value) {
-                                controller.agreeTerms.value = value ?? false;
-                              },
-                              activeColor: const Color(0xFFE1B000),
-                            ),
-                            const Text(
-                              'Agree with Terms & Conditions',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        )),
+                    Obx(
+                      () => Row(
+                        children: [
+                          Checkbox(
+                            value: controller.agreeTerms.value,
+                            onChanged: (value) {
+                              controller.agreeTerms.value = value ?? false;
+                            },
+                            activeColor: const Color(0xFFE1B000),
+                          ),
+                          const Text(
+                            'Agree with Terms & Conditions',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 20),
-
                     // Sign Up Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          controller.signUp();
-                        },
+                        onPressed: controller.signUp,
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color(0xFFE1B000), // Yellow button color
@@ -261,7 +263,6 @@ class SignupView extends GetView<SignupController> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
                     // Already have an account? Sign In
                     GestureDetector(
                       onTap: () {

@@ -44,7 +44,7 @@ class WishlistController extends GetxController {
           throw Exception('Invalid data format');
         }
       } else {
-        throw Exception('Failed to load banners');
+        throw Exception('Failed to load wishlist');
       }
     } catch (e) {
       print('Error fetching banners: $e');

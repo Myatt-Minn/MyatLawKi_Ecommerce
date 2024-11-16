@@ -40,11 +40,9 @@ class ContactUsView extends GetView<ContactUsController> {
               height: 120,
             ),
             const SizedBox(height: 20),
-            _buildExpansionTile('မေးလေ့ရှိသောမေးခွန်းများ'),
+            _buildExpansionTile('faq'.tr),
             const SizedBox(height: 10),
-            _buildExpansionTile('မေးလေ့ရှိသောအခြားမေးခွန်းများ'),
-            const SizedBox(height: 10),
-            _buildExpansionTile('အထူးစျေးနှုန်းဆိုင်ရာအကြောင်းအရာများ'),
+            _buildExpansionTile('sp_pricing'.tr),
             const SizedBox(height: 20),
             _buildContactInfo(),
           ],
@@ -113,6 +111,19 @@ class ContactUsView extends GetView<ContactUsController> {
               Expanded(
                 child: Text(
                   'Address: ${ConstsConfig.address}',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(Icons.facebook, color: Colors.yellow),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Facebook: ${ConstsConfig.fbLink}',
                   style: TextStyle(color: Colors.white),
                 ),
               ),

@@ -10,7 +10,7 @@ import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 class SignupController extends GetxController {
   //TODO: Implement SignupController
 
-  var isPasswordHidden = true.obs;
+  var isPasswordHidden = false.obs;
   var isConfirmPasswordHidden = true.obs;
   var isLoading = false.obs;
   var agreeTerms = false.obs;

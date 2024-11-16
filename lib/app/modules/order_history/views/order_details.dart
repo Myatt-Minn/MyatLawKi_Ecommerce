@@ -1,24 +1,21 @@
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/order_model.dart';
 
-import '../controllers/order_history_controller.dart';
+class OrderDetails extends StatelessWidget {
+  final Order order = Get.arguments;
 
-class OrderDetails extends GetView<OrderHistoryController> {
-  const OrderDetails({super.key});
+  OrderDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve the passed OrderItem object from arguments
-    final OrderItem order = Get.arguments as OrderItem;
-
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
-        title: Text(
-          "${'order_history'.tr} details",
+        title: const Text(
+          "Order Details",
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
@@ -33,60 +30,60 @@ class OrderDetails extends GetView<OrderHistoryController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildOrderSummary(order),
+            _buildOrderSummary(),
             const SizedBox(height: 16),
-            _buildItemDetails(order),
+            _buildItemDetails(),
             const SizedBox(height: 16),
-            order.paymentMethod!.isEmpty
-                ? Container()
-                : _buildPaymentType(order),
+            _buildPaymentType(),
             const SizedBox(height: 16),
-            order.transationUrl!.isEmpty
-                ? Container()
-                : _buildTransitionImage(order),
+            _buildTransitionImage(),
             const SizedBox(height: 16),
-            _buildCustomerInfo(order),
+            _buildCustomerInfo(),
             const SizedBox(height: 16),
-            _buildCostDetails(order),
+            _buildCostDetails(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOrderSummary(OrderItem order) {
+  Widget _buildOrderSummary() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(children: [
-          Text(
-            order.orderId!.toString(),
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            order.totalPrice!.toString(),
-            style: const TextStyle(fontSize: 16, color: Colors.white),
-          ),
-        ]),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Order ID: ${order.id}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              "Total Price",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            Text(
+              "${order.grandTotal} MMK",
+              style: const TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ],
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              order.status!,
+              "Status: ${order.status}",
               style: const TextStyle(fontSize: 16, color: Colors.red),
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
             Text(
-              controller.formatDate(
-                order.orderDate!.toString(),
-              ),
-              style: TextStyle(color: Colors.white),
+              "Order Date: ${DateFormat('yyyy-MM-dd').format(order.createdAt)}",
+              style: const TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -94,7 +91,7 @@ class OrderDetails extends GetView<OrderHistoryController> {
     );
   }
 
-  Widget _buildItemDetails(OrderItem order) {
+  Widget _buildItemDetails() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -102,38 +99,39 @@ class OrderDetails extends GetView<OrderHistoryController> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        children: order.items!.map((orderitem) {
+        children: order.orderItems.map((item) {
           return Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 4.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Row(
               children: [
-                FancyShimmerImage(
-                  imageUrl: orderitem.imageUrl,
+                Container(
                   width: 80,
                   height: 50,
+                  color: Colors.grey,
+                  child: Image.network(
+                    item.product.images[0],
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: 190,
-                      child: Text(
-                        orderitem.name,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                    Text(
+                      item.product.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
                     Text(
-                      "${orderitem.price} MMK",
+                      "Price: ${item.price} MMK",
                       style:
                           const TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                     Text(
-                      "Size: ${orderitem.size}",
+                      "Size: ${item.orderVariation.name}",
                       style:
                           const TextStyle(fontSize: 14, color: Colors.black87),
                     ),
@@ -147,7 +145,21 @@ class OrderDetails extends GetView<OrderHistoryController> {
     );
   }
 
-  Widget _buildPaymentType(OrderItem order) {
+  Widget _buildPaymentType() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        "Payment Type: ${order.paymentMethod}",
+        style: const TextStyle(fontSize: 16, color: Colors.black),
+      ),
+    );
+  }
+
+  Widget _buildTransitionImage() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -158,61 +170,27 @@ class OrderDetails extends GetView<OrderHistoryController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Payment Type",
+            "Transition Image",
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
           const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start, // Aligns the start of the text
-            children: [
-              Text(
-                order.paymentMethod!,
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-            ],
-          ),
+          order.paymentPhoto != null
+              ? Image.network(
+                  order.paymentPhoto!,
+                  height: 100,
+                  fit: BoxFit.cover,
+                )
+              : const Text("No image available"),
         ],
       ),
     );
   }
 
-  Widget _buildTransitionImage(OrderItem order) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to the full-screen image view
-        Get.toNamed('/full-screen-image', arguments: order.transationUrl!);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Transition Image",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            const SizedBox(height: 8),
-            Image.network(
-              order.transationUrl!,
-              height: 100,
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCustomerInfo(OrderItem order) {
+  Widget _buildCustomerInfo() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -222,65 +200,17 @@ class OrderDetails extends GetView<OrderHistoryController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Name",
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                order.name!,
-                style: const TextStyle(color: Colors.black87),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Phone Number",
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                order.phoneNumber!,
-                style: const TextStyle(color: Colors.black87),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Address",
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                order.address!,
-                style: const TextStyle(color: Colors.black87),
-              ),
-            ],
-          ),
+          Text("Customer Name: ${order.name}"),
+          const SizedBox(height: 8),
+          Text("Phone Number: ${order.phone}"),
+          const SizedBox(height: 8),
+          Text("Address: ${order.address}, ${order.city}, ${order.region}"),
         ],
       ),
     );
   }
 
-  Widget _buildCostDetails(OrderItem order) {
+  Widget _buildCostDetails() {
     return Column(
       children: [
         ListTile(
@@ -289,18 +219,18 @@ class OrderDetails extends GetView<OrderHistoryController> {
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           trailing: Text(
-            "${order.totalPrice! - ConstsConfig.deliveryfee} MMK",
+            "${order.subTotal} MMK",
             style: const TextStyle(fontSize: 16, color: Colors.white),
           ),
         ),
-        const ListTile(
-          title: Text(
+        ListTile(
+          title: const Text(
             "Delivery Fees",
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           trailing: Text(
-            "${ConstsConfig.deliveryfee} MMK",
-            style: TextStyle(fontSize: 16, color: Colors.white),
+            "${order.deliveryFee} MMK",
+            style: const TextStyle(fontSize: 16, color: Colors.white),
           ),
         ),
         const Divider(),
@@ -310,9 +240,12 @@ class OrderDetails extends GetView<OrderHistoryController> {
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           trailing: Text(
-            "${order.totalPrice} MMK",
+            "${order.grandTotal} MMK",
             style: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.white,
+            ),
           ),
         ),
       ],

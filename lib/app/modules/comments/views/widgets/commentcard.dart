@@ -18,8 +18,8 @@ class CmtCard extends GetView<CommentsController> {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: comment.image.isNotEmpty
-                  ? NetworkImage(comment.image)
+              backgroundImage: comment.image!.isNotEmpty
+                  ? NetworkImage(comment.image!)
                   : AssetImage('assets/person.png'),
               radius: 18,
             ),
@@ -47,7 +47,7 @@ class CmtCard extends GetView<CommentsController> {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                           // DateFormat.yMMMd().format(comment.createdAt),
-                          comment.createdAt),
+                          comment.createdAt!),
                     ),
                   ],
                 ),

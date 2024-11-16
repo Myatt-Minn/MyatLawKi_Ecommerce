@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/brand_model.dart';
@@ -21,8 +20,7 @@ class CategoryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // fetchProducts();
-    getProductsByBrand('Nike');
+
     fetchBrands();
     fetchCategories();
   }
@@ -94,23 +92,6 @@ class CategoryController extends GetxController {
       }
     } catch (e) {
       print('Error fetching categories: $e');
-    }
-  }
-
-  Future<void> getProductsByBrand(String brand) async {
-    try {
-      // Query Firestore to retrieve products where 'brand' matches the provided brand
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('new_arrivals')
-          .where('brand', isEqualTo: brand)
-          .get();
-
-      // Map Firestore documents to Product objects and update the RxList
-      productsByBrand.value = querySnapshot.docs.map((doc) {
-        return Product.fromJson(doc.data() as Map<String, dynamic>);
-      }).toList();
-    } catch (e) {
-      Get.snackbar('Error', 'failed_to_fetch_data'.tr);
     }
   }
 

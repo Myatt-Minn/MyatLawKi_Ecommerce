@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/modules/notification/controllers/notification_controller.dart';
 import 'package:myat_ecommerence/app/modules/postCard/controllers/post_card_controller.dart';
 import 'package:myat_ecommerence/app/modules/postCard/views/post_card_view.dart';
 
@@ -16,6 +17,7 @@ class FeedsView extends GetView<FeedsController> {
       backgroundColor:
           ConstsConfig.primarycolor, // Set the brown background color
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor:
             const Color(0xFF5D3A2D), // Same color as the background
         title: Image.asset(
@@ -24,39 +26,54 @@ class FeedsView extends GetView<FeedsController> {
         ),
         centerTitle: false,
         actions: [
-          Stack(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.notifications,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Text(
-                    '1', // Change as needed
-                    style: TextStyle(
+          Obx(() => Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.notifications,
                       color: Colors.white,
-                      fontSize: 12,
                     ),
+                    onPressed: () {
+                      controller.checkAndPromptLogin();
+                    },
                   ),
-                ),
-              ),
-            ],
-          ),
+                  if (Get.find<NotificationController>().itemCount >
+                      0) // Show badge only if there are items
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/notification');
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            '${Get.find<NotificationController>().itemCount}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              )),
         ],
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -76,22 +93,21 @@ class FeedsView extends GetView<FeedsController> {
               ),
             ),
           ),
-          Expanded(
-            child: Obx(() {
-              return controller.posts.isEmpty
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: controller.posts.length,
-                      itemBuilder: (context, index) {
-                        var postData = controller.posts[index];
-
-                        return PostCardView(
-                          post: postData,
-                        );
-                      },
-                    );
-            }),
-          ),
+          Expanded(child: Obx(() {
+            return controller.posts.isEmpty && controller.posts.isNotEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: controller.posts.length,
+                    itemBuilder: (context, index) {
+                      var postData = controller.posts[index];
+                      return PostCardView(
+                        post: postData,
+                      );
+                    },
+                  );
+          })),
         ],
       ),
     );

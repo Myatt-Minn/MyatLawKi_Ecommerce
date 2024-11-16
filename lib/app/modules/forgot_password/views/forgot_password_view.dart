@@ -5,109 +5,101 @@ import '../controllers/forgot_password_controller.dart';
 
 class ForgotPasswordView extends GetView<ForgotPasswordController> {
   const ForgotPasswordView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF4B1E16), // Dark brown background color
+      backgroundColor: const Color(0xFF4B2A2A), // Brown background color
       appBar: AppBar(
-        backgroundColor: Color(0xFF4B1E16),
-        title: Text(
-          'password_reset'.tr,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Obx(
-          () => Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Image.asset('assets/forgot_password.png',
+                  height: 200), // Replace with actual asset path
               const SizedBox(height: 20),
-              _buildPasswordField(
-                  'လက်ရှိကုတ်ဝှက်ထည့်ပါ', controller.isObscured1.value, () {
-                controller.togglePasswordVisibility();
-              }),
+              const Text(
+                'Forgot password?',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Enter your email to receive a password reset link.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.white70),
+              ),
+              const SizedBox(height: 30),
+              Obx(
+                () => TextField(
+                  controller: controller.emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.email, color: Colors.black),
+                    hintText: 'Enter your email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    errorText: controller.isValidEmail.value
+                        ? null
+                        : 'Invalid email address',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
-              _buildPasswordField(
-                  'ကုတ်ဝှက်အသစ်ထည့်ပါ', controller.isObscured2.value, () {
-                controller.togglePasswordVisibility();
-              }),
-              const SizedBox(height: 20),
-              _buildPasswordField(
-                  'ကုတ်ဝှက်အတည်ပြုပါ', controller.isObscured3.value, () {
-                controller.togglePasswordVisibility();
-              }),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
+              Obx(
+                () => ElevatedButton(
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : () {
+                          controller.sendForgotPasswordRequest();
+                        },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFFC107), // Yellow color
+                    backgroundColor:
+                        const Color(0xFFFFC107), // Yellow button color
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                        borderRadius: BorderRadius.circular(10)),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
-                  onPressed: () {
-                    // Handle submit action
-                  },
-                  child: Text(
-                    'အတည်ပြုပါ',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: controller.isLoading.value
+                      ? const CircularProgressIndicator(color: Colors.black)
+                      : const Text(
+                          'Request',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Get.snackbar('Info', 'Reset link resent to your email');
+                },
+                child: const Text(
+                  'Resend',
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildPasswordField(
-      String labelText, bool isObscured, VoidCallback toggleObscure) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          labelText,
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          obscureText: isObscured,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                isObscured ? Icons.visibility_off : Icons.visibility,
-                color: Colors.grey,
-              ),
-              onPressed: toggleObscure,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

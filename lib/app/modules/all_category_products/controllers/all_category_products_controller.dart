@@ -24,7 +24,7 @@ class AllCategoryProductsController extends GetxController {
     getAllProductsByCategory();
   }
 
-  Future<void> getAllProductsByCategory({int page = 1, int limit = 10}) async {
+  Future<void> getAllProductsByCategory({int page = 1, int limit = 70}) async {
     final url = '$baseUrl/api/v1/products?page=$page&limit=$limit';
     final authService = Tokenhandler();
     final token = await authService.getToken();

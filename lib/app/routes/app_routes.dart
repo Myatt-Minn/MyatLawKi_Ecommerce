@@ -12,6 +12,9 @@ abstract class Routes {
   static const CONTACT_US = _Paths.CONTACT_US;
   static const PRODUCT_CARD = _Paths.PRODUCT_CARD;
   static const NAVIGATION = _Paths.NAVIGATION_SCREEN;
+  static const VERIFICATION = _Paths.VERIFICATION;
+  static const CHANGEPASSWORD = _Paths.CHANGEPASSWORD;
+  static const ALL_BRAND_PRODUCTS = _Paths.ALL_BRAND_PRODUCTS;
 }
 
 abstract class _Paths {
@@ -43,4 +46,7 @@ abstract class _Paths {
   static const FULL_SCREEN_IMAGE = '/full-screen-image';
   static const CONTACT_US = '/contact-us';
   static const PRODUCT_CARD = '/product-card';
+  static const VERIFICATION = '/verification';
+  static const CHANGEPASSWORD = '/changepassword';
+  static const ALL_BRAND_PRODUCTS = '/all-brand-products';
 }

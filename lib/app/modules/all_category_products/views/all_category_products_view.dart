@@ -44,9 +44,7 @@ class AllCategoryProductsView extends GetView<AllCategoryProductsController> {
           Expanded(
             child: Obx(() {
               return controller.filteredProducts.isEmpty
-                  ? Center(
-                      child: Text("no_products".tr),
-                    )
+                  ? Container()
                   : GridView.builder(
                       padding: const EdgeInsets.all(8.0),
                       gridDelegate:

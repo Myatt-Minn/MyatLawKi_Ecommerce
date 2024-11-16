@@ -87,7 +87,7 @@ class CommentsView extends GetView<CommentsController> {
                       //   controller.profileImg.value,
                       // );
                       controller.addComment(
-                          post.id, controller.commentController.text);
+                          post.id!, controller.commentController.text);
                       controller.commentController.clear();
                     }
                   },

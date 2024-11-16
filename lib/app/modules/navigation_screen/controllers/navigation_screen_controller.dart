@@ -24,7 +24,8 @@ class NavigationScreenController extends GetxController {
     switch (index) {
       case 0:
         Get.put(FeedsController());
-        Get.put(ProductCardController(), permanent: true);
+        Get.put(ProductCardController());
+        Get.put(NotificationController());
         break;
       case 1:
         Get.put(HomeController());

@@ -49,7 +49,7 @@ class PostCardGG extends GetView<CommentsController> {
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            post.poster,
+            post.poster!,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -63,7 +63,7 @@ class PostCardGG extends GetView<CommentsController> {
 
   Widget _buildDescriptionSection() {
     return Text(
-      post.description,
+      post.description!,
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -74,12 +74,12 @@ class PostCardGG extends GetView<CommentsController> {
   }
 
   Widget _buildImageSection() {
-    return post.images.isEmpty
+    return post.images!.isEmpty
         ? const SizedBox(height: 0)
         : ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              post.images[0].path,
+              post.images![0].path!,
               fit: BoxFit.cover,
             ),
           );

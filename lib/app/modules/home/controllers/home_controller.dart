@@ -15,7 +15,7 @@ import 'package:myat_ecommerence/app/modules/notification/controllers/notificati
 class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxList<Product> productList = <Product>[].obs;
-  RxList<Product> savedproducts = <Product>[].obs;
+
   RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late PageController pageController;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -35,7 +35,6 @@ class HomeController extends GetxController {
     pageController = PageController(initialPage: currentBanner.value);
     getAllProducts();
     fetchCategories();
-    fetchWishList();
   }
 
   Future<void> getAllProducts({int page = 1, int limit = 10}) async {
@@ -120,40 +119,6 @@ class HomeController extends GetxController {
     } else {
       // Proceed to checkout if logged in
       Get.toNamed('/notification');
-    }
-  }
-
-  Future<void> fetchWishList() async {
-    final url = '$baseUrl/api/v1/wishlist';
-    final authService = Tokenhandler();
-    final token = await authService.getToken();
-
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-
-        // Check if 'data' key exists and is a list
-        if (jsonData['data'] is List) {
-          savedproducts.clear();
-          savedproducts.value = (jsonData['data'] as List)
-              .map((data) => Product.fromJson(data))
-              .toList();
-        } else {
-          throw Exception('Invalid data format');
-        }
-      } else {
-        throw Exception('Failed to load banners');
-      }
-    } catch (e) {
-      print('Error fetching banners: $e');
     }
   }
 

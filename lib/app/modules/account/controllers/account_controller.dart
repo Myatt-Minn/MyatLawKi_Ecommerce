@@ -94,10 +94,10 @@ class AccountController extends GetxController {
         if (jsonData['success'] == true) {
           currentUser.value = UserModel.fromJson(jsonData['data']);
         } else {
-          Get.snackbar("Error", "Error fetching data");
+          // Get.snackbar("Error", "Error fetching data");
         }
       } else {
-        Get.snackbar("Fail", "Error fetching data");
+        // Get.snackbar("Fail", "Error fetching data");
       }
     } catch (e) {
       print('Error fetching user data: $e');

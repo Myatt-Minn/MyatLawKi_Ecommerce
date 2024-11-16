@@ -1,41 +1,70 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 
 class ForgotPasswordController extends GetxController {
-  var email = ''.obs;
-  var newPassword = ''.obs;
-  RxBool isObscured1 = true.obs;
-  RxBool isObscured2 = true.obs;
-  RxBool isObscured3 = true.obs;
+  final emailController = TextEditingController();
+  var isLoading = false.obs;
+  var isValidEmail = true.obs;
 
-  // Send Password Reset Email
-  // void sendPasswordResetEmail() async {
-  //   try {
-  //     await _auth.sendPasswordResetEmail(email: email.value);
-
-  //     Get.snackbar(
-  //       'succeed'.tr,
-  //       'Password reset email sent. Please check your email',
-  //       backgroundColor: const Color(0xFF8E2DE2),
-  //       colorText: Colors.white,
-  //     );
-  //   } catch (e) {
-  //     Get.snackbar(
-  //         'Error', 'Failed to send password reset email. Please try again');
-  //   }
-  // }
-
-  // Toggles for password visibility
-  void togglePasswordVisibility() {
-    isObscured1.value = !isObscured1.value;
+  // Email validation
+  void validateEmail() {
+    isValidEmail.value =
+        RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+            .hasMatch(emailController.text.trim());
   }
 
-  // Toggles for password visibility
-  void togglePasswordVisibility1() {
-    isObscured2.value = !isObscured2.value;
+  // Send forgot password request to API
+  Future<void> sendForgotPasswordRequest() async {
+    validateEmail();
+    if (!isValidEmail.value) {
+      Get.snackbar('Error', 'Please enter a valid email address',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
+      final response = await http.post(
+        Uri.parse(
+            '$baseUrl/api/v1/forgot-password'), // Replace `$baseUrl` with your API base URL
+        headers: {'Content-Type': 'application/json'},
+        body: '{"email": "${emailController.text.trim()}"}',
+      );
+
+      if (response.statusCode == 200) {
+        Get.snackbar('Success', 'Password reset link sent to your email',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+
+        // Navigate to the Verification page and pass email as an argument
+        Get.toNamed('/verification', arguments: emailController.text.trim());
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        Get.snackbar('Error', 'Failed to send reset link. Try again.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+      }
+    } catch (e) {
+      print('Exception: $e');
+      Get.snackbar('Error', '$e',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Toggles for password visibility
-  void togglePasswordVisibility2() {
-    isObscured3.value = !isObscured3.value;
+  @override
+  void onClose() {
+    emailController.dispose();
+    super.onClose();
   }
 }

@@ -52,20 +52,6 @@ class SavedProductCard extends GetView<WishlistController> {
                     boxFit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Obx(() => IconButton(
-                        icon: Icon(
-                          controller.savedStatusMap[product.id]?.value == true
-                              ? Icons.favorite
-                              : Icons.favorite_border_outlined,
-                          color: Colors.redAccent,
-                          size: 28,
-                        ),
-                        onPressed: () => controller.toggleSaveStatus(product),
-                      )),
-                ),
               ],
             ),
             Padding(

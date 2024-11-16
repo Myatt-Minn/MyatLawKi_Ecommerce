@@ -11,6 +11,7 @@ class CategoryView extends GetView<CategoryController> {
     return Scaffold(
       backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
+        leading: Icon(Icons.category),
         title: Text(
           'categories'.tr,
           style: TextStyle(
@@ -123,23 +124,26 @@ class CategoryView extends GetView<CategoryController> {
 
   // Brands Grid (replace with actual data if available)
   Widget _buildBrandGrid() {
-    // Dummy brands list
-    final brands = ['Brand A', 'Brand B', 'Brand C'];
     return Wrap(
       spacing: 12,
       runSpacing: 12,
-      children: brands.map((brand) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            brand,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.brown,
+      children: controller.brands.map((brand) {
+        return GestureDetector(
+          onTap: () {
+            Get.toNamed('/all-brand-products', arguments: brand.title);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              brand.title,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.brown,
+              ),
             ),
           ),
         );
