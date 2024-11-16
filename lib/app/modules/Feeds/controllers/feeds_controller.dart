@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/post_model.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
+import 'package:myat_ecommerence/app/data/user_model.dart';
 
 import '../../../data/post_detail_model.dart';
 
@@ -17,6 +18,7 @@ class FeedsController extends GetxController {
   var isSavedClicked = false.obs;
   var commentLength = 0.obs;
   var isPostSaved = false.obs;
+  var userID = 0;
 
   final TextEditingController commentController = TextEditingController();
 
@@ -31,7 +33,7 @@ class FeedsController extends GetxController {
     fetchAllPosts();
   }
 
-  void checkAndPromptLogin() async {
+  Future<bool> checkAndPromptLogin() async {
     final authService = Tokenhandler();
     final token = await authService.getToken();
 
@@ -44,9 +46,10 @@ class FeedsController extends GetxController {
           Get.offNamed('/login'); // Navigate to the login screen
         },
       );
+      return false;
     } else {
-      // Proceed to checkout if logged in
-      Get.toNamed('/notification');
+      fetchUserData();
+      return true;
     }
   }
 
@@ -87,7 +90,7 @@ class FeedsController extends GetxController {
 
   Future<void> comment(
       {required int post_id,
-      required int user_id,
+      required int userID,
       required String body,
       required int parient_id}) async {
     var loading = BotToast.showCustomLoading(
@@ -105,13 +108,13 @@ class FeedsController extends GetxController {
     final Map<String, String> formData;
     if (isReply.value == false) {
       formData = {
-        "user_id": user_id.toString(),
+        "user_id": userID.toString(),
         "post_id": post_id.toString(),
         "body": body.toString(),
       };
     } else {
       formData = {
-        "user_id": user_id.toString(),
+        "user_id": userID.toString(),
         "body": body.toString(),
         "parent_id": parient_id.toString(),
       };
@@ -147,6 +150,36 @@ class FeedsController extends GetxController {
 
   Rx<Post> postData = Post().obs;
   RxBool isPostLoading = false.obs;
+  Future<void> fetchUserData() async {
+    final url = '$baseUrl/api/v1/customer';
+    final token = await Tokenhandler()
+        .getToken(); // Make sure to replace this with your method for retrieving the token.
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] == true) {
+          var currentUser = UserModel.fromJson(jsonData['data']);
+          userID = currentUser.id;
+        } else {
+          Get.snackbar("Error", "Error fetching data");
+        }
+      } else {
+        Get.snackbar("Fail", "Error fetching data");
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+      return;
+    }
+  }
 
   Future<void> getPostDetail({required int post_id}) async {
     isCommentLoading.value = true;

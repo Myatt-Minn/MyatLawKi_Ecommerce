@@ -80,12 +80,6 @@ class CommentsView extends GetView<CommentsController> {
                 InkWell(
                   onTap: () {
                     if (controller.commentController.text.isNotEmpty) {
-                      // controller.addComment(
-                      //   controller.commentController.text,
-                      //   controller.userId,
-                      //   controller.username.value,
-                      //   controller.profileImg.value,
-                      // );
                       controller.addComment(
                           post.id!, controller.commentController.text);
                       controller.commentController.clear();

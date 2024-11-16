@@ -553,20 +553,23 @@ class _NewFeedDetailPageState extends State<NewfeedDetailPage> {
                             width: 6,
                           ),
                           IconButton(
-                              onPressed: () {
-                                widget.controller.comment(
-                                    post_id: builder.postData.value.id!.toInt(),
-                                    user_id:
-                                        builder.postData.value.userId!.toInt(),
-                                    body: builder.commentController.text,
-                                    parient_id: builder.parent_id.value);
+                              onPressed: () async {
+                                if (await widget.controller
+                                    .checkAndPromptLogin()) {
+                                  widget.controller.comment(
+                                      post_id:
+                                          builder.postData.value.id!.toInt(),
+                                      userID: widget.controller.userID,
+                                      body: builder.commentController.text,
+                                      parient_id: builder.parent_id.value);
+                                }
 
-                                /*if(widget.authController.appToken.isNotEmpty){
-                        widget.controller.comment(post_id: builder.postData.value.id!.toInt(), user_id: builder.postData.value.userId!.toInt(), body: builder.commentController.text, parient_id: builder.parent_id.value);
+                                //           if(widget.authController.appToken.isNotEmpty){
+                                //   widget.controller.comment(post_id: builder.postData.value.id!.toInt(), user_id: builder.postData.value.userId!.toInt(), body: builder.commentController.text, parient_id: builder.parent_id.value);
 
-                      }else{
-                        Get.toNamed(RouteConstant.login);
-                      }*/
+                                // }else{
+                                //   Get.toNamed(RouteConstant.login);
+                                // }
                               },
                               icon: Icon(
                                 Icons.send,

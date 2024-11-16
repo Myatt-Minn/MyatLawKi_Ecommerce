@@ -387,26 +387,26 @@ class _CommentAlertWidgetState extends State<CommentAlertWidget> {
                         ),
                         IconButton(
                             onPressed: () {
-                              setState(() {
-                                widget.controller.comment(
-                                    post_id: widget
-                                        .controller.postData.value.id!
-                                        .toInt(),
-                                    user_id: widget
-                                        .controller.postData.value.userId!
-                                        .toInt(),
-                                    body: widget
-                                        .controller.commentController.text,
-                                    parient_id:
-                                        widget.controller.parent_id.value);
+                              //       setState(() {
+                              //         widget.controller.comment(
+                              //             post_id: widget
+                              //                 .controller.postData.value.id!
+                              //                 .toInt(),
+                              //             user_id: widget
+                              //                 .controller.postData.value.userId!
+                              //                 .toInt(),
+                              //             body: widget
+                              //                 .controller.commentController.text,
+                              //             parient_id:
+                              //                 widget.controller.parent_id.value);
 
-                                /* if(widget.authController.appToken.isNotEmpty){
-                          widget.controller.comment(post_id: widget.controller.postData.value.id!.toInt(), user_id: widget.controller.postData.value.userId!.toInt(), body: widget.controller.commentController.text, parient_id: widget.controller.parent_id.value);
+                              //         /* if(widget.authController.appToken.isNotEmpty){
+                              //   widget.controller.comment(post_id: widget.controller.postData.value.id!.toInt(), user_id: widget.controller.postData.value.userId!.toInt(), body: widget.controller.commentController.text, parient_id: widget.controller.parent_id.value);
 
-                        }else{
-                          Get.toNamed(RouteConstant.login);
-                        }*/
-                              });
+                              // }else{
+                              //   Get.toNamed(RouteConstant.login);
+                              // }*/
+                              //       });
                             },
                             icon: Icon(
                               Icons.send,
