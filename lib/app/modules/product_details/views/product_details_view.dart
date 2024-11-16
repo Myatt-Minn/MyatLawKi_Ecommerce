@@ -346,7 +346,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                     color: ConstsConfig.secondarycolor,
                     child: Center(
                       child: Text(
-                        controller.selectedquantity.value
+                        controller.selectedQuantity.value
                             .toString(), // Quantity
                         style: const TextStyle(
                           color: Colors.black,

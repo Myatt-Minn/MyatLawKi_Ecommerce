@@ -3,23 +3,24 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/payment_model.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
+import 'package:myat_ecommerence/app/modules/Cart/controllers/cart_controller.dart';
 
 class PaymentController extends GetxController {
   // Rx variables for payment options
 
   var transitionImage = "".obs;
-  late File file;
+  File? file;
   var isProfileImageChooseSuccess = false.obs;
   var isLoading = false.obs;
   var isOrder = false.obs;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  int paymentId = 0;
 
   var payments = <PaymentModel>[].obs; // List to store payment data
   var selectedPayment = ''.obs;
@@ -32,8 +33,9 @@ class PaymentController extends GetxController {
   }
 
   // Method to select payment method
-  void selectPayment(String method) {
+  void selectPayment(String method, int id) {
     selectedPayment.value = method;
+    paymentId = id;
   }
 
   // Function to choose an image from File Picker
@@ -43,7 +45,6 @@ class PaymentController extends GetxController {
     if (result != null) {
       file = File(result.files.single.path!);
       isProfileImageChooseSuccess.value = true;
-      await uploadImage(file);
     } else {
       // User canceled the picker
       Get.snackbar("cancel".tr, "No Image");
@@ -85,82 +86,152 @@ class PaymentController extends GetxController {
     }
   }
 
-// Function to upload the selected image to Firebase Storage and save its metadata in Firestore
-  Future<void> uploadImage(File imageFile) async {
+  Future<void> createOrder({
+    required String name,
+    required String address,
+    required String phone,
+    required String regionId,
+    required String deliId,
+    required String deliFee,
+  }) async {
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
+
+    if (token == null) {
+      Get.snackbar(
+        "Authentication Error",
+        "User is not logged in.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    var cartItems = Get.find<CartController>().cartItems;
+
+    // Validate cart items
+    if (cartItems.isEmpty) {
+      Get.snackbar(
+        "Validation Error",
+        "Cart cannot be empty.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Prepare the multipart request
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseUrl/api/v1/orders'))
+          ..headers.addAll({
+            'Authorization': 'Bearer $token',
+          })
+          ..fields['name'] = name
+          ..fields['address'] = address
+          ..fields['phone'] = phone
+          ..fields['payment_method'] = 'payment'
+          ..fields['payment_id'] = paymentId.toString()
+          ..fields['region_id'] = regionId
+          ..fields['delivery_fee_id'] = deliId
+          ..fields['delivery_fee'] = deliFee
+          ..fields['carts'] = json.encode(
+            cartItems.map((item) => item.toMap()).toList(),
+          );
+
+    // Add payment photo
+    if (file!.existsSync()) {
+      request.files.add(
+        await http.MultipartFile.fromPath('payment_photo', file!.path),
+      );
+    } else {
+      Get.snackbar(
+        "Validation Error",
+        "Please provide a valid payment photo.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
     try {
-      if (isProfileImageChooseSuccess.value) {
-        isLoading.value = true;
-        // Initialize Firebase Storage
-        FirebaseStorage storage = FirebaseStorage.instance;
-        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-        Reference storageRef =
-            storage.ref().child('transation&profile_images/$fileName');
+      final response = await request.send();
 
-        // Upload image file to Firebase Storage
-        UploadTask uploadTask = storageRef.putFile(imageFile);
-        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-
-        // Get the image URL
-        String imageUrl = await taskSnapshot.ref.getDownloadURL();
-        transitionImage.value = imageUrl;
-        isLoading.value = false;
-      } else {
+      if (response.statusCode == 200) {
+        // Handle successful response
         Get.snackbar(
-          'failed_to_fetch_data'.tr,
-          'Sorry, the image is not picked!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
+          "Success",
+          "Order created successfully.",
+          backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+        Get.offNamed('/order-success');
+      } else {
+        // Handle error response
+        final responseBody = await response.stream.bytesToString();
+
+        try {
+          final errorResponse = json.decode(responseBody);
+          Get.snackbar(
+            "Order Error",
+            errorResponse['message'] ?? 'An error occurred.',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        } catch (e) {
+          // Fallback for non-JSON error responses
+          print(e.toString());
+        }
       }
     } catch (e) {
-      print('Error uploading image: $e');
+      print('Error creating order: $e');
+      Get.snackbar(
+        "Network Error",
+        "Failed to create order. Please try again.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
-  // void confirmPayment() async {
-  //   // Validate if a payment method is selected
-  //   if (selectedPayment.value.isEmpty) {
-  //     Get.snackbar('Invalid Payment', 'Please select a payment method.',
-  //         backgroundColor: Colors.red, colorText: Colors.white);
-  //     return;
-  //   }
+  void confirmPayment() async {
+    // Validate if a payment method is selected
+    if (selectedPayment.value.isEmpty) {
+      Get.snackbar('Invalid Payment', 'Please select a payment method.',
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
 
-  //   // Validate if an image has been uploaded
-  //   if (transitionImage.value.isEmpty) {
-  //     Get.snackbar('Invalid Image', 'Please upload a transaction screenshot.',
-  //         backgroundColor: Colors.red, colorText: Colors.white);
-  //     return;
-  //   }
+    // Validate if an image has been uploaded
+    if (file == null) {
+      Get.snackbar('Invalid Image', 'Please upload a transaction screenshot.',
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
 
-  //   isLoading.value = true;
+    isLoading.value = true;
 
-  //   // Perform stock check for all items in the cart before placing the order
-  //   bool isStockAvailable = await checkStockForOrder(
-  //     Get.find<CartController>().cartItems,
-  //   );
+    // Perform stock check for all items in the cart before placing the order
+    // bool isStockAvailable = await checkStockForOrder(
+    //   Get.find<CartController>().cartItems,
+    // );
 
-  //   if (!isStockAvailable) {
-  //     Get.snackbar(
-  //         'Stock Error', 'Not enough stock for one or more items in your cart.',
-  //         backgroundColor: Colors.red);
-  //     isLoading.value = false;
-  //     return;
-  //   }
+    // if (!isStockAvailable) {
+    //   Get.snackbar(
+    //       'Stock Error', 'Not enough stock for one or more items in your cart.',
+    //       backgroundColor: Colors.red);
+    //   isLoading.value = false;
+    //   return;
+    // }
 
-  //   // Proceed with order creation if stock is sufficient
-  //   await createOrder(
-  //     name: Get.arguments['name'],
-  //     phoneNumber: Get.arguments['phoneNumber'],
-  //     cartItems: Get.find<CartController>().cartItems,
-  //     totalPrice: Get.arguments['totalCost'],
-  //     address: Get.arguments['address'],
-  //     status: "Pending",
-  //   );
-
-  //   Get.offNamed('/order-success');
-  //   isLoading.value = false;
-  // }
+    // Proceed with order creation if stock is sufficient
+    await createOrder(
+        name: Get.arguments['name'],
+        phone: Get.arguments['phone'],
+        deliFee: Get.arguments['deliFee'],
+        deliId: Get.arguments['deliId'],
+        regionId: Get.arguments['regionId'],
+        address: Get.arguments['address']);
+  }
 
 // Function to check if there's enough stock for each item in the cart
   // Future<bool> checkStockForOrder(List<CartItem> cartItems) async {

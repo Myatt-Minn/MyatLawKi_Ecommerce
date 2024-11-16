@@ -67,11 +67,11 @@ class SummarySection extends StatelessWidget {
                         label: 'cash_on_deli'.tr,
                         color: Colors.grey,
                         onPressed: () {
-                          // checkOutController.setOrder()
-                          //     ? checkOutController.confirmPayment()
-                          //     : Get.snackbar(
-                          //         "Empty TextBox", "fill_all_information".tr,
-                          //         backgroundColor: Colors.red);
+                          checkOutController.setOrder()
+                              ? checkOutController.createOrder()
+                              : Get.snackbar(
+                                  "Empty TextBox", "fill_all_information".tr,
+                                  backgroundColor: Colors.red);
                         },
                       ),
                     );
@@ -85,10 +85,14 @@ class SummarySection extends StatelessWidget {
                   checkOutController.setOrder()
                       ? Get.toNamed('/payment', arguments: {
                           "name": checkOutController.nameController.text,
-                          "phoneNumber":
+                          "phone":
                               checkOutController.phoneNumberController.text,
                           "address": checkOutController.addressController.text,
-                          "totalCost": checkOutController.finaltotalcost
+                          "regionId": checkOutController
+                              .selectedRegion.value!.id
+                              .toString(),
+                          "deliId": checkOutController.feeId,
+                          "deliFee": checkOutController.selectedFee.value
                         })
                       : Get.snackbar("Empty TextBox", "fill_all_information".tr,
                           backgroundColor: Colors.red);

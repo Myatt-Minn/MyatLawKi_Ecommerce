@@ -11,7 +11,7 @@ class ProductDetailsController extends GetxController {
   var selectedSizeIndex = 0.obs;
   RxInt quantity = 0.obs;
   var selectedSize = ''.obs;
-  var selectedquantity = 1.obs;
+  var selectedQuantity = 1.obs;
   var price = 0.0.obs;
   var filteredVolumePrices = <VolumePrice>[].obs;
 
@@ -27,12 +27,12 @@ class ProductDetailsController extends GetxController {
         index; // Change the main image based on selected thumbnail
   }
 
-// Method to select a size and update colors based on the size selected
+  // Method to select a size and update colors based on the size selected
   void selectSize(String sizeType) {
     selectedSize.value = sizeType;
     // Reset selected color when size is changed
     selectedColor.value = '';
-    selectedquantity.value = 1;
+    selectedQuantity.value = 1;
     updatePriceAndQuantity();
 
     // Filter volume prices based on selected size
@@ -70,7 +70,7 @@ class ProductDetailsController extends GetxController {
       bool volumePriceApplied = false;
 
       for (var volumePrice in filteredVolumePrices) {
-        if (selectedquantity.value >= volumePrice.quantity) {
+        if (selectedQuantity.value >= volumePrice.quantity) {
           price.value = double.parse(volumePrice.discountPrice);
           volumePriceApplied = true;
           break;
@@ -118,15 +118,15 @@ class ProductDetailsController extends GetxController {
   }
 
   void addToCart() {
-    final selectedSizegg = product.value!.variations.firstWhere(
+    final selectedVariation = product.value!.variations.firstWhere(
       (variation) => variation.type == selectedSize.value,
     );
-    final selectedOption = selectedSizegg.options.firstWhereOrNull(
+    final selectedOption = selectedVariation.options.firstWhereOrNull(
       (option) => option.name == selectedColor.value,
     );
 
     // Check if size and color are selected
-    if (selectedOption == null || quantity.value == 0) {
+    if (selectedOption == null || selectedQuantity.value == 0) {
       Get.snackbar("Selection Error", "Please select size and color",
           backgroundColor: Colors.red, colorText: Colors.white);
       return;
@@ -136,12 +136,12 @@ class ProductDetailsController extends GetxController {
     int totalCartQuantity = Get.find<CartController>()
         .cartItems
         .where((item) =>
-            item.productId == product.value!.id.toString() &&
-            item.size == selectedSizegg.type &&
-            item.color == selectedOption.name)
+            item.productId == product.value!.id &&
+            item.productVariationId == selectedVariation.id &&
+            item.optionId == selectedOption.id)
         .fold(0, (sum, item) => sum + item.quantity);
 
-    if (totalCartQuantity + selectedquantity.value > selectedOption.quantity) {
+    if (totalCartQuantity + selectedQuantity.value > selectedOption.quantity) {
       Get.snackbar("Stock Limit",
           "You cannot add more than ${selectedOption.quantity} of this item",
           backgroundColor: Colors.red, colorText: Colors.white);
@@ -150,21 +150,27 @@ class ProductDetailsController extends GetxController {
 
     // Create a CartItem with the selected product details
     CartItem cartItem = CartItem(
-      stock: quantity.value,
-      imageUrl: product.value!.images[0],
-      productId: product.value!.id.toString(),
-      name: product.value!.name,
+      productId: product.value!.id,
+      productVariationId: selectedVariation.id,
+      optionId: selectedOption.id,
+      quantity: selectedQuantity.value,
       price: price.value,
-      size: selectedSizegg.type,
-      color: selectedOption.name,
-      quantity: selectedquantity.value,
+      name: product.value!.name, // Adding the product name
+      size: selectedSize.value, // Adding the selected size
+      color: selectedColor.value, // Adding the selected color
+      imageUrl: product.value!.images.isNotEmpty
+          ? product.value!.images[
+              selectedImageIndex.value] // Image URL for the selected image
+          : '', // Fallback if no images
     );
 
     // Add item to cart
     Get.find<CartController>().addItem(cartItem);
 
-    Get.snackbar("succeed".tr, "added_to_cart".tr,
-        backgroundColor: Colors.green, colorText: Colors.white);
+    Get.snackbar("Success", "Item added to cart",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM);
   }
 
   void increaseQuantity() {
@@ -179,8 +185,8 @@ class ProductDetailsController extends GetxController {
 
     // Check if the selected option has enough stock
     if (selectedOption != null &&
-        selectedquantity.value < selectedOption.quantity) {
-      selectedquantity.value++;
+        selectedQuantity.value < selectedOption.quantity) {
+      selectedQuantity.value++;
       applyVolumePricing(); // Update price based on new quantity
     } else {
       // Show snackbar if trying to exceed available stock
@@ -194,8 +200,8 @@ class ProductDetailsController extends GetxController {
   }
 
   void decreaseQuantity() {
-    if (selectedquantity.value > 1) {
-      selectedquantity.value--;
+    if (selectedQuantity.value > 1) {
+      selectedQuantity.value--;
       applyVolumePricing(); // Update price based on new quantity
     }
   }

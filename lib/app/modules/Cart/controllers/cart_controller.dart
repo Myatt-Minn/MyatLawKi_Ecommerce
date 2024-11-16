@@ -8,13 +8,16 @@ class CartController extends GetxController {
   var cartItems = <CartItem>[].obs;
   var totalAmount = 0.0.obs;
   final storage = GetStorage();
+
   // Getter for cart item count
   int get itemCount => cartItems.length;
+
   @override
   void onInit() {
     super.onInit();
     cartItems
         .listen((_) => calculateTotalAmount()); // Recalculate when cart changes
+    loadCartFromStorage(); // Load cart from storage on initialization
   }
 
   void addItem(CartItem item) {
@@ -22,37 +25,19 @@ class CartController extends GetxController {
     var existingItemIndex = cartItems.indexWhere(
       (cartItem) =>
           cartItem.productId == item.productId &&
-          cartItem.size == item.size &&
-          cartItem.color == item.color,
+          cartItem.productVariationId == item.productVariationId &&
+          cartItem.optionId == item.optionId,
     );
 
     if (existingItemIndex != -1) {
       // Item exists, increase quantity
       var existingItem = cartItems[existingItemIndex];
-      if (existingItem.quantity + item.quantity <= item.stock) {
-        cartItems[existingItemIndex] = existingItem.copyWith(
-          quantity: existingItem.quantity + item.quantity,
-        );
-      } else {
-        Get.snackbar(
-          "Stock Limit",
-          "You cannot add more than ${item.stock} of this item",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
+      cartItems[existingItemIndex] = existingItem.copyWith(
+        quantity: existingItem.quantity + item.quantity,
+      );
     } else {
       // Add as a new item
-      if (item.quantity <= item.stock) {
-        cartItems.add(item);
-      } else {
-        Get.snackbar(
-          "Stock Limit",
-          "You cannot add more than ${item.stock} of this item",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
+      cartItems.add(item);
     }
 
     calculateTotalAmount();
@@ -109,7 +94,7 @@ class CartController extends GetxController {
   void saveCartToStorage() {
     List<Map<String, dynamic>> cartData = cartItems
         .map((item) =>
-            item.toJson()) // Assuming you have a toJson method in CartItem
+            item.toMap()) // Assuming you have a toMap method in CartItem
         .toList();
     storage.write('cart', cartData); // Save the cart to storage
   }
@@ -118,7 +103,7 @@ class CartController extends GetxController {
     List<dynamic> storedCart = storage.read<List<dynamic>>('cart') ?? [];
     cartItems.value = storedCart
         .map((item) =>
-            CartItem.fromJson(item)) // Assuming you have a fromJson method
+            CartItem.fromMap(item)) // Assuming you have a fromMap method
         .toList();
     updateTotalAmount();
   }

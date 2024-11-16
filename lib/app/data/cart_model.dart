@@ -1,69 +1,66 @@
 class CartItem {
-  final String productId;
-  final String name;
-  final String imageUrl;
+  final int productId;
+  final int productVariationId;
+  final int optionId;
+  final int quantity;
   final double price;
+  final String name;
   final String size;
   final String color;
-  final int quantity;
-  final int stock; // Add this property to track available stock
+  final String imageUrl;
 
   CartItem({
     required this.productId,
-    required this.name,
-    required this.imageUrl,
-    required this.price,
-    required this.size,
-    required this.color,
+    required this.productVariationId,
+    required this.optionId,
     required this.quantity,
-    required this.stock,
+    required this.price,
+    required this.name,
+    required this.color,
+    required this.size,
+    required this.imageUrl,
   });
 
-  CartItem copyWith({
-    String? productId,
-    String? name,
-    String? imageUrl,
-    double? price,
-    String? size,
-    String? color,
-    int? quantity,
-    int? stock,
-  }) {
-    return CartItem(
-      productId: productId ?? this.productId,
-      name: name ?? this.name,
-      imageUrl: imageUrl ?? this.imageUrl,
-      price: price ?? this.price,
-      size: size ?? this.size,
-      color: color ?? this.color,
-      quantity: quantity ?? this.quantity,
-      stock: stock ?? this.stock,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
+  // Convert CartItem to a map (for storing in Firestore or local storage)
+  Map<String, dynamic> toMap() {
     return {
-      'productId': productId,
-      'name': name,
-      'imageUrl': imageUrl,
+      'product_id': productId,
+      'product_variation_id': productVariationId,
+      'optionId': optionId,
+      'quantity': quantity,
       'price': price,
+      'name': name,
       'size': size,
       'color': color,
-      'quantity': quantity,
-      'stock': stock,
+      'imageUrl': imageUrl
     };
   }
 
-  factory CartItem.fromJson(Map<String, dynamic> json) {
+  // Convert map to CartItem
+  factory CartItem.fromMap(Map<String, dynamic> map) {
     return CartItem(
-      productId: json['productId'],
-      name: json['name'],
-      imageUrl: json['imageUrl'],
-      price: json['price'],
-      size: json['size'],
-      color: json['color'],
-      quantity: json['quantity'],
-      stock: json['stock'], // Ensure this is included in your JSON
+      productId: map['product_id'],
+      productVariationId: map['product_variation_id'],
+      optionId: map['optionId'],
+      quantity: map['quantity'],
+      price: map['price'],
+      name: map['name'],
+      size: map['size'],
+      color: map['color'],
+      imageUrl: map['imageUrl'],
     );
+  }
+
+  CartItem copyWith({int? quantity}) {
+    return CartItem(
+        productId: productId,
+        productVariationId: productVariationId,
+        optionId: optionId,
+        quantity: quantity ?? this.quantity,
+        price: price,
+        name: name,
+        size: size,
+        color: color,
+        imageUrl: imageUrl);
   }
 }

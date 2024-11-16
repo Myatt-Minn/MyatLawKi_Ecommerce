@@ -145,11 +145,13 @@ class Variation {
 }
 
 class VariationOption {
+  final int id;
   final String name;
   final int quantity;
   final double price;
 
   VariationOption({
+    required this.id,
     required this.name,
     required this.quantity,
     required this.price,
@@ -157,6 +159,7 @@ class VariationOption {
 
   factory VariationOption.fromJson(Map<String, dynamic> json) {
     return VariationOption(
+      id: json['id'],
       name: json['name'],
       quantity: json['quantity'],
       price: (json['price'] as num).toDouble(),

@@ -16,7 +16,6 @@ class EditProfileController extends GetxController {
   var isLoading = false.obs;
   var isProfileImageChooseSuccess = false.obs;
   File? profileImage;
-  var prof = ''.obs;
 
   // Text controllers for the TextFields
   late TextEditingController fullNameController;

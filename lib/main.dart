@@ -15,6 +15,7 @@ void main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   SendNotificationHandler.initialized();
   FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
   SystemChrome.setPreferredOrientations([

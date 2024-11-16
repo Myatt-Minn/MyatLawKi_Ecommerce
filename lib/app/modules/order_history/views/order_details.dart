@@ -78,7 +78,7 @@ class OrderDetails extends StatelessWidget {
           children: [
             Text(
               "Status: ${order.status}",
-              style: const TextStyle(fontSize: 16, color: Colors.red),
+              style: const TextStyle(fontSize: 16, color: Colors.yellow),
             ),
             const SizedBox(height: 5),
             Text(
@@ -160,34 +160,33 @@ class OrderDetails extends StatelessWidget {
   }
 
   Widget _buildTransitionImage() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Transition Image",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+    return order.payment != null
+        ? Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
             ),
-          ),
-          const SizedBox(height: 8),
-          order.paymentPhoto != null
-              ? Image.network(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Transition Image",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Image.network(
                   order.paymentPhoto!,
                   height: 100,
                   fit: BoxFit.cover,
                 )
-              : const Text("No image available"),
-        ],
-      ),
-    );
+              ],
+            ))
+        : Container();
   }
 
   Widget _buildCustomerInfo() {

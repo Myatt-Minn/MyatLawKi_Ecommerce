@@ -44,7 +44,8 @@ class PaymentView extends GetView<PaymentController> {
                     image: payment.payment_logo,
                     isSelected:
                         controller.selectedPayment.value == payment.name,
-                    onSelect: () => controller.selectPayment(payment.name),
+                    onSelect: () =>
+                        controller.selectPayment(payment.name, payment.id),
                   );
                 }).toList(),
               );
@@ -63,8 +64,9 @@ class PaymentView extends GetView<PaymentController> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: controller.transitionImage.value == ""
-                      ? Center(
+                  child: controller.isProfileImageChooseSuccess.value
+                      ? Image.file(controller.file!)
+                      : Center(
                           child: controller.isLoading.value
                               ? const CircularProgressIndicator()
                               : const Column(
@@ -77,10 +79,6 @@ class PaymentView extends GetView<PaymentController> {
                                         style: TextStyle(color: Colors.white))
                                   ],
                                 ),
-                        )
-                      : Image.network(
-                          controller.transitionImage.value,
-                          fit: BoxFit.cover,
                         ),
                 ),
               ),
@@ -89,7 +87,8 @@ class PaymentView extends GetView<PaymentController> {
             Obx(() {
               return ElevatedButton(
                 // onPressed: () => controller.confirmPayment(),
-                onPressed: () {},
+                onPressed: () => controller.confirmPayment(),
+
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
                   backgroundColor: ConstsConfig.secondarycolor,
