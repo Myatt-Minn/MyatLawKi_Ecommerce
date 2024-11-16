@@ -11,7 +11,7 @@ import 'package:myat_ecommerence/app/modules/productCard/controllers/product_car
 class NavigationScreenController extends GetxController {
   //TODO: Implement NavigationScreenController
   var currentIndex = 0.obs;
-
+  DateTime? lastPressed;
   @override
   void onInit() async {
     super.onInit();

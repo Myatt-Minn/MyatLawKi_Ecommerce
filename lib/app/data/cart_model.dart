@@ -26,7 +26,7 @@ class CartItem {
     return {
       'product_id': productId,
       'product_variation_id': productVariationId,
-      'optionId': optionId,
+      'option_id': optionId,
       'quantity': quantity,
       'price': price,
       'name': name,
@@ -41,7 +41,7 @@ class CartItem {
     return CartItem(
       productId: map['product_id'],
       productVariationId: map['product_variation_id'],
-      optionId: map['optionId'],
+      optionId: map['option_id'],
       quantity: map['quantity'],
       price: map['price'],
       name: map['name'],

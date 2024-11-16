@@ -148,16 +148,13 @@ class CheckOutController extends GetxController {
   }
 
   Future<void> createOrder() async {
+    // Get the authentication token (assuming it's stored in local storage or session)
     final authService = Tokenhandler();
     final token = await authService.getToken();
 
     if (token == null) {
-      Get.snackbar(
-        "Authentication Error",
-        "User is not logged in.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Authentication Error", "User is not logged in.",
+          backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
@@ -168,16 +165,14 @@ class CheckOutController extends GetxController {
       'name': nameController.text,
       'address': addressController.text,
       'phone': phoneNumberController.text,
-      'payment_method': 'cod', // Adjust payment method if needed
+      'payment_method': 'cod',
       'carts': json.encode(
         cartItems.map((item) => item.toMap()).toList(),
-      ),
+      ), // Convert CartItem to Map and then encode as JSON string
       'region_id': selectedRegion.value!.id.toString(),
       'delivery_fee_id': feeId,
       'delivery_fee': selectedFee.value,
     };
-
-    print('Request Body: ${json.encode(requestBody)}'); // Log the request body
 
     try {
       final response = await http.post(
@@ -189,45 +184,18 @@ class CheckOutController extends GetxController {
         body: json.encode(requestBody),
       );
 
-      print('Response Status: ${response.statusCode}');
-      print('Response Body: ${response.body}'); // Log the response body
-
       if (response.statusCode == 200) {
         // Successfully created order
-        Get.snackbar(
-          "Success",
-          'Success',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        Get.offNamed('/order-success');
       } else {
         // Handle error response
-        try {
-          final responseBody = json.decode(response.body);
-          Get.snackbar(
-            "Order Error",
-            'An error occurred.',
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        } catch (e) {
-          // Fallback for non-JSON error responses
-          Get.snackbar(
-            "Order Error",
-            "Unexpected error:",
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
+        final responseBody = json.decode(response.body);
+        Get.snackbar(
+            "Order Error", responseBody['message'] ?? 'An error occurred.',
+            backgroundColor: Colors.red, colorText: Colors.white);
       }
     } catch (e) {
       print('Error creating order: $e');
-      Get.snackbar(
-        "Network Error",
-        "Failed to create order. Please try again.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
     }
   }
 
