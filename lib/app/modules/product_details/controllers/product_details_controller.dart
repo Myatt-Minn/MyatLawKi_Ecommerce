@@ -139,7 +139,7 @@ class ProductDetailsController extends GetxController {
             item.productId == product.value!.id &&
             item.productVariationId == selectedVariation.id &&
             item.optionId == selectedOption.id)
-        .fold(0, (sum, item) => sum + item.quantity);
+        .fold(0, (sum, item) => sum + item.quantity!);
 
     if (totalCartQuantity + selectedQuantity.value > selectedOption.quantity) {
       Get.snackbar("Stock Limit",
