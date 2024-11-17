@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myat_ecommerence/app/data/comment_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/Feeds/controllers/feeds_controller.dart';
+import 'package:myat_ecommerence/app/modules/account/controllers/account_controller.dart';
+import 'package:myat_ecommerence/app/modules/login/views/login_view.dart';
 
 import '../app/data/post_model.dart';
 
@@ -19,6 +21,7 @@ class CommentAlertWidget extends StatefulWidget {
 }
 
 class _CommentAlertWidgetState extends State<CommentAlertWidget> {
+  final AccountController accountController=Get.put(AccountController());
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -401,12 +404,18 @@ class _CommentAlertWidgetState extends State<CommentAlertWidget> {
                               //                 widget.controller.parent_id.value);
 
                               //         /* if(widget.authController.appToken.isNotEmpty){
-                              //   widget.controller.comment(post_id: widget.controller.postData.value.id!.toInt(), user_id: widget.controller.postData.value.userId!.toInt(), body: widget.controller.commentController.text, parient_id: widget.controller.parent_id.value);
+                              //
 
                               // }else{
                               //   Get.toNamed(RouteConstant.login);
                               // }*/
                               //       });
+
+                              if(accountController.currentUser.value!=null){
+                                widget.controller.comment(post_id: widget.controller.postData.value.id!.toInt(), userID: accountController.currentUser.value!.id, body: widget.controller.commentController.text, parient_id: widget.controller.parent_id.value);
+                              }else{
+                                Get.to(LoginView());
+                              }
                             },
                             icon: Icon(
                               Icons.send,

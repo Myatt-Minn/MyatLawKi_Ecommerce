@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myat_ecommerence/app/data/comment_model.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/Feeds/controllers/feeds_controller.dart';
+import 'package:myat_ecommerence/app/modules/account/controllers/account_controller.dart';
 import 'package:myat_ecommerence/global_widgets/view_all_images.dart';
 
 import '../app/data/post_model.dart';
@@ -26,6 +27,7 @@ class NewfeedDetailPage extends StatefulWidget {
 }
 
 class _NewFeedDetailPageState extends State<NewfeedDetailPage> {
+  final AccountController accountController=Get.put(AccountController());
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -559,7 +561,7 @@ class _NewFeedDetailPageState extends State<NewfeedDetailPage> {
                                   widget.controller.comment(
                                       post_id:
                                           builder.postData.value.id!.toInt(),
-                                      userID: widget.controller.userID,
+                                      userID: accountController.currentUser.value!.id,
                                       body: builder.commentController.text,
                                       parient_id: builder.parent_id.value);
                                 }
