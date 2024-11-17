@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 
 import '../controllers/splash_controller.dart';
 
@@ -8,7 +9,7 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ConstsConfig.primarycolor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -18,7 +19,7 @@ class SplashView extends GetView<SplashController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/tran_logo.jpg', // Replace with the path to your logo image
+                    'assets/logo.png', // Replace with the path to your logo image
                     width: MediaQuery.of(context).size.width,
                     height: 250,
                   ),

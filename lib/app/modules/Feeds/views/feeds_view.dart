@@ -20,9 +20,17 @@ class FeedsView extends GetView<FeedsController> {
         automaticallyImplyLeading: false,
         backgroundColor:
             const Color(0xFF5D3A2D), // Same color as the background
-        title: Image.asset(
+        leading: Image.asset(
           'assets/icon.png', // Replace with your logo image path
           height: 50,
+        ),
+        title: Text(
+          "မြတ် - လောကီအစီအရင်များ".tr,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: false,
         actions: [

@@ -75,7 +75,11 @@ class AppPages {
       page: () => const AuthGateView(),
       binding: AuthGateBinding(),
     ),
-
+    /*GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),*/
     GetPage(
       name: _Paths.NOTIFICATION,
       page: () => const NotificationView(),

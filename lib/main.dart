@@ -34,7 +34,7 @@ void main() async {
             : const Locale('my', 'MM'),
         fallbackLocale:
             const Locale('en', 'US'), // Set a fallback language (e.g., English)
-        title: "MyatEcommerce",
+        title: "Myat Ecommerce",
         initialRoute: AppPages.INITIAL,
         getPages: AppPages.routes,
         initialBinding: AuthGateBinding(),

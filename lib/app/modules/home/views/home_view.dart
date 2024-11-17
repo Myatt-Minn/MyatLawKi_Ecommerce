@@ -33,11 +33,11 @@ class HomeView extends GetView<HomeController> {
                           height: 50,
                         ),
                         const SizedBox(width: 10),
-                        const Column(
+                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Ecommerce App",
+                              "မြတ် - လောကီအစီအရင်များ".tr,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

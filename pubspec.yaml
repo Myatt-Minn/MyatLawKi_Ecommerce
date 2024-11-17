@@ -54,8 +54,8 @@ dev_dependencies:
   flutter_native_splash: ^2.4.2
 
 flutter_native_splash: # Add this at the top level, not indented under anything
-  color: "#FFFFFF" # Background color
-  image: assets/tran_logo.jpg # Default splash screen image
+  color: "#471E04" # Background color
+  image: assets/splash.jpg # Default splash screen image
   android: true # Enable for Android
   ios: true # Enable for iOS
   web: false # Disable for Web
