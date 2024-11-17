@@ -76,7 +76,6 @@ class ProductCardController extends GetxController {
         Uri.parse(url),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
         },
       );
 

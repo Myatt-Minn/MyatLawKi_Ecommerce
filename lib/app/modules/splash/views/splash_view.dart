@@ -8,7 +8,7 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           children: [
@@ -18,7 +18,7 @@ class SplashView extends GetView<SplashController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/a.jpg', // Replace with the path to your logo image
+                    'assets/tran_logo.jpg', // Replace with the path to your logo image
                     width: MediaQuery.of(context).size.width,
                     height: 250,
                   ),

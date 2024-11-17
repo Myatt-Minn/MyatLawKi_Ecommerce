@@ -92,7 +92,7 @@ class PostCardView extends GetView<FeedsController> {
                             Get.to(ViewAllImagesScreen(images: post.images, indexImg: 1,));
 
                           },
-                          child: MyCacheImg(url: post.images![1].path.toString(), boxfit: BoxFit.fill, borderRadius: BorderRadius.zero,height: screenHeight/6),
+                          child: MyCacheImg(url: post.images![1].path.toString(), boxfit: BoxFit.cover, borderRadius: BorderRadius.zero,height: screenHeight/6),
                         )),
                         const SizedBox(height: 3),
                         Flexible(child: InkWell(
@@ -101,7 +101,7 @@ class PostCardView extends GetView<FeedsController> {
 
 
                           },
-                          child: MyCacheImg(url: post.images![2].path.toString(), boxfit: BoxFit.fill, borderRadius: BorderRadius.zero,height: screenHeight/6),
+                          child: MyCacheImg(url: post.images![2].path.toString(), boxfit: BoxFit.cover, borderRadius: BorderRadius.zero,height: screenHeight/6),
                         )),
                       ],
                     )
