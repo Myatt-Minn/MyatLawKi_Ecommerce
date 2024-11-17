@@ -21,7 +21,7 @@ class FeedsView extends GetView<FeedsController> {
         backgroundColor:
             const Color(0xFF5D3A2D), // Same color as the background
         title: Image.asset(
-          'assets/logo.png', // Replace with your logo image path
+          'assets/icon.png', // Replace with your logo image path
           height: 50,
         ),
         centerTitle: false,
@@ -34,7 +34,7 @@ class FeedsView extends GetView<FeedsController> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      controller.checkAndPromptLogin();
+                      controller.checkLogin();
                     },
                   ),
                   if (Get.find<NotificationController>().itemCount >

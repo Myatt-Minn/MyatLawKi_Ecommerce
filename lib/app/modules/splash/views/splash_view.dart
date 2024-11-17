@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/loader/gf_loader.dart';
-import 'package:getwidget/types/gf_loader_type.dart';
-import 'package:myat_ecommerence/app/data/consts_config.dart';
 
 import '../controllers/splash_controller.dart';
 
@@ -11,8 +8,7 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).primaryColor, // Set the background color
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Stack(
           children: [
@@ -22,24 +18,13 @@ class SplashView extends GetView<SplashController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/icon.png', // Replace with the path to your logo image
-                    width: 150,
-                    height: 150,
+                    'assets/a.jpg', // Replace with the path to your logo image
+                    width: MediaQuery.of(context).size.width,
+                    height: 250,
                   ),
                   const SizedBox(height: 30),
-                  const Text(
-                    ConstsConfig.appname, // Replace with your app name
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
                   const SizedBox(
                     height: 100,
-                  ),
-                  const GFLoader(
-                    type: GFLoaderType.android,
                   ),
                   const SizedBox(
                     height: 50,
@@ -70,7 +55,7 @@ class SplashView extends GetView<SplashController> {
               left: 0,
               child: Center(
                 child: Text(
-                  '© 2024 Tech4MM. All rights reserved.', // Updated copyright text, // Replace with your desired footer text
+                  '© 2024 app.com.mm. All rights reserved.', // Updated copyright text, // Replace with your desired footer text
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.normal,

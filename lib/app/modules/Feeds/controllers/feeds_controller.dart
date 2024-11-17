@@ -40,6 +40,9 @@ class FeedsController extends GetxController {
     if (token == null) {
       Get.defaultDialog(
         title: "login_first".tr,
+        titleStyle: TextStyle(color: Colors.white),
+        backgroundColor: ConstsConfig.primarycolor,
+        buttonColor: Colors.white,
         content: Text('to_proceed'.tr),
         textConfirm: "OK",
         onConfirm: () {
@@ -50,6 +53,33 @@ class FeedsController extends GetxController {
     } else {
       fetchUserData();
       return true;
+    }
+  }
+
+  void checkLogin() async {
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
+
+    if (token == null) {
+      Get.defaultDialog(
+        title: "login_first".tr,
+        titleStyle: TextStyle(color: Colors.white),
+        middleTextStyle: TextStyle(color: Colors.white),
+        backgroundColor: ConstsConfig.primarycolor,
+        confirmTextColor: Colors.black,
+        buttonColor: Colors.white,
+        content: Text(
+          'to_proceed'.tr,
+          style: TextStyle(color: Colors.white),
+        ),
+        textConfirm: "OK",
+        onConfirm: () {
+          Get.offNamed('/login'); // Navigate to the login screen
+        },
+      );
+    } else {
+      // Proceed to checkout if logged in
+      Get.toNamed('/notification');
     }
   }
 

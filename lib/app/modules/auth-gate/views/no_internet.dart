@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/modules/auth-gate/controllers/auth_gate_controller.dart';
 
 class NoInternetScreen extends StatelessWidget {
@@ -13,11 +14,12 @@ class NoInternetScreen extends StatelessWidget {
           title: Text('no_connection'.tr),
           centerTitle: true,
         ),
+        backgroundColor: ConstsConfig.primarycolor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('images/no_connection.jpg', height: 200),
+              Image.asset('assets/noInter.png', height: 200),
               const SizedBox(height: 20),
               const Text(
                 'You are not connected to the internet.',

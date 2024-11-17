@@ -19,7 +19,7 @@ class SplashController extends GetxController {
     final bool? repeat = box.read('repeat');
     if (repeat == null) {
       await box.write('repeat', true);
-      Get.offAllNamed('/onboarding');
+      Get.offAllNamed('/auth-gate');
     } else {
       Get.offAllNamed('/auth-gate');
     }

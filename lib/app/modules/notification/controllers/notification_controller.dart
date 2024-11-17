@@ -56,7 +56,7 @@ class NotificationController extends GetxController {
         throw Exception('Failed to load banners');
       }
     } catch (e) {
-      print('Error fetching banners: $e');
+      print('Error fetching notifications: $e');
     }
   }
 

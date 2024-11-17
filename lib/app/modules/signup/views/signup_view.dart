@@ -27,7 +27,7 @@ class SignupView extends GetView<SignupController> {
                 child: Row(
                   children: [
                     Image.asset(
-                      'assets/logo.png', // Replace with your logo path
+                      'assets/a.jpg', // Replace with your logo path
                       width: 140,
                       height: 140,
                     ),

@@ -82,7 +82,15 @@ class AccountController extends GetxController {
     if (token == null) {
       Get.defaultDialog(
         title: "login_first".tr,
-        content: Text('to_proceed'.tr),
+        titleStyle: TextStyle(color: Colors.white),
+        middleTextStyle: TextStyle(color: Colors.white),
+        backgroundColor: ConstsConfig.primarycolor,
+        confirmTextColor: Colors.black,
+        buttonColor: Colors.white,
+        content: Text(
+          'to_proceed'.tr,
+          style: TextStyle(color: Colors.white),
+        ),
         textConfirm: "OK",
         onConfirm: () {
           Get.offNamed('/login'); // Navigate to the login screen

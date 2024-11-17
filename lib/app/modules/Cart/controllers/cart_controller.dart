@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:myat_ecommerence/app/data/cart_model.dart';
+import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class CartController extends GetxController {
@@ -71,7 +72,15 @@ class CartController extends GetxController {
     if (token == null) {
       Get.defaultDialog(
         title: "login_first".tr,
-        content: Text('to_proceed'.tr),
+        titleStyle: TextStyle(color: Colors.white),
+        middleTextStyle: TextStyle(color: Colors.white),
+        backgroundColor: ConstsConfig.primarycolor,
+        confirmTextColor: Colors.black,
+        buttonColor: Colors.white,
+        content: Text(
+          'to_proceed'.tr,
+          style: TextStyle(color: Colors.white),
+        ),
         textConfirm: "OK",
         onConfirm: () {
           Get.offNamed('/login'); // Navigate to the login screen

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ConstsConfig {
   static const String appname = "MyatEcommerence";
-  static const String logo = "assets/logo.png";
+  static const String logo = "assets/a.jpg";
   static const String person = "assets/person.png";
   static const String fbLink =
       "https://www.facebook.com/profile.php?id=100075884784099&mibextid=ZbWKwL ";

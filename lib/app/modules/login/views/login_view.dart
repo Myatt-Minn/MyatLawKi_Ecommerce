@@ -42,59 +42,76 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(height: 30),
 
               // Phone Number input
-              TextField(
-                controller: controller.phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  errorText: controller.emailError.value.isEmpty
-                      ? null
-                      : controller.emailError.value,
-                  labelText: 'ဖုန်းနံပါတ်',
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintText: 'E.g 09123456',
-                  hintStyle: TextStyle(color: Colors.grey[500]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'ဖုန်းနံပါတ်',
+                    style: TextStyle(color: Colors.white),
                   ),
-                ),
-                onChanged: (value) => controller.clearErrorMessages(),
+                  const SizedBox(height: 5),
+                  Obx(
+                    () => TextField(
+                      controller: controller.phoneController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        errorText: controller.emailError.value.isEmpty
+                            ? null
+                            : controller.emailError.value,
+                        fillColor: Colors.white,
+                        labelStyle: TextStyle(color: Colors.black),
+                        hintText: 'E.g 09123456',
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
               const SizedBox(height: 20),
 
               // Password input
-              Obx(() => TextField(
-                    controller: controller.passwordController,
-                    obscureText: controller.isPasswordHidden.value,
-                    decoration: InputDecoration(
-                      filled: true,
-                      errorText: controller.passwordError.value.isEmpty
-                          ? null
-                          : controller.passwordError.value,
-                      fillColor: Colors.white,
-                      labelText: 'စကားဝှက်',
-                      labelStyle: TextStyle(color: Colors.black),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isPasswordHidden.value
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'စကားဝှက်နံပါတ်',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 5),
+                  Obx(
+                    () => TextField(
+                      controller: controller.passwordController,
+                      obscureText: controller.isPasswordHidden.value,
+                      decoration: InputDecoration(
+                        hintText: '*************',
+                        errorText: controller.passwordError.value.isEmpty
+                            ? null
+                            : controller.passwordError.value,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        filled: true,
+                        fillColor: Colors.white,
+                        suffixIcon: IconButton(
+                          icon: Icon(controller.isPasswordHidden.value
                               ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.black54,
+                              : Icons.visibility),
+                          onPressed: () {
+                            controller.isPasswordHidden.value =
+                                !controller.isPasswordHidden.value;
+                          },
                         ),
-                        onPressed: () {
-                          controller.isPasswordHidden.value =
-                              !controller.isPasswordHidden.value;
-                        },
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
-                    onChanged: (value) => controller.clearErrorMessages(),
-                  )),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
 
               // Sign In Button
