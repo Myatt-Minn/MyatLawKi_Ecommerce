@@ -101,97 +101,136 @@ class CartView extends GetView<CartController> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     const SizedBox(width: 8),
-                                    IconButton(
-                                        onPressed: () =>
-                                            _showDeleteConfirmation(item),
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Colors.red,
-                                        )),
                                     Row(
                                       children: [
-                                        InkWell(
-                                          onTap: (){
-                                            if(controller.cartItems[index].quantity!>1){
-                                              for(var map in controller.cartItems){
-                                                if(map.optionId==controller.cartItems[index].optionId){
-                                                  map.quantity=(controller.cartItems[index].quantity!-1)!;
+                                        Column(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                for (var map
+                                                    in controller.cartItems) {
+                                                  if (map.optionId ==
+                                                      controller
+                                                          .cartItems[index]
+                                                          .optionId) {
+                                                    map.quantity = (controller
+                                                            .cartItems[index]
+                                                            .quantity! +
+                                                        1);
+                                                  }
                                                 }
-                                              }
-                                            }else{
-                                              Get.snackbar("Warming", "Can't less than 1");
-                                            }
-
-                                            controller.cartItems.refresh();
-                                            controller.saveCartToStorage();
-
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 14, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            child: Text(
-                                              "-",
-                                              style: const TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 21,
+                                                controller.cartItems.refresh();
+                                                controller.saveCartToStorage();
+                                              },
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[200],
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  "+",
+                                                  style: const TextStyle(
+                                                    color: Colors.green,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 19,
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Text(
+                                                item.quantity.toString(),
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                if (controller.cartItems[index]
+                                                        .quantity! >
+                                                    1) {
+                                                  for (var map
+                                                      in controller.cartItems) {
+                                                    if (map.optionId ==
+                                                        controller
+                                                            .cartItems[index]
+                                                            .optionId) {
+                                                      map.quantity = (controller
+                                                              .cartItems[index]
+                                                              .quantity! -
+                                                          1);
+                                                    }
+                                                  }
+                                                } else {
+                                                  Get.snackbar("Warming",
+                                                      "Can't less than 1");
+                                                }
+
+                                                controller.cartItems.refresh();
+                                                controller.saveCartToStorage();
+                                              },
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 14,
+                                                        vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[200],
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  "-",
+                                                  style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 21,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(width: 10,),
+                                        const SizedBox(width: 8),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 4),
                                           decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            borderRadius: BorderRadius.circular(12),
+                                            color: ConstsConfig.primarycolor,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                           ),
-                                          child: Text(
-                                            item.quantity.toString(),
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
+                                          child: IconButton(
+                                              onPressed: () =>
+                                                  _showDeleteConfirmation(item),
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.yellow,
+                                              )),
                                         ),
-                                        SizedBox(width: 10,),
-                                        InkWell(
-                                          onTap: (){
-                                            for(var map in controller.cartItems){
-                                              if(map.optionId==controller.cartItems[index].optionId){
-                                                map.quantity=(controller.cartItems[index].quantity!+1)!;
-                                              }
-                                            }
-                                            controller.cartItems.refresh();
-                                            controller.saveCartToStorage();
-
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            child: Text(
-                                              "+",
-                                              style: const TextStyle(
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        )
                                       ],
                                     ),
-
                                   ],
                                 ),
                               ],
@@ -307,9 +346,7 @@ class CartView extends GetView<CartController> {
       ),
     );
   }
-  
 
-  
   void _showDeleteConfirmation(CartItem item) {
     Get.defaultDialog(
       title: "Delete Item",

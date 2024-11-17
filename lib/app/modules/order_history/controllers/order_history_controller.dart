@@ -53,33 +53,6 @@ class OrderHistoryController extends GetxController {
       Get.snackbar("Error", "Error loading data");
     }
   }
-  // Future<void> fetchOrderHistory() async {
-  //   try {
-  //     isLoading(true); // Set loading to true
-
-  //     // Get the current user's ID
-  //     String userId = FirebaseAuth.instance.currentUser!.uid;
-
-  //     // Query Firestore to get orders for the current user, ordered by 'orderDate' in descending order
-  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-  //         .collection('orders')
-  //         .where('userId', isEqualTo: userId) // Filter by userId
-  //         .orderBy('orderDate', descending: true) // Order by 'orderDate'
-  //         .get();
-
-  //     // Map Firestore documents to OrderItem model using the fromMap method
-  //     var orders = querySnapshot.docs.map((doc) {
-  //       final data = doc.data() as Map<String, dynamic>;
-  //       return OrderItem.fromMap(data); // Use the fromMap function here
-  //     }).toList();
-
-  //     orderList.assignAll(orders); // Update reactive order list
-  //   } catch (e) {
-  //     print(e.toString());
-  //   } finally {
-  //     isLoading(false); // Set loading to false
-  //   }
-  // }
 
   String formatDate(String dateString) {
     // Parse the date string into a DateTime object

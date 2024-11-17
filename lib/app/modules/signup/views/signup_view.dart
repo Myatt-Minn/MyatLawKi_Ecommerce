@@ -81,20 +81,25 @@ class SignupView extends GetView<SignupController> {
                           style: TextStyle(color: Colors.white),
                         ),
                         const SizedBox(height: 5),
-                        TextField(
-                          controller: controller.nameController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelStyle: TextStyle(color: Colors.black),
-                            hintText: 'Myat Min',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                        Obx(
+                          () => TextField(
+                            controller: controller.nameController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              errorText: controller.nameError.value.isEmpty
+                                  ? null
+                                  : controller.nameError.value,
+                              fillColor: Colors.white,
+                              labelStyle: TextStyle(color: Colors.black),
+                              hintText: 'Myat Min',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                     const SizedBox(height: 15),
@@ -107,20 +112,25 @@ class SignupView extends GetView<SignupController> {
                           style: TextStyle(color: Colors.white),
                         ),
                         const SizedBox(height: 5),
-                        TextField(
-                          controller: controller.emailController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelStyle: TextStyle(color: Colors.black),
-                            hintText: 'E.g Myat@gmail.com',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                        Obx(
+                          () => TextField(
+                            controller: controller.emailController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              errorText: controller.emailError.value.isEmpty
+                                  ? null
+                                  : controller.emailError.value,
+                              fillColor: Colors.white,
+                              labelStyle: TextStyle(color: Colors.black),
+                              hintText: 'E.g Myat@gmail.com',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                     const SizedBox(height: 15),
@@ -133,20 +143,25 @@ class SignupView extends GetView<SignupController> {
                           style: TextStyle(color: Colors.white),
                         ),
                         const SizedBox(height: 5),
-                        TextField(
-                          controller: controller.phoneController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelStyle: TextStyle(color: Colors.black),
-                            hintText: 'E.g 09123456',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                        Obx(
+                          () => TextField(
+                            controller: controller.phoneController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              errorText: controller.phoneError.value.isEmpty
+                                  ? null
+                                  : controller.phoneError.value,
+                              fillColor: Colors.white,
+                              labelStyle: TextStyle(color: Colors.black),
+                              hintText: 'E.g 09123456',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                     const SizedBox(height: 15),
@@ -165,13 +180,16 @@ class SignupView extends GetView<SignupController> {
                             obscureText: controller.isPasswordHidden.value,
                             decoration: InputDecoration(
                               hintText: '*************',
+                              errorText: controller.passwordError.value.isEmpty
+                                  ? null
+                                  : controller.passwordError.value,
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               filled: true,
                               fillColor: Colors.white,
                               suffixIcon: IconButton(
                                 icon: Icon(controller.isPasswordHidden.value
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
                                 onPressed: () {
                                   controller.isPasswordHidden.value =
                                       !controller.isPasswordHidden.value;
@@ -202,18 +220,10 @@ class SignupView extends GetView<SignupController> {
                             obscureText: controller.isPasswordHidden.value,
                             decoration: InputDecoration(
                               hintText: '*************',
+                              errorText: controller.confirmPasswordError.value,
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               filled: true,
                               fillColor: Colors.white,
-                              suffixIcon: IconButton(
-                                icon: Icon(controller.isPasswordHidden.value
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                                onPressed: () {
-                                  controller.isPasswordHidden.value =
-                                      !controller.isPasswordHidden.value;
-                                },
-                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide.none,
@@ -223,7 +233,7 @@ class SignupView extends GetView<SignupController> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+
                     // Terms & Conditions Checkbox
                     Obx(
                       () => Row(
@@ -276,6 +286,9 @@ class SignupView extends GetView<SignupController> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: 30,
                     ),
                   ],
                 ),

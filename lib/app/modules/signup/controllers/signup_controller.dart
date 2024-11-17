@@ -10,7 +10,7 @@ import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 class SignupController extends GetxController {
   //TODO: Implement SignupController
 
-  var isPasswordHidden = false.obs;
+  var isPasswordHidden = true.obs;
   var isConfirmPasswordHidden = true.obs;
   var isLoading = false.obs;
   var agreeTerms = false.obs;
@@ -27,6 +27,7 @@ class SignupController extends GetxController {
   var emailError = ''.obs;
   var passwordError = ''.obs;
   var confirmPasswordError = ''.obs;
+  var phoneError = ''.obs;
 
   // Toggles for password visibility
   void togglePasswordVisibility() {
@@ -58,10 +59,10 @@ class SignupController extends GetxController {
     }
     // Email validation
     if (!GetUtils.isPhoneNumber(phoneController.text)) {
-      emailError.value = 'Please enter a valid email';
+      phoneError.value = 'Please enter a valid email';
       isValid = false;
     } else {
-      emailError.value = '';
+      phoneError.value = '';
     }
     // Password validation
     if (passwordController.text.length < 6) {
@@ -97,7 +98,10 @@ class SignupController extends GetxController {
             await SendNotificationHandler.getDeviceTokenToSendNotification();
         final response = await http.post(
           Uri.parse(url),
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
           body: json.encode({
             'name': nameController.text,
             'email': emailController.text,
@@ -120,18 +124,27 @@ class SignupController extends GetxController {
           // Navigate to the home page or perform other actions after login
           Get.offAllNamed('/navigation-screen');
         } else {
-          print("Response status code: ${response.statusCode}");
-          print("Response body: ${response.body}");
-          Get.snackbar('Error', "Fail to signup",
-              snackPosition: SnackPosition.BOTTOM);
+          final responseBody = json.decode(response.body);
+          final errorMessage = responseBody['message'] ?? 'Sign-up failed';
+          Get.snackbar(
+            'Error',
+            errorMessage,
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
       } catch (e) {
-        Get.snackbar('Error', e.toString(),
-            snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          'Error',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } else {
-      Get.snackbar('Error', "Please fill all the fields",
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Error',
+        "Please fill all the fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 

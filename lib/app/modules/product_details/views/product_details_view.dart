@@ -161,7 +161,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       ),
                       Text(
                         controller.quantity.value == 0
-                            ? ""
+                            ? 'choose_one'.tr
                             : "${controller.quantity.value} in Stock",
                         style: TextStyle(color: Colors.white),
                       )

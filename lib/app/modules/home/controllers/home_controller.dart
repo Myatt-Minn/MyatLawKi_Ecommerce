@@ -109,7 +109,7 @@ class HomeController extends GetxController {
 
     if (token == null) {
       Get.defaultDialog(
-        title: "Login First",
+        title: "login_first".tr,
         content: Text('to_proceed'.tr),
         textConfirm: "OK",
         onConfirm: () {

@@ -98,14 +98,23 @@ class AccountView extends GetView<AccountController> {
               children: [
                 const SizedBox(height: 20),
                 _buildMenuItem(Icons.access_time_outlined, 'order_history'.tr,
-                    () {
-                  Get.toNamed('/order-history');
+                    () async {
+                  if (await controller.checkAndPromptLogin()) {
+                    Get.toNamed('/order-history');
+                  } else {
+                    return;
+                  }
                 }),
                 _buildMenuItem(Icons.favorite_border, 'favorites'.tr, () {
                   Get.toNamed('/wishlist');
                 }),
-                _buildMenuItem(Icons.lock_outline, 'change_password'.tr, () {
-                  Get.toNamed('/forgot-password');
+                _buildMenuItem(Icons.lock_outline, 'change_password'.tr,
+                    () async {
+                  if (await controller.checkAndPromptLogin()) {
+                    Get.toNamed('/forgot-password');
+                  } else {
+                    return;
+                  }
                 }),
                 _buildMenuItem(Icons.headset_mic_outlined, 'contact_us'.tr, () {
                   Get.toNamed('/contact-us');
@@ -116,7 +125,7 @@ class AccountView extends GetView<AccountController> {
                 }),
                 _buildLanguageToggle(),
                 const Divider(color: Colors.grey),
-                _buildDeleteAccount(),
+                // _buildDeleteAccount(),
               ],
             ),
           ),

@@ -11,6 +11,7 @@ class OrderSuccessView extends GetView<OrderSuccessController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ConstsConfig.primarycolor,
       appBar: AppBar(
         title:
             Text('payment_success'.tr, style: TextStyle(color: Colors.black)),
@@ -42,9 +43,7 @@ class OrderSuccessView extends GetView<OrderSuccessController> {
               Text(
                 "order_placed_success".tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(height: 30),
               ElevatedButton(

@@ -15,6 +15,7 @@ class NavigationScreenController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    Get.put(NotificationController());
     initializeController(currentIndex.value);
     await SendNotificationHandler().initNotification();
   }
@@ -25,7 +26,7 @@ class NavigationScreenController extends GetxController {
       case 0:
         Get.put(FeedsController());
         Get.put(ProductCardController());
-        Get.put(NotificationController());
+
         break;
       case 1:
         Get.put(HomeController());
@@ -47,7 +48,6 @@ class NavigationScreenController extends GetxController {
     switch (index) {
       case 1:
         Get.delete<HomeController>();
-        Get.delete<NotificationController>();
         break;
       case 2:
         Get.delete<CategoryController>();

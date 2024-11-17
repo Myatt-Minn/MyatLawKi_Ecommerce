@@ -75,6 +75,26 @@ class AccountController extends GetxController {
     }
   }
 
+  Future<bool> checkAndPromptLogin() async {
+    final authService = Tokenhandler();
+    final token = await authService.getToken();
+
+    if (token == null) {
+      Get.defaultDialog(
+        title: "login_first".tr,
+        content: Text('to_proceed'.tr),
+        textConfirm: "OK",
+        onConfirm: () {
+          Get.offNamed('/login'); // Navigate to the login screen
+        },
+      );
+      return false;
+    } else {
+      // Proceed to checkout if logged in
+      return true;
+    }
+  }
+
   Future<void> fetchUserData() async {
     final url = '$baseUrl/api/v1/customer';
     final token = await Tokenhandler()
@@ -137,7 +157,8 @@ class AccountController extends GetxController {
         actions: [
           TextButton(
             onPressed: () {
-              // Close the dialog without doing anything
+              Get.offAllNamed('/login');
+              Tokenhandler().clearToken();
               Get.back();
             },
             child: Text(

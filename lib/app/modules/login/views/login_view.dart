@@ -153,6 +153,22 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 16,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Get.offAllNamed('/navigation-screen');
+                },
+                child: const Text(
+                  'ဧည့်သည်အကောင့်ဖြင့်ဝင်ရောက်ပါ။',
+                  style: TextStyle(
+                    color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

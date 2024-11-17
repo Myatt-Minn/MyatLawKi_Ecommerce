@@ -81,6 +81,7 @@ class MyTranslations extends Translations {
           'shipping_status': 'Shipping Status',
           'delivered': 'Delivered',
           'in_transit': 'In Transit',
+          'choose_one': 'Select color and size',
           'out_for_delivery': 'Out for Delivery',
           'cash_on_deli': 'Cash on Delivery',
           'pending': 'Pending',
@@ -270,6 +271,7 @@ class MyTranslations extends Translations {
           'stock_error': 'ပစ္စည်းပြသနာ',
           'login_first': 'Login အရင်၀င်ပါ',
           'to_proceed': 'ဆက်လက်လုပ်ဆောင်ရန်အကောင့်အရင်၀င်ပါ',
+          'choose_one': 'အရွယ်နှင့်အရောင်ရွေးပါ။'
         }
       };
 }
