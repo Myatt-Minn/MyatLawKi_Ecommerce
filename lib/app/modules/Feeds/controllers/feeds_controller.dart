@@ -41,9 +41,14 @@ class FeedsController extends GetxController {
       Get.defaultDialog(
         title: "login_first".tr,
         titleStyle: TextStyle(color: Colors.white),
+        middleTextStyle: TextStyle(color: Colors.white),
         backgroundColor: ConstsConfig.primarycolor,
+        confirmTextColor: Colors.black,
         buttonColor: Colors.white,
-        content: Text('to_proceed'.tr),
+        content: Text(
+          'to_proceed'.tr,
+          style: TextStyle(color: Colors.white),
+        ),
         textConfirm: "OK",
         onConfirm: () {
           Get.offNamed('/login'); // Navigate to the login screen

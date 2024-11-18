@@ -12,10 +12,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AccountController extends GetxController {
   var currentUser = Rxn<UserModel>();
-  var selectedLanguage = 'ENG'.obs;
+  var selectedLanguage = 'MYN'.obs;
   var goDarkMode = true.obs;
   var notificationsEnabled = true.obs;
-  var languageSelected = 'English'.obs;
+  var languageSelected = 'Myanmar'.obs;
   var isProfileImageChooseSuccess = false.obs;
   late File file;
   final storage = GetStorage();
@@ -52,10 +52,6 @@ class AccountController extends GetxController {
 
   void toggleNotifications() {
     notificationsEnabled.value = !notificationsEnabled.value;
-  }
-
-  void changeLanguage(String language) {
-    languageSelected.value = language;
   }
 
   Future<void> logout() async {

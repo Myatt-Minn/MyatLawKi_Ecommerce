@@ -62,8 +62,12 @@ class AccountView extends GetView<AccountController> {
                         child: IconButton(
                           icon: const Icon(Icons.edit,
                               size: 16, color: Colors.black),
-                          onPressed: () {
-                            Get.toNamed('/edit-profile');
+                          onPressed: () async {
+                            if (await controller.checkAndPromptLogin()) {
+                              Get.toNamed('/edit-profile');
+                            } else {
+                              return;
+                            }
                           },
                         ),
                       ),

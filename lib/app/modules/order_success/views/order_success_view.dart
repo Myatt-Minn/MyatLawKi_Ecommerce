@@ -35,7 +35,7 @@ class OrderSuccessView extends GetView<OrderSuccessController> {
                 ),
                 child: const Icon(
                   Icons.check_circle_outline,
-                  color: ConstsConfig.primarycolor,
+                  color: Colors.white,
                   size: 80,
                 ),
               ),

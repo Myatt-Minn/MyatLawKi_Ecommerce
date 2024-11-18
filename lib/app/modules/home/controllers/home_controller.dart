@@ -37,7 +37,7 @@ class HomeController extends GetxController {
     fetchCategories();
   }
 
-  Future<void> getAllProducts({int page = 1, int limit = 10}) async {
+  Future<void> getAllProducts({int page = 1, int limit = 50}) async {
     final url = '$baseUrl/api/v1/products?page=$page&limit=$limit';
     final authService = Tokenhandler();
     final token = await authService.getToken();

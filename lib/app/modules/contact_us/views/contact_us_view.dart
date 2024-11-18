@@ -35,9 +35,11 @@ class ContactUsView extends GetView<ContactUsController> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            Image.asset(
-              'assets/logo.png', // Replace with your logo image path
-              height: 120,
+            SizedBox(
+              width: 200,
+              child: Image.asset(
+                'assets/logo.png', // Replace with your logo image path
+              ),
             ),
             const SizedBox(height: 20),
             _buildExpansionTile('faq'.tr),
