@@ -168,6 +168,7 @@ class ProductDetailsController extends GetxController {
     Get.find<CartController>().addItem(cartItem);
 
     Get.snackbar("Success", "Item added to cart",
+        isDismissible: true, // Allow dismissal
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM);

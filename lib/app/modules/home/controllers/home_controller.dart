@@ -50,7 +50,8 @@ class HomeController extends GetxController {
           'Content-Type': 'application/json',
         },
       );
-
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}'); //
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
 
@@ -63,7 +64,24 @@ class HomeController extends GetxController {
           throw Exception('Invalid data format');
         }
       } else {
-        throw Exception('Failed to load banners');
+        // Handle error response
+        try {
+          final responseBody = json.decode(response.body);
+          Get.snackbar(
+            "Order Error",
+            responseBody['message'] ?? 'An error occurred.',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        } catch (e) {
+          // Fallback for non-JSON error responses
+          Get.snackbar(
+            "Order Error",
+            "Unexpected error: ${response.body}",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
       }
     } catch (e) {
       print('Error fetching products: $e');

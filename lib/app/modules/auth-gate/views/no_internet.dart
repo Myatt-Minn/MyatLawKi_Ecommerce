@@ -23,7 +23,7 @@ class NoInternetScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const Text(
                 'You are not connected to the internet.',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(height: 20),
               ElevatedButton(

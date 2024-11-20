@@ -12,13 +12,13 @@ class Post {
 
   Post(
       {this.id,
-        this.userId,
-        this.poster,
-        this.description,
-        this.images,
-        this.comments,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.poster,
+      this.description,
+      this.images,
+      this.comments,
+      this.createdAt,
+      this.updatedAt});
 
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,13 +28,13 @@ class Post {
     if (json['images'] != null) {
       images = <PostImage>[];
       json['images'].forEach((v) {
-        images!.add(new PostImage.fromJson(v));
+        images!.add(PostImage.fromJson(v));
       });
     }
     if (json['comments'] != null) {
       comments = <CommentModel>[];
       json['comments'].forEach((v) {
-        comments!.add(new CommentModel.fromJson(v));
+        comments!.add(CommentModel.fromJson(v));
       });
     }
     createdAt = json['created_at'];
@@ -42,19 +42,19 @@ class Post {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['poster'] = this.poster;
-    data['description'] = this.description;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['user_id'] = userId;
+    data['poster'] = poster;
+    data['description'] = description;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
     }
-    if (this.comments != null) {
-      data['comments'] = this.comments!.map((v) => v.toJson()).toList();
+    if (comments != null) {
+      data['comments'] = comments!.map((v) => v.toJson()).toList();
     }
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -69,11 +69,11 @@ class PostImage {
 
   PostImage(
       {this.id,
-        this.postId,
-        this.path,
-        this.description,
-        this.createdAt,
-        this.updatedAt});
+      this.postId,
+      this.path,
+      this.description,
+      this.createdAt,
+      this.updatedAt});
 
   PostImage.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -85,13 +85,13 @@ class PostImage {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['post_id'] = this.postId;
-    data['path'] = this.path;
-    data['description'] = this.description;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['post_id'] = postId;
+    data['path'] = path;
+    data['description'] = description;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

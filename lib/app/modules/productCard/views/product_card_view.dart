@@ -87,11 +87,15 @@ class ProductCardView extends GetView<ProductCardController> {
                   const SizedBox(height: 4),
                   Text(
                     product.brand,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     product.category,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 4),

@@ -4,7 +4,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:myat_ecommerence/app/data/consts_config.dart';
 import 'package:myat_ecommerence/app/data/post_model.dart';
 import 'package:myat_ecommerence/app/modules/Feeds/controllers/feeds_controller.dart';
-import 'package:myat_ecommerence/app/modules/postCard/controllers/post_card_controller.dart';
 import 'package:myat_ecommerence/global_widgets/newfeed_detail.dart';
 
 import '../../../../global_widgets/comment_alert.dart';
@@ -19,12 +18,13 @@ class PostCardView extends GetView<FeedsController> {
   @override
   Widget build(BuildContext context) {
     RxInt commentLength = post.comments!.length.obs;
-    final screenHeight=MediaQuery.of(context).size.height;
-    final screenWidth=MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTap: () {
-        Get.to(NewfeedDetailPage(id: post.id!, controller: controller, postData: post));
+        Get.to(NewfeedDetailPage(
+            id: post.id!, controller: controller, postData: post));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -41,93 +41,137 @@ class PostCardView extends GetView<FeedsController> {
             const SizedBox(height: 10),
             _buildDescriptionSection(),
             const SizedBox(height: 10),
-            if(post.images!.length==1)
+            if (post.images!.length == 1)
               InkWell(
-                onTap: (){
-                  Get.to(ViewAllImagesScreen(images: post.images, indexImg: 0,));
-
+                onTap: () {
+                  Get.to(ViewAllImagesScreen(
+                    images: post.images,
+                    indexImg: 0,
+                  ));
                 },
-                child: Container(
-                  height: screenHeight/4,
-                  child: MyCacheImg(url: post.images![0].path.toString(), boxfit: BoxFit.fill, borderRadius: BorderRadius.zero),
+                child: SizedBox(
+                  height: screenHeight / 4,
+                  child: MyCacheImg(
+                      url: post.images![0].path.toString(),
+                      boxfit: BoxFit.fill,
+                      borderRadius: BorderRadius.zero),
                 ),
               ),
-            if(post.images!.length!=3 && post.images!.length==2 && post.images!.length!=1)
-              Container(
-                height: screenHeight/5.1,
+            if (post.images!.length != 3 &&
+                post.images!.length == 2 &&
+                post.images!.length != 1)
+              SizedBox(
+                height: screenHeight / 5.1,
                 child: Row(
                   children: [
-                    Flexible(child: InkWell(
-                      onTap: (){
-                        Get.to(ViewAllImagesScreen(images: post.images, indexImg: 0,));
+                    Flexible(
+                        child: InkWell(
+                      onTap: () {
+                        Get.to(ViewAllImagesScreen(
+                          images: post.images,
+                          indexImg: 0,
+                        ));
                       },
-                      child: MyCacheImg(url: post.images![0].path.toString(), boxfit: BoxFit.fill, borderRadius: BorderRadius.zero,height: screenHeight/6),
+                      child: MyCacheImg(
+                          url: post.images![0].path.toString(),
+                          boxfit: BoxFit.fill,
+                          borderRadius: BorderRadius.zero,
+                          height: screenHeight / 6),
                     )),
                     const SizedBox(height: 3),
-                    Flexible(child: InkWell(
-                      onTap: (){
-                        Get.to(ViewAllImagesScreen(images: post.images, indexImg: 1,));
+                    Flexible(
+                        child: InkWell(
+                      onTap: () {
+                        Get.to(ViewAllImagesScreen(
+                          images: post.images,
+                          indexImg: 1,
+                        ));
                       },
-                      child: MyCacheImg(url: post.images![1].path.toString(), boxfit: BoxFit.fill, borderRadius: BorderRadius.zero,height: screenHeight/6),
+                      child: MyCacheImg(
+                          url: post.images![1].path.toString(),
+                          boxfit: BoxFit.fill,
+                          borderRadius: BorderRadius.zero,
+                          height: screenHeight / 6),
                     ))
                   ],
                 ),
               ),
-            if(post.images!.length==3 && post.images!.length!=1)
-              Flexible(child: Container(
+            if (post.images!.length == 3 && post.images!.length != 1)
+              Flexible(
+                  child: Container(
                 child: Column(
                   children: [
                     InkWell(
-                      onTap: (){
-                        Get.to(ViewAllImagesScreen(images: post.images, indexImg: 0,));
-
+                      onTap: () {
+                        Get.to(ViewAllImagesScreen(
+                          images: post.images,
+                          indexImg: 0,
+                        ));
                       },
-                      child: MyCacheImg(url: post.images![0].path.toString(), boxfit: BoxFit.fill, borderRadius: BorderRadius.zero,width: screenWidth,height: screenHeight/4),
+                      child: MyCacheImg(
+                          url: post.images![0].path.toString(),
+                          boxfit: BoxFit.fill,
+                          borderRadius: BorderRadius.zero,
+                          width: screenWidth,
+                          height: screenHeight / 4),
                     ),
                     const SizedBox(height: 3),
                     Row(
                       children: [
-                        Flexible(child: InkWell(
-                          onTap: (){
-                            Get.to(ViewAllImagesScreen(images: post.images, indexImg: 1,));
-
+                        Flexible(
+                            child: InkWell(
+                          onTap: () {
+                            Get.to(ViewAllImagesScreen(
+                              images: post.images,
+                              indexImg: 1,
+                            ));
                           },
-                          child: MyCacheImg(url: post.images![1].path.toString(), boxfit: BoxFit.cover, borderRadius: BorderRadius.zero,height: screenHeight/6),
+                          child: MyCacheImg(
+                              url: post.images![1].path.toString(),
+                              boxfit: BoxFit.cover,
+                              borderRadius: BorderRadius.zero,
+                              height: screenHeight / 6),
                         )),
                         const SizedBox(height: 3),
-                        Flexible(child: InkWell(
-                          onTap: (){
-                            Get.to(ViewAllImagesScreen(images: post.images, indexImg: 2,));
-
-
+                        Flexible(
+                            child: InkWell(
+                          onTap: () {
+                            Get.to(ViewAllImagesScreen(
+                              images: post.images,
+                              indexImg: 2,
+                            ));
                           },
-                          child: MyCacheImg(url: post.images![2].path.toString(), boxfit: BoxFit.cover, borderRadius: BorderRadius.zero,height: screenHeight/6),
+                          child: MyCacheImg(
+                              url: post.images![2].path.toString(),
+                              boxfit: BoxFit.cover,
+                              borderRadius: BorderRadius.zero,
+                              height: screenHeight / 6),
                         )),
                       ],
                     )
                   ],
                 ),
               )),
-            if(post.images!.length>3)
-              Container(
-                height: screenHeight/2.7,
+            if (post.images!.length > 3)
+              SizedBox(
+                height: screenHeight / 2.7,
                 child: PhotoGrid(
                   imageUrls: post.images!,
                   onImageClicked: (i) => {
-                   Get.to(ViewAllImagesScreen(images: post.images, indexImg: i,))
-
+                    Get.to(ViewAllImagesScreen(
+                      images: post.images,
+                      indexImg: i,
+                    ))
                   },
-                  onExpandClicked: () => {
-                  Get.toNamed('/comments', arguments: post)
-
-                  },
+                  onExpandClicked: () =>
+                      {Get.toNamed('/comments', arguments: post)},
                   maxImages: 4,
                 ),
               ),
-           // _buildImageSection(),
+            // _buildImageSection(),
             const SizedBox(height: 10),
             Obx(
-              () => _buildBottomSection(post, commentLength.value,context),
+              () => _buildBottomSection(post, commentLength.value, context),
             ),
           ],
         ),
@@ -180,7 +224,7 @@ class PostCardView extends GetView<FeedsController> {
           );
   }
 
-  Widget _buildBottomSection(Post post, int cmtLength,BuildContext context) {
+  Widget _buildBottomSection(Post post, int cmtLength, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -202,9 +246,10 @@ class PostCardView extends GetView<FeedsController> {
             onPressed: () {
               showCupertinoModalBottomSheet(
                 context: context,
-                builder: (context) => CommentAlertWidget(postData: post, controller: controller),
+                builder: (context) =>
+                    CommentAlertWidget(postData: post, controller: controller),
               );
-             // Get.toNamed('/comments', arguments: post);
+              // Get.toNamed('/comments', arguments: post);
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: ConstsConfig.secondarycolor),

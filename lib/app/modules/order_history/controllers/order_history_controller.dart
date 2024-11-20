@@ -47,7 +47,7 @@ class OrderHistoryController extends GetxController {
           throw Exception('Invalid data format');
         }
       } else {
-        Get.snackbar("Fail", "Fail to load categories");
+        Get.snackbar("Fail", "Fail to load Orders");
       }
     } catch (e) {
       Get.snackbar("Error", "Error loading data");

@@ -91,7 +91,7 @@ class SignupView extends GetView<SignupController> {
                                   : controller.nameError.value,
                               fillColor: Colors.white,
                               labelStyle: TextStyle(color: Colors.black),
-                              hintText: 'Myat Min',
+                              hintText: 'Eg. Phyo Pyae',
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -122,7 +122,7 @@ class SignupView extends GetView<SignupController> {
                                   : controller.emailError.value,
                               fillColor: Colors.white,
                               labelStyle: TextStyle(color: Colors.black),
-                              hintText: 'E.g Myat@gmail.com',
+                              hintText: 'E.g phyo@gmail.com',
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -217,13 +217,26 @@ class SignupView extends GetView<SignupController> {
                         Obx(
                           () => TextField(
                             controller: controller.confirmPasswordController,
-                            obscureText: controller.isPasswordHidden.value,
+                            obscureText:
+                                controller.isConfirmPasswordHidden.value,
                             decoration: InputDecoration(
                               hintText: '*************',
                               errorText: controller.confirmPasswordError.value,
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               filled: true,
                               fillColor: Colors.white,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.isConfirmPasswordHidden.value
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () {
+                                  controller.isConfirmPasswordHidden.value =
+                                      !controller.isConfirmPasswordHidden.value;
+                                },
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide.none,
@@ -254,21 +267,27 @@ class SignupView extends GetView<SignupController> {
                     ),
                     const SizedBox(height: 20),
                     // Sign Up Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: controller.signUp,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFFE1B000), // Yellow button color
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                    Obx(
+                      () => SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: controller.agreeTerms.value
+                              ? () {
+                                  controller.signUp();
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFFE1B000), // Yellow button color
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          'အကောင့်ဖွင့်ရန်',
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          child: const Text(
+                            'အကောင့်ဖွင့်ရန်',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
                         ),
                       ),
                     ),

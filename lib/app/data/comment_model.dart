@@ -4,26 +4,25 @@ class CommentModel {
   String? poster;
   String? image;
   int? postId;
-  dynamic? parentId;
+  dynamic parentId;
   String? body;
   String? createdAt;
   String? updatedAt;
   List<Replies>? replies;
-  bool? replyShow=false;
-
+  bool? replyShow = false;
 
   CommentModel(
       {this.id,
-        this.userId,
-        this.poster,
-        this.image,
-        this.postId,
-        this.parentId,
-        this.body,
-        this.createdAt,
-        this.updatedAt,
-        this.replies,
-        this.replyShow});
+      this.userId,
+      this.poster,
+      this.image,
+      this.postId,
+      this.parentId,
+      this.body,
+      this.createdAt,
+      this.updatedAt,
+      this.replies,
+      this.replyShow});
 
   CommentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -38,29 +37,28 @@ class CommentModel {
     if (json['replies'] != null) {
       replies = <Replies>[];
       json['replies'].forEach((v) {
-        replies!.add(new Replies.fromJson(v));
+        replies!.add(Replies.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['poster'] = this.poster;
-    data['image'] = this.image;
-    data['post_id'] = this.postId;
-    data['parent_id'] = this.parentId;
-    data['body'] = this.body;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.replies != null) {
-      data['replies'] = this.replies!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['user_id'] = userId;
+    data['poster'] = poster;
+    data['image'] = image;
+    data['post_id'] = postId;
+    data['parent_id'] = parentId;
+    data['body'] = body;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (replies != null) {
+      data['replies'] = replies!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
-
 
 class Replies {
   int? id;
@@ -76,15 +74,15 @@ class Replies {
 
   Replies(
       {this.id,
-        this.userId,
-        this.poster,
-        this.image,
-        this.postId,
-        this.parentId,
-        this.body,
-        this.createdAt,
-        this.updatedAt,
-        this.replies});
+      this.userId,
+      this.poster,
+      this.image,
+      this.postId,
+      this.parentId,
+      this.body,
+      this.createdAt,
+      this.updatedAt,
+      this.replies});
 
   Replies.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -99,24 +97,24 @@ class Replies {
     if (json['replies'] != null) {
       replies = <Replies>[];
       json['replies'].forEach((v) {
-        replies!.add(new Replies.fromJson(v));
+        replies!.add(Replies.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['poster'] = this.poster;
-    data['image'] = this.image;
-    data['post_id'] = this.postId;
-    data['parent_id'] = this.parentId;
-    data['body'] = this.body;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.replies != null) {
-      data['replies'] = this.replies!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['user_id'] = userId;
+    data['poster'] = poster;
+    data['image'] = image;
+    data['post_id'] = postId;
+    data['parent_id'] = parentId;
+    data['body'] = body;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (replies != null) {
+      data['replies'] = replies!.map((v) => v.toJson()).toList();
     }
     return data;
   }

@@ -51,6 +51,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                         icon: const Icon(Icons.shopping_cart,
                             color: Colors.white),
                         onPressed: () {
+                          Get.closeAllSnackbars(); // Close snackbar
                           Get.find<NavigationScreenController>()
                               .currentIndex
                               .value = 3;
@@ -109,41 +110,41 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Obx(
-                  () => SizedBox(
-                    width: double.infinity,
-                    height: 90,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.product.value!.images.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
+                SizedBox(
+                  width: double.infinity,
+                  height: 90,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.product.value!.images.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
                           onTap: () {
                             controller.changeImage(
                                 index); // Update the selected image index
                           },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color:
-                                    controller.selectedImageIndex.value == index
-                                        ? ConstsConfig.secondarycolor
-                                        : Colors.transparent,
-                                width: 2,
+                          child: Obx(
+                            () => Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: controller.selectedImageIndex.value ==
+                                          index
+                                      ? ConstsConfig.secondarycolor
+                                      : Colors.transparent,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              borderRadius: BorderRadius.circular(8),
+                              child: FancyShimmerImage(
+                                imageUrl:
+                                    controller.product.value!.images[index],
+                                width: 70,
+                                height: 70,
+                                boxFit: BoxFit.cover,
+                              ),
                             ),
-                            child: FancyShimmerImage(
-                              imageUrl: controller.product.value!.images[index],
-                              width: 70,
-                              height: 70,
-                              boxFit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                          ));
+                    },
                   ),
                 ),
                 const SizedBox(height: 20),
