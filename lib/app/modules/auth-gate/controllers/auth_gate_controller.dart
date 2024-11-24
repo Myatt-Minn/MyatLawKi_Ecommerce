@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:myat_ecommerence/app/data/consts_config.dart';
+import 'package:myat_ecommerence/app/data/constsconfig.dart';
 import 'package:myat_ecommerence/app/data/tokenHandler.dart';
 
 class AuthGateController extends GetxController {
